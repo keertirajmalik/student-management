@@ -1,8 +1,8 @@
-#Student Management Project
+# Student Management Project
 
 I am creating this web app to learn about the Spring.
 
-##Technology used:
+## Technology used:
     Spring
     Hibernate
     JSP

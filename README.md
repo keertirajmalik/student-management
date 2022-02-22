@@ -6,6 +6,7 @@ I am creating this web app to learn about the Spring. Where I plan to create a s
     Spring
     Hibernate
     JSP
+    MySQL
 
 ## Feature to be implemented:
    - [ ] student information 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.codingmonkey.studentmanagement.Exception.NotFoundException;
 import com.codingmonkey.studentmanagement.entity.Student;
 import com.codingmonkey.studentmanagement.service.StudentService;
 
@@ -36,7 +37,7 @@ public class StudentRestController {
     Student student = studentService.findById(studentId);
 
     if (student == null) {
-      throw new RuntimeException("Student not found with id: " + studentId);
+      throw new NotFoundException("Student not found with id: " + studentId);
     }
     return student;
   }

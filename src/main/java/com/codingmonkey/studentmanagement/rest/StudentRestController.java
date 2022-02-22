@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,4 +28,24 @@ public class StudentRestController {
   public List<Student> findAll() {
     return studentService.findAll();
   }
+
+  @GetMapping("/students/{studentId}")
+  public Student getStudent(@PathVariable int studentId) {
+    Student student = studentService.findById(studentId);
+
+    if (student == null) {
+      throw new RuntimeException("Student not found with id: " + studentId);
+    }
+    return student;
+  }
+
+  @PostMapping("/students")
+  public Student addEmployee(@RequestBody Student student) {
+    student.setId(0);
+
+    studentService.save(student);
+
+    return student;
+  }
+
 }

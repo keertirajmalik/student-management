@@ -3,9 +3,11 @@ package com.codingmonkey.studentmanagement.rest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,7 +42,7 @@ public class StudentRestController {
   }
 
   @PostMapping("/students")
-  public Student addEmployee(@RequestBody Student student) {
+  public Student addStudent(@RequestBody Student student) {
     student.setId(0);
 
     studentService.save(student);
@@ -48,4 +50,19 @@ public class StudentRestController {
     return student;
   }
 
+  @PutMapping("/students/{studentId}")
+  public Student updateStudent(@RequestBody Student student) {
+
+    studentService.save(student);
+
+    return student;
+  }
+
+  @DeleteMapping("/students/{studentId}")
+  public String deleteStudent(@PathVariable int studentId) {
+
+    studentService.deleteById(studentId);
+
+    return "Student is successfully deleted";
+  }
 }

@@ -50,7 +50,7 @@ public class StudentRestController {
     return student;
   }
 
-  @PutMapping("/students/{studentId}")
+  @PutMapping("/students")
   public Student updateStudent(@RequestBody Student student) {
 
     studentService.save(student);

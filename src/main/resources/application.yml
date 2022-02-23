@@ -3,3 +3,7 @@ spring:
     url: jdbc:mysql://localhost:3306/student_data?useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=TRUE
     username: root
     password: password
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp

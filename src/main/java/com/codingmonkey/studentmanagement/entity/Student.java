@@ -12,8 +12,7 @@ import javax.persistence.Table;
 public class Student {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
-  private int id;
+  private int student_id;
 
   @Column(name = "first_name")
   private String first_name;
@@ -33,31 +32,12 @@ public class Student {
   @Column(name = "class")
   private int classNumber;
 
-  public Student(){
-
+  public int getStudentId() {
+    return student_id;
   }
 
-  public Student(final String first_name,
-                 final String last_name,
-                 final int roll_number,
-                 final Long mobile_number,
-                 final String email,
-                 final int classNumber) {
-    this.first_name = first_name;
-    this.last_name = last_name;
-    this.roll_number = roll_number;
-    this.mobile_number = mobile_number;
-    this.email = email;
-    this.classNumber = classNumber;
-  }
-
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
+  public void setStudentId(int id) {
+    this.student_id = id;
   }
 
   public String getFirst_name() {
@@ -108,9 +88,17 @@ public class Student {
     this.classNumber = classNumber;
   }
 
+  //  public List<Subject> getSubjects() {
+  //    return subjects;
+  //  }
+  //
+  //  public void setSubjects(final List<Subject> subjects) {
+  //    this.subjects = subjects;
+  //  }
+
   @Override
   public String toString() {
-    return "Student{" + "id=" + id + ", first_name='" + first_name + '\'' + ", last_name='" + last_name + '\''
+    return "Student{" + "id=" + student_id + ", first_name='" + first_name + '\'' + ", last_name='" + last_name + '\''
         + ", roll_number=" + roll_number + ", mobile_number=" + mobile_number + ", email='" + email + '\''
         + ", classNumber=" + classNumber + '}';
   }

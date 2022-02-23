@@ -44,7 +44,7 @@ public class StudentRestController {
 
   @PostMapping("/students")
   public Student addStudent(@RequestBody Student student) {
-    student.setId(0);
+    student.setStudentId(0);
 
     studentService.save(student);
 

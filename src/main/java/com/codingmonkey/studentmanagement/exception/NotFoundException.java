@@ -1,4 +1,4 @@
-package com.codingmonkey.studentmanagement.Exception;
+package com.codingmonkey.studentmanagement.exception;
 
 public class NotFoundException extends RuntimeException {
   public NotFoundException() {

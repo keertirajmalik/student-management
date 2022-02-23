@@ -1,4 +1,4 @@
-package com.codingmonkey.studentmanagement.Exception.handler;
+package com.codingmonkey.studentmanagement.exception.handler;
 
 import java.time.Instant;
 
@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.codingmonkey.studentmanagement.Exception.ErrorResponse;
-import com.codingmonkey.studentmanagement.Exception.NotFoundException;
+import com.codingmonkey.studentmanagement.exception.ErrorResponse;
+import com.codingmonkey.studentmanagement.exception.NotFoundException;
 
 @ControllerAdvice
 public class RestExceptionHandler {

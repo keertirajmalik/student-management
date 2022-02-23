@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codingmonkey.studentmanagement.Exception.NotFoundException;
 import com.codingmonkey.studentmanagement.entity.Student;
+import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.service.StudentService;
 
 @RestController
@@ -66,4 +66,5 @@ public class StudentRestController {
 
     return "Student is successfully deleted";
   }
+
 }

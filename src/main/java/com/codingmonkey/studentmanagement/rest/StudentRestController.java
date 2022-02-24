@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.codingmonkey.studentmanagement.dto.StudentDTO;
 import com.codingmonkey.studentmanagement.entity.Student;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.service.StudentService;
@@ -28,7 +29,7 @@ public class StudentRestController {
   }
 
   @GetMapping("/students")
-  public List<Student> findAll() {
+  public List<StudentDTO> findAll() {
     return studentService.findAll();
   }
 
@@ -44,7 +45,7 @@ public class StudentRestController {
 
   @PostMapping("/students")
   public Student addStudent(@RequestBody Student student) {
-    student.setStudentId(0);
+    student.setStudent_id(0);
 
     studentService.save(student);
 

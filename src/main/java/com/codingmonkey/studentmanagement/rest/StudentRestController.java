@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.codingmonkey.studentmanagement.dto.StudentDTO;
 import com.codingmonkey.studentmanagement.entity.Student;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.service.StudentService;
@@ -28,13 +29,13 @@ public class StudentRestController {
   }
 
   @GetMapping("/students")
-  public List<Student> findAll() {
+  public List<StudentDTO> findAll() {
     return studentService.findAll();
   }
 
   @GetMapping("/students/{studentId}")
-  public Student getStudent(@PathVariable int studentId) {
-    Student student = studentService.findById(studentId);
+  public StudentDTO getStudent(@PathVariable int studentId) {
+    StudentDTO student = studentService.findById(studentId);
 
     if (student == null) {
       throw new NotFoundException("Student not found with id: " + studentId);
@@ -44,7 +45,7 @@ public class StudentRestController {
 
   @PostMapping("/students")
   public Student addStudent(@RequestBody Student student) {
-    student.setId(0);
+    student.setStudent_id(0);
 
     studentService.save(student);
 

@@ -12,8 +12,7 @@ import javax.persistence.Table;
 public class Teacher {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
-  private int id;
+  private int teacherId;
 
   @Column(name = "first_name")
   private String first_name;
@@ -27,15 +26,12 @@ public class Teacher {
   @Column(name = "email")
   private String email;
 
-  //  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  //  @JoinTable(name = "")
-
   public int getId() {
-    return id;
+    return teacherId;
   }
 
-  public void setId(int id) {
-    this.id = id;
+  public void setId(int teacherId) {
+    this.teacherId = teacherId;
   }
 
   public String getFirst_name() {
@@ -72,6 +68,7 @@ public class Teacher {
 
   @Override
   public String toString() {
-    return "Teacher{" + "id=" + id + ", first_name='" + first_name + '\'' + ", last_name='" + last_name + '\'' + '}';
+    return "Teacher{" + "teacherId=" + teacherId + ", first_name='" + first_name + '\'' + ", last_name='" + last_name
+        + '\'' + '}';
   }
 }

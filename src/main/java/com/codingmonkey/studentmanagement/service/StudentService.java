@@ -2,13 +2,14 @@ package com.codingmonkey.studentmanagement.service;
 
 import java.util.List;
 
+import com.codingmonkey.studentmanagement.dto.StudentDTO;
 import com.codingmonkey.studentmanagement.entity.Student;
 
 public interface StudentService {
 
-  List<Student> findAll();
+  List<StudentDTO> findAll();
 
-  Student findById(int studentId);
+  StudentDTO findById(int studentId);
 
   void save(Student student);
 

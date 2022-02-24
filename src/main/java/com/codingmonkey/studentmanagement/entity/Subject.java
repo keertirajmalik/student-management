@@ -17,7 +17,7 @@ public class Subject {
   @Column(name = "subject")
   private String subject;
 
-  @Column(name = "class")
+  @Column(name = "class_number")
   private int class_number;
 
   public Integer getSubjectId() {

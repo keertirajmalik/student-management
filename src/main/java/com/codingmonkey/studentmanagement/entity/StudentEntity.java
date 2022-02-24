@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "student_details")
-public class Student {
+public class StudentEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int student_id;
@@ -90,8 +90,8 @@ public class Student {
 
   @Override
   public String toString() {
-    return "Student{" + "id=" + student_id + ", first_name='" + first_name + '\'' + ", last_name='" + last_name + '\''
-        + ", roll_number=" + roll_number + ", mobile_number=" + mobile_number + ", email='" + email + '\''
+    return "StudentEntity{" + "id=" + student_id + ", first_name='" + first_name + '\'' + ", last_name='" + last_name
+        + '\'' + ", roll_number=" + roll_number + ", mobile_number=" + mobile_number + ", email='" + email + '\''
         + ", class_number=" + class_number + '}';
   }
 }

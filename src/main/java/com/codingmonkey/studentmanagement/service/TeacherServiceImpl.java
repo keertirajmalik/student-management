@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.codingmonkey.studentmanagement.entity.Teacher;
+import com.codingmonkey.studentmanagement.entity.TeacherEntity;
 import com.codingmonkey.studentmanagement.repositories.TeacherRepository;
 
 @Service
@@ -18,13 +18,13 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public List<Teacher> findAll() {
+  public List<TeacherEntity> findAll() {
     return teacherRepository.findAll();
   }
 
   @Override
-  public Teacher findById(final int teacherId) {
-    Optional<Teacher> teacher = teacherRepository.findById(teacherId);
+  public TeacherEntity findById(final int teacherId) {
+    Optional<TeacherEntity> teacher = teacherRepository.findById(teacherId);
 
     if (teacher.isPresent()) {
       return teacher.get();
@@ -33,8 +33,8 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public void save(final Teacher teacher) {
-    teacherRepository.save(teacher);
+  public void save(final TeacherEntity teacherEntity) {
+    teacherRepository.save(teacherEntity);
   }
 
   @Override

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codingmonkey.studentmanagement.dto.StudentDTO;
-import com.codingmonkey.studentmanagement.entity.Student;
+import com.codingmonkey.studentmanagement.entity.StudentEntity;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.service.StudentService;
 
@@ -44,20 +44,20 @@ public class StudentRestController {
   }
 
   @PostMapping("/students")
-  public Student addStudent(@RequestBody Student student) {
-    student.setStudent_id(0);
+  public StudentEntity addStudent(@RequestBody StudentEntity studentEntity) {
+    studentEntity.setStudent_id(0);
 
-    studentService.save(student);
+    studentService.save(studentEntity);
 
-    return student;
+    return studentEntity;
   }
 
   @PutMapping("/students")
-  public Student updateStudent(@RequestBody Student student) {
+  public StudentEntity updateStudent(@RequestBody StudentEntity studentEntity) {
 
-    studentService.save(student);
+    studentService.save(studentEntity);
 
-    return student;
+    return studentEntity;
   }
 
   @DeleteMapping("/students/{studentId}")

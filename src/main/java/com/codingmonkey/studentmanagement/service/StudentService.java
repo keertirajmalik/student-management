@@ -3,7 +3,7 @@ package com.codingmonkey.studentmanagement.service;
 import java.util.List;
 
 import com.codingmonkey.studentmanagement.dto.StudentDTO;
-import com.codingmonkey.studentmanagement.entity.Student;
+import com.codingmonkey.studentmanagement.entity.StudentEntity;
 
 public interface StudentService {
 
@@ -11,7 +11,7 @@ public interface StudentService {
 
   StudentDTO findById(int studentId);
 
-  void save(Student student);
+  void save(StudentEntity studentEntity);
 
   void deleteById(int studentId);
 }

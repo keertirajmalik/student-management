@@ -6,10 +6,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.codingmonkey.studentmanagement.entity.Subject;
+import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 
-public interface SubjectRepository extends JpaRepository<Subject, Integer> {
+public interface SubjectRepository extends JpaRepository<SubjectEntity, Integer> {
 
-  @Query("select s from Subject s where s.class_number = ?1")
-  Optional<List<Subject>> findSubjectsByClass_number(int class_number);
+  @Query("select s from SubjectEntity s where s.class_number = ?1")
+  Optional<List<SubjectEntity>> findSubjectsByClass_number(int class_number);
 }

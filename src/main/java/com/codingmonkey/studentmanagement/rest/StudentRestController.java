@@ -34,8 +34,8 @@ public class StudentRestController {
   }
 
   @GetMapping("/students/{studentId}")
-  public Student getStudent(@PathVariable int studentId) {
-    Student student = studentService.findById(studentId);
+  public StudentDTO getStudent(@PathVariable int studentId) {
+    StudentDTO student = studentService.findById(studentId);
 
     if (student == null) {
       throw new NotFoundException("Student not found with id: " + studentId);

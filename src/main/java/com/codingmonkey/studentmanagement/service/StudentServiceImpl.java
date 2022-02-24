@@ -46,11 +46,11 @@ public class StudentServiceImpl implements StudentService {
   }
 
   @Override
-  public Student findById(final int studentId) {
+  public StudentDTO findById(final int studentId) {
     Optional<Student> student = studentRepository.findById(studentId);
 
     if (student.isPresent()) {
-      return student.get();
+      return convertEntityToDto(student.get());
     }
     throw new RuntimeException("Did not find student id: " + studentId);
   }

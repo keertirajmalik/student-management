@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.codingmonkey.studentmanagement.dto.StudentDTO;
 import com.codingmonkey.studentmanagement.entity.Student;
 import com.codingmonkey.studentmanagement.service.StudentService;
 
@@ -27,7 +28,7 @@ public class StudentUIController {
 
   @GetMapping("/list")
   public String listCustomers(Model model) {
-    List<Student> studentList = studentService.findAll();
+    List<StudentDTO> studentList = studentService.findAll();
     model.addAttribute("student", studentList);
     return "list-students";
   }
@@ -56,7 +57,7 @@ public class StudentUIController {
   public String showFormForUpdate(@RequestParam("studentId") int id, Model theModel) {
 
     // get the customer from our service
-    Student student = studentService.findById(id);
+    StudentDTO student = studentService.findById(id);
 
     // set customer as a model attribute to pre-populate the form
     theModel.addAttribute("student", student);

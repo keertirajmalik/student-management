@@ -9,7 +9,7 @@ public interface StudentService {
 
   List<StudentDTO> findAll();
 
-  Student findById(int studentId);
+  StudentDTO findById(int studentId);
 
   void save(Student student);
 

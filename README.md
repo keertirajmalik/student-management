@@ -7,8 +7,26 @@ I am creating this web app to learn about the Spring. Where I plan to create a s
     Hibernate
     JSP
     MySQL
+    Liquibase
 
 ## Feature to be implemented:
    - [ ] student information 
    - [ ] Exams info
    - [ ] Homework assignment
+
+## Table structure followed
+
+### Studnets Table
+
+| First name  | Last name  |  Roll Number | Mobile Number  |email   |class |
+|---|---|---|---|---|---|
+
+### Teachers Table
+
+| First name  | Last name  |  Mobile Number  |email  |
+|---|---|---|---|
+
+### Subject Table
+
+| Subject  | Class |  teacher name  |
+|---|---|---|

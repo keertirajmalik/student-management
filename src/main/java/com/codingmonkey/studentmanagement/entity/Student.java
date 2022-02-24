@@ -29,15 +29,15 @@ public class Student {
   @Column(name = "email")
   private String email;
 
-  @Column(name = "class")
-  private int classNumber;
+  @Column(name = "class_number")
+  private int class_number;
 
-  public int getStudentId() {
+  public int getStudent_id() {
     return student_id;
   }
 
-  public void setStudentId(int id) {
-    this.student_id = id;
+  public void setStudent_id(final int student_id) {
+    this.student_id = student_id;
   }
 
   public String getFirst_name() {
@@ -81,25 +81,17 @@ public class Student {
   }
 
   public int getClassNumber() {
-    return classNumber;
+    return class_number;
   }
 
   public void setClassNumber(final int classNumber) {
-    this.classNumber = classNumber;
+    this.class_number = classNumber;
   }
-
-  //  public List<Subject> getSubjects() {
-  //    return subjects;
-  //  }
-  //
-  //  public void setSubjects(final List<Subject> subjects) {
-  //    this.subjects = subjects;
-  //  }
 
   @Override
   public String toString() {
     return "Student{" + "id=" + student_id + ", first_name='" + first_name + '\'' + ", last_name='" + last_name + '\''
         + ", roll_number=" + roll_number + ", mobile_number=" + mobile_number + ", email='" + email + '\''
-        + ", classNumber=" + classNumber + '}';
+        + ", class_number=" + class_number + '}';
   }
 }

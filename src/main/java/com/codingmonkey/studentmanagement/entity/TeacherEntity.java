@@ -1,10 +1,14 @@
 package com.codingmonkey.studentmanagement.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -26,12 +30,24 @@ public class TeacherEntity {
   @Column(name = "email")
   private String email;
 
-  public int getId() {
+  @OneToMany(mappedBy = "teacher", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
+      CascadeType.DETACH})
+  private List<SubjectEntity> subjects;
+
+  public int getTeacherId() {
     return teacherId;
   }
 
-  public void setId(int teacherId) {
+  public void setTeacherId(final int teacherId) {
     this.teacherId = teacherId;
+  }
+
+  public List<SubjectEntity> getSubjects() {
+    return subjects;
+  }
+
+  public void setSubjects(final List<SubjectEntity> subjects) {
+    this.subjects = subjects;
   }
 
   public String getFirst_name() {

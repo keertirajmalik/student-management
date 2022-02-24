@@ -38,7 +38,19 @@
             </column>
             <column name="subject" type="VARCHAR(255)"/>
             <column name="class_number" type="INT"/>
+            <column name="teacher_id" type="INT"/>
     </createTable>
+          <addUniqueConstraint
+              columnNames="subject, class_number"
+              constraintName="subject_details_uindex"
+              tableName="subject_details"
+          />
+          <addForeignKeyConstraint
+              baseColumnNames="teacher_id"
+              referencedColumnNames="teacher_id"
+              referencedTableName="teacher_details"
+              constraintName="subject_details_teacher_details_teacher_id_fk"
+              baseTableName="subject_details"/>
   </changeSet>
 
   <changeSet dbms="mysql" author="fico" id="1605500811268-4">
@@ -46,6 +58,10 @@
   </changeSet>
 
   <changeSet dbms="mysql" author="fico" id="1605500811268-5">
+    <sqlFile dbms="mysql" path="db/changelog/v1/scripts/ADD TEACHER DETAILS.sql"/>
+  </changeSet>
+
+  <changeSet dbms="mysql" author="fico" id="1605500811268-6">
     <sqlFile dbms="mysql" path="db/changelog/v1/scripts/ADD SUBJECTS.sql"/>
   </changeSet>
 

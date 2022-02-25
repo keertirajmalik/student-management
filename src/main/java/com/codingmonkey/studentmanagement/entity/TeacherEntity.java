@@ -1,15 +1,21 @@
 package com.codingmonkey.studentmanagement.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "teacher_details")
-public class Teacher {
+public class TeacherEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int teacherId;
@@ -26,12 +32,33 @@ public class Teacher {
   @Column(name = "email")
   private String email;
 
-  public int getId() {
+  @OneToMany(mappedBy = "teacher", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
+      CascadeType.DETACH}, fetch = FetchType.LAZY)
+  private List<SubjectEntity> subjects;
+
+  public int getTeacherId() {
     return teacherId;
   }
 
-  public void setId(int teacherId) {
+  public void setTeacherId(final int teacherId) {
     this.teacherId = teacherId;
+  }
+
+  public List<SubjectEntity> getSubjects() {
+    return subjects;
+  }
+
+  public void setSubjects(final List<SubjectEntity> subjects) {
+    this.subjects = subjects;
+  }
+
+  public void add(SubjectEntity subject) {
+    if (subjects == null) {
+      subjects = new ArrayList<>();
+    }
+
+    subjects.add(subject);
+    subject.setTeacher(this);
   }
 
   public String getFirst_name() {
@@ -68,7 +95,7 @@ public class Teacher {
 
   @Override
   public String toString() {
-    return "Teacher{" + "teacherId=" + teacherId + ", first_name='" + first_name + '\'' + ", last_name='" + last_name
-        + '\'' + '}';
+    return "TeacherEntity{" + "teacherId=" + teacherId + ", first_name='" + first_name + '\'' + ", last_name='"
+        + last_name + '\'' + '}';
   }
 }

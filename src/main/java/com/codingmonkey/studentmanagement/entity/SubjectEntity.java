@@ -1,15 +1,21 @@
 package com.codingmonkey.studentmanagement.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "subject_details")
-public class Subject {
+public class SubjectEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer subject_id;
@@ -19,6 +25,20 @@ public class Subject {
 
   @Column(name = "class_number")
   private int class_number;
+
+  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
+      CascadeType.DETACH}, fetch = FetchType.LAZY)
+  @JoinColumn(name = "teacher_id")
+  @JsonIgnore
+  private TeacherEntity teacher;
+
+  public TeacherEntity getTeacher() {
+    return teacher;
+  }
+
+  public void setTeacher(TeacherEntity teacher) {
+    this.teacher = teacher;
+  }
 
   public Integer getSubjectId() {
     return subject_id;

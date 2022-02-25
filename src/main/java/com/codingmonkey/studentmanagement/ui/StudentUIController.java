@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.codingmonkey.studentmanagement.dto.StudentDTO;
-import com.codingmonkey.studentmanagement.entity.Student;
+import com.codingmonkey.studentmanagement.entity.StudentEntity;
 import com.codingmonkey.studentmanagement.service.StudentService;
 
 @Controller
@@ -37,18 +37,18 @@ public class StudentUIController {
   public String showFormForAdd(Model theModel) {
 
     // create model attribute to bind form data
-    Student student = new Student();
+    StudentEntity studentEntity = new StudentEntity();
 
-    theModel.addAttribute("student", student);
+    theModel.addAttribute("student", studentEntity);
 
     return "student-form";
   }
 
   @PostMapping("/saveStudent")
-  public String saveStudent(@ModelAttribute("student") Student student) {
+  public String saveStudent(@ModelAttribute("student") StudentEntity studentEntity) {
 
     // save the customer using our service
-    studentService.save(student);
+    studentService.save(studentEntity);
 
     return "redirect:/student/list";
   }

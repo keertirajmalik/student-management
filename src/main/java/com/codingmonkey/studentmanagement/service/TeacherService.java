@@ -2,15 +2,16 @@ package com.codingmonkey.studentmanagement.service;
 
 import java.util.List;
 
-import com.codingmonkey.studentmanagement.entity.Teacher;
+import com.codingmonkey.studentmanagement.dto.TeacherDTO;
+import com.codingmonkey.studentmanagement.entity.TeacherEntity;
 
 public interface TeacherService {
 
-  List<Teacher> findAll();
+  List<TeacherDTO> findAll();
 
-  Teacher findById(int teacherId);
+  TeacherDTO findById(int teacherId);
 
-  void save(Teacher teacher);
+  void save(TeacherEntity teacherEntity);
 
   void deleteById(int teacherId);
 }

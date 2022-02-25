@@ -28,7 +28,7 @@ public class TeacherRestController {
   }
 
   @GetMapping("/teachers")
-  public List<TeacherEntity> findAll() {
+  public List<TeacherDTO> findAll() {
     return teacherService.findAll();
   }
 

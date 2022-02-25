@@ -2,6 +2,7 @@ package com.codingmonkey.studentmanagement.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,8 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public List<TeacherEntity> findAll() {
-    return teacherRepository.findAll();
+  public List<TeacherDTO> findAll() {
+    return teacherRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
   }
 
   @Override

@@ -7,7 +7,7 @@ import com.codingmonkey.studentmanagement.entity.TeacherEntity;
 
 public interface TeacherService {
 
-  List<TeacherEntity> findAll();
+  List<TeacherDTO> findAll();
 
   TeacherDTO findById(int teacherId);
 

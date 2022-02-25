@@ -1,6 +1,7 @@
 package com.codingmonkey.studentmanagement.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 
@@ -9,7 +10,7 @@ public class TeacherDTO {
   private String last_name;
   private Long mobile_number;
   private String email;
-  private List<SubjectEntity> subjects;
+  private List<SubjectDTO> subjects;
 
   public String getFirst_name() {
     return first_name;
@@ -43,11 +44,20 @@ public class TeacherDTO {
     this.email = email;
   }
 
-  public List<SubjectEntity> getSubjects() {
+  public List<SubjectDTO> getSubjects() {
     return subjects;
   }
 
   public void setSubjects(final List<SubjectEntity> subjects) {
-    this.subjects = subjects;
+    this.subjects = subjects.stream().map(this::convertEntityToDto).collect(Collectors.toList());
   }
+
+  private SubjectDTO convertEntityToDto(SubjectEntity subjectEntity) {
+    SubjectDTO subjectDTO = new SubjectDTO();
+    subjectDTO.setClass_number(subjectEntity.getClass_number());
+    subjectDTO.setSubject(subjectEntity.getSubject());
+
+    return subjectDTO;
+  }
+
 }

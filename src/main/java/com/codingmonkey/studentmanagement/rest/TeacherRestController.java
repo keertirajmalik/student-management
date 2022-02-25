@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.codingmonkey.studentmanagement.dto.TeacherDTO;
 import com.codingmonkey.studentmanagement.entity.TeacherEntity;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 
@@ -32,8 +33,8 @@ public class TeacherRestController {
   }
 
   @GetMapping("/teachers/{teacherId}")
-  public TeacherEntity getTeacher(@PathVariable int teacherId) {
-    TeacherEntity teacher = teacherService.findById(teacherId);
+  public TeacherDTO getTeacher(@PathVariable int teacherId) {
+    TeacherDTO teacher = teacherService.findById(teacherId);
 
     if (teacher == null) {
       throw new RuntimeException("Teacher not found with id: " + teacherId);
@@ -43,7 +44,7 @@ public class TeacherRestController {
 
   @PostMapping("/teachers")
   public TeacherEntity addTeacher(@RequestBody TeacherEntity teacherEntity) {
-    teacherEntity.setId(0);
+    teacherEntity.setTeacherId(0);
 
     teacherService.save(teacherEntity);
 

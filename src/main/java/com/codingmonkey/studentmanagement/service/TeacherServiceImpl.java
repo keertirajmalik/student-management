@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.codingmonkey.studentmanagement.dto.TeacherDTO;
 import com.codingmonkey.studentmanagement.entity.TeacherEntity;
 import com.codingmonkey.studentmanagement.repositories.TeacherRepository;
 
@@ -23,11 +24,11 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public TeacherEntity findById(final int teacherId) {
+  public TeacherDTO findById(final int teacherId) {
     Optional<TeacherEntity> teacher = teacherRepository.findById(teacherId);
 
     if (teacher.isPresent()) {
-      return teacher.get();
+      return convertEntityToDto(teacher.get());
     }
     throw new RuntimeException("Did not find teacher with id: " + teacherId);
   }
@@ -40,5 +41,15 @@ public class TeacherServiceImpl implements TeacherService {
   @Override
   public void deleteById(final int teacherId) {
     teacherRepository.deleteById(teacherId);
+  }
+
+  private TeacherDTO convertEntityToDto(TeacherEntity teacherEntity) {
+    TeacherDTO teacherDTO = new TeacherDTO();
+    teacherDTO.setFirst_name(teacherEntity.getFirst_name());
+    teacherDTO.setLast_name(teacherEntity.getLast_name());
+    teacherDTO.setEmail(teacherEntity.getEmail());
+    teacherDTO.setMobile_number(teacherEntity.getMobile_number());
+    teacherDTO.setSubjects(teacherEntity.getSubjects());
+    return teacherDTO;
   }
 }

@@ -46,10 +46,10 @@ public class ModelMapperConfiguration {
 
     PropertyMap<TeacherDTO, TeacherEntity> teacherRequestDtoEntityMap = new PropertyMap<TeacherDTO, TeacherEntity>() {
       protected void configure() {
-        map().setFirstName(source.getFirst_name());
-        map().setLastName(source.getLast_name());
+        map().setFirstName(source.getFirstName());
+        map().setLastName(source.getLastName());
         map().setEmail(source.getEmail());
-        map().setMobileNumber(source.getMobile_number());
+        map().setMobileNumber(source.getMobileNumber());
       }
     };
 

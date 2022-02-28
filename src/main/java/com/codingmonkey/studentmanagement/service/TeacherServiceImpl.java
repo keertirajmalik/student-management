@@ -69,28 +69,21 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   private void validateFieldsInRequestDto(final TeacherDTO teacherDTO) {
-    if (Optional.ofNullable(teacherDTO.getFirst_name()).isEmpty()) {
+    if (Optional.ofNullable(teacherDTO.getFirstName()).isEmpty()) {
       throw new StudentDetailsException("Teacher First Name cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (teacherDTO.getFirst_name().isEmpty()) {
+    } else if (teacherDTO.getFirstName().isEmpty()) {
       throw new StudentDetailsException("Teacher First Name cannot be empty", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(teacherDTO.getLast_name()).isEmpty()) {
+    } else if (Optional.ofNullable(teacherDTO.getLastName()).isEmpty()) {
       throw new StudentDetailsException("Teacher Last Name cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (teacherDTO.getLast_name().isEmpty()) {
+    } else if (teacherDTO.getLastName().isEmpty()) {
       throw new StudentDetailsException("Teacher Last Name cannot be empty", HttpStatus.BAD_REQUEST);
     } else if (Optional.ofNullable(teacherDTO.getEmail()).isEmpty()) {
       throw new StudentDetailsException("Teacher email cannot be null", HttpStatus.BAD_REQUEST);
     } else if (teacherDTO.getEmail().isEmpty()) {
       throw new StudentDetailsException("Teacher email cannot be empty", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(teacherDTO.getMobile_number()).isEmpty()) {
+    } else if (Optional.ofNullable(teacherDTO.getMobileNumber()).isEmpty()) {
       throw new StudentDetailsException("Teacher mobile number cannot be null", HttpStatus.BAD_REQUEST);
     }
-    //    else if (teacherDTO.get() < 1) {
-    //      throw new StudentDetailsException("Student class number cannot be less than 1", HttpStatus.BAD_REQUEST);
-    //    } else if (studentDTO.getClassNumber() > 11) {
-    //      throw new StudentDetailsException("Student class number cannot be greater than 11", HttpStatus.BAD_REQUEST);
-    //    } else if (studentDTO.getMobileNumber().toString().length() != 10) {
-    //      throw new StudentDetailsException("Student mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
-    //    }
   }
 
   @Override
@@ -100,10 +93,10 @@ public class TeacherServiceImpl implements TeacherService {
 
   private TeacherDTO convertEntityToDto(TeacherEntity teacherEntity) {
     TeacherDTO teacherDTO = new TeacherDTO();
-    teacherDTO.setFirst_name(teacherEntity.getFirstName());
-    teacherDTO.setLast_name(teacherEntity.getLastName());
+    teacherDTO.setFirstName(teacherEntity.getFirstName());
+    teacherDTO.setLastName(teacherEntity.getLastName());
     teacherDTO.setEmail(teacherEntity.getEmail());
-    teacherDTO.setMobile_number(teacherEntity.getMobileNumber());
+    teacherDTO.setMobileNumber(teacherEntity.getMobileNumber());
     teacherDTO.setSubjects(teacherEntity.getSubjects());
     return teacherDTO;
   }

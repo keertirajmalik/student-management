@@ -6,34 +6,34 @@ import java.util.stream.Collectors;
 import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 
 public class TeacherDTO {
-  private String first_name;
-  private String last_name;
-  private Long mobile_number;
+  private String firstName;
+  private String lastName;
+  private Long mobileNumber;
   private String email;
   private List<SubjectDTO> subjects;
 
-  public String getFirst_name() {
-    return first_name;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setFirst_name(final String first_name) {
-    this.first_name = first_name;
+  public void setFirstName(final String firstName) {
+    this.firstName = firstName;
   }
 
-  public String getLast_name() {
-    return last_name;
+  public String getLastName() {
+    return lastName;
   }
 
-  public void setLast_name(final String last_name) {
-    this.last_name = last_name;
+  public void setLastName(final String lastName) {
+    this.lastName = lastName;
   }
 
-  public Long getMobile_number() {
-    return mobile_number;
+  public Long getMobileNumber() {
+    return mobileNumber;
   }
 
-  public void setMobile_number(final Long mobile_number) {
-    this.mobile_number = mobile_number;
+  public void setMobileNumber(final Long mobileNumber) {
+    this.mobileNumber = mobileNumber;
   }
 
   public String getEmail() {

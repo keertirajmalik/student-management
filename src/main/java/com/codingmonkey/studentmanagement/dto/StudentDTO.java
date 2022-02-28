@@ -8,7 +8,7 @@ public class StudentDTO {
   private int roll_number;
   private Long mobile_number;
   private String email;
-  private int classNumber;
+  private int class_number;
   private List<String> subjects;
 
   public String getFirst_name() {
@@ -51,12 +51,12 @@ public class StudentDTO {
     this.email = email;
   }
 
-  public int getClassNumber() {
-    return classNumber;
+  public int getClass_number() {
+    return class_number;
   }
 
-  public void setClassNumber(final int classNumber) {
-    this.classNumber = classNumber;
+  public void setClassNumber(final int class_number) {
+    this.class_number = class_number;
   }
 
   public List<String> getSubjects() {

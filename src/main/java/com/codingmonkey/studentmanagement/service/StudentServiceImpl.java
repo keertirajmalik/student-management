@@ -35,9 +35,9 @@ public class StudentServiceImpl implements StudentService {
     studentDTO.setLast_name(studentEntity.getLast_name());
     studentDTO.setEmail(studentEntity.getEmail());
     studentDTO.setMobile_number(studentEntity.getMobile_number());
-    studentDTO.setClassNumber(studentEntity.getClassNumber());
+    studentDTO.setClassNumber(studentEntity.getClass_number());
 
-    List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClass_number(studentEntity.getClassNumber())
+    List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClass_number(studentEntity.getClass_number())
         .orElseThrow(
             () -> new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirst_name()));
 

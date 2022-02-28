@@ -80,11 +80,11 @@ public class StudentEntity {
     this.email = email;
   }
 
-  public int getClassNumber() {
+  public int getClass_number() {
     return class_number;
   }
 
-  public void setClassNumber(final int classNumber) {
+  public void setClass_number(final int classNumber) {
     this.class_number = classNumber;
   }
 

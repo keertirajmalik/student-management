@@ -46,10 +46,10 @@ public class TeacherServiceImpl implements TeacherService {
 
   private TeacherDTO convertEntityToDto(TeacherEntity teacherEntity) {
     TeacherDTO teacherDTO = new TeacherDTO();
-    teacherDTO.setFirst_name(teacherEntity.getFirst_name());
-    teacherDTO.setLast_name(teacherEntity.getLast_name());
+    teacherDTO.setFirst_name(teacherEntity.getFirstName());
+    teacherDTO.setLast_name(teacherEntity.getLastName());
     teacherDTO.setEmail(teacherEntity.getEmail());
-    teacherDTO.setMobile_number(teacherEntity.getMobile_number());
+    teacherDTO.setMobile_number(teacherEntity.getMobileNumber());
     teacherDTO.setSubjects(teacherEntity.getSubjects());
     return teacherDTO;
   }

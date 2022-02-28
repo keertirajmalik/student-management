@@ -33,12 +33,12 @@ public class ModelMapperConfiguration {
 
     PropertyMap<StudentDTO, StudentEntity> barRequestDtoEntityMap = new PropertyMap<StudentDTO, StudentEntity>() {
       protected void configure() {
-        map().setFirst_name(source.getFirst_name());
-        map().setLast_name(source.getLast_name());
+        map().setFirstName(source.getFirstName());
+        map().setLastName(source.getLastName());
         map().setEmail(source.getEmail());
-        map().setClass_number(source.getClass_number());
-        map().setRoll_number(source.getRoll_number());
-        map().setMobile_number(source.getMobile_number());
+        map().setClassNumber(source.getClassNumber());
+        map().setRollNumber(source.getRollNumber());
+        map().setMobileNumber(source.getMobileNumber());
       }
     };
 

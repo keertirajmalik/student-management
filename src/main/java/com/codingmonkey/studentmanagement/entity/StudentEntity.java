@@ -12,64 +12,64 @@ import javax.persistence.Table;
 public class StudentEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int student_id;
+  private int studentId;
 
   @Column(name = "first_name")
-  private String first_name;
+  private String firstName;
 
   @Column(name = "last_name")
-  private String last_name;
+  private String lastName;
 
   @Column(name = "roll_number")
-  private int roll_number;
+  private int rollNumber;
 
   @Column(name = "mobile_number")
-  private Long mobile_number;
+  private Long mobileNumber;
 
   @Column(name = "email")
   private String email;
 
   @Column(name = "class_number")
-  private int class_number;
+  private int classNumber;
 
-  public int getStudent_id() {
-    return student_id;
+  public int getStudentId() {
+    return studentId;
   }
 
-  public void setStudent_id(final int student_id) {
-    this.student_id = student_id;
+  public void setStudentId(final int studentId) {
+    this.studentId = studentId;
   }
 
-  public String getFirst_name() {
-    return first_name;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setFirst_name(final String first_name) {
-    this.first_name = first_name;
+  public void setFirstName(final String firstName) {
+    this.firstName = firstName;
   }
 
-  public String getLast_name() {
-    return last_name;
+  public String getLastName() {
+    return lastName;
   }
 
-  public void setLast_name(final String last_name) {
-    this.last_name = last_name;
+  public void setLastName(final String lastName) {
+    this.lastName = lastName;
   }
 
-  public int getRoll_number() {
-    return roll_number;
+  public int getRollNumber() {
+    return rollNumber;
   }
 
-  public void setRoll_number(final int roll_number) {
-    this.roll_number = roll_number;
+  public void setRollNumber(final int rollNumber) {
+    this.rollNumber = rollNumber;
   }
 
-  public Long getMobile_number() {
-    return mobile_number;
+  public Long getMobileNumber() {
+    return mobileNumber;
   }
 
-  public void setMobile_number(final Long mobile_number) {
-    this.mobile_number = mobile_number;
+  public void setMobileNumber(final Long mobileNumber) {
+    this.mobileNumber = mobileNumber;
   }
 
   public String getEmail() {
@@ -80,18 +80,18 @@ public class StudentEntity {
     this.email = email;
   }
 
-  public int getClass_number() {
-    return class_number;
+  public int getClassNumber() {
+    return classNumber;
   }
 
-  public void setClass_number(final int classNumber) {
-    this.class_number = classNumber;
+  public void setClassNumber(final int classNumber) {
+    this.classNumber = classNumber;
   }
 
   @Override
   public String toString() {
-    return "StudentEntity{" + "id=" + student_id + ", first_name='" + first_name + '\'' + ", last_name='" + last_name
-        + '\'' + ", roll_number=" + roll_number + ", mobile_number=" + mobile_number + ", email='" + email + '\''
-        + ", class_number=" + class_number + '}';
+    return "StudentEntity{" + "studentId=" + studentId + ", firstName='" + firstName + '\'' + ", lastName='" + lastName
+        + '\'' + ", rollNumber=" + rollNumber + ", mobileNumber=" + mobileNumber + ", email='" + email + '\''
+        + ", classNumber=" + classNumber + '}';
   }
 }

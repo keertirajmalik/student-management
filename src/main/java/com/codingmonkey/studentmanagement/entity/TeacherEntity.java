@@ -1,6 +1,5 @@
 package com.codingmonkey.studentmanagement.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -21,13 +20,13 @@ public class TeacherEntity {
   private int teacherId;
 
   @Column(name = "first_name")
-  private String first_name;
+  private String firstName;
 
   @Column(name = "last_name")
-  private String last_name;
+  private String lastName;
 
   @Column(name = "mobile_number")
-  private Long mobile_number;
+  private Long mobileNumber;
 
   @Column(name = "email")
   private String email;
@@ -44,45 +43,28 @@ public class TeacherEntity {
     this.teacherId = teacherId;
   }
 
-  public List<SubjectEntity> getSubjects() {
-    return subjects;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setSubjects(final List<SubjectEntity> subjects) {
-    this.subjects = subjects;
+  public void setFirstName(final String firstName) {
+    this.firstName = firstName;
   }
 
-  public void add(SubjectEntity subject) {
-    if (subjects == null) {
-      subjects = new ArrayList<>();
-    }
-
-    subjects.add(subject);
-    subject.setTeacher(this);
+  public String getLastName() {
+    return lastName;
   }
 
-  public String getFirst_name() {
-    return first_name;
+  public void setLastName(final String lastName) {
+    this.lastName = lastName;
   }
 
-  public void setFirst_name(final String first_name) {
-    this.first_name = first_name;
+  public Long getMobileNumber() {
+    return mobileNumber;
   }
 
-  public String getLast_name() {
-    return last_name;
-  }
-
-  public void setLast_name(final String last_name) {
-    this.last_name = last_name;
-  }
-
-  public Long getMobile_number() {
-    return mobile_number;
-  }
-
-  public void setMobile_number(final Long mobile_number) {
-    this.mobile_number = mobile_number;
+  public void setMobileNumber(final Long mobileNumber) {
+    this.mobileNumber = mobileNumber;
   }
 
   public String getEmail() {
@@ -93,9 +75,17 @@ public class TeacherEntity {
     this.email = email;
   }
 
+  public List<SubjectEntity> getSubjects() {
+    return subjects;
+  }
+
+  public void setSubjects(final List<SubjectEntity> subjects) {
+    this.subjects = subjects;
+  }
+
   @Override
   public String toString() {
-    return "TeacherEntity{" + "teacherId=" + teacherId + ", first_name='" + first_name + '\'' + ", last_name='"
-        + last_name + '\'' + '}';
+    return "TeacherEntity{" + "teacherId=" + teacherId + ", firstName='" + firstName + '\'' + ", lastName='" + lastName
+        + '\'' + ", mobileNumber=" + mobileNumber + ", email='" + email + '\'' + ", subjects=" + subjects + '}';
   }
 }

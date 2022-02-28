@@ -41,15 +41,15 @@ public class StudentServiceImpl implements StudentService {
 
   private StudentDTO convertEntityToDto(StudentEntity studentEntity) {
     StudentDTO studentDTO = new StudentDTO();
-    studentDTO.setFirst_name(studentEntity.getFirst_name());
-    studentDTO.setLast_name(studentEntity.getLast_name());
+    studentDTO.setFirstName(studentEntity.getFirstName());
+    studentDTO.setLastName(studentEntity.getLastName());
     studentDTO.setEmail(studentEntity.getEmail());
-    studentDTO.setMobile_number(studentEntity.getMobile_number());
-    studentDTO.setClassNumber(studentEntity.getClass_number());
+    studentDTO.setMobileNumber(studentEntity.getMobileNumber());
+    studentDTO.setClassNumber(studentEntity.getClassNumber());
 
-    List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClass_number(studentEntity.getClass_number())
+    List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber())
         .orElseThrow(
-            () -> new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirst_name()));
+            () -> new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirstName()));
 
     studentDTO.setSubjects(subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
 
@@ -87,25 +87,25 @@ public class StudentServiceImpl implements StudentService {
   }
 
   private void validateFieldsInRequestDto(final StudentDTO studentDTO) {
-    if (Optional.ofNullable(studentDTO.getFirst_name()).isEmpty()) {
+    if (Optional.ofNullable(studentDTO.getFirstName()).isEmpty()) {
       throw new StudentDetailsException("Student First Name cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getFirst_name().isEmpty()) {
+    } else if (studentDTO.getFirstName().isEmpty()) {
       throw new StudentDetailsException("Student First Name cannot be empty", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(studentDTO.getLast_name()).isEmpty()) {
+    } else if (Optional.ofNullable(studentDTO.getLastName()).isEmpty()) {
       throw new StudentDetailsException("Student Last Name cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getLast_name().isEmpty()) {
+    } else if (studentDTO.getLastName().isEmpty()) {
       throw new StudentDetailsException("Student Last Name cannot be empty", HttpStatus.BAD_REQUEST);
     } else if (Optional.ofNullable(studentDTO.getEmail()).isEmpty()) {
       throw new StudentDetailsException("Student email cannot be null", HttpStatus.BAD_REQUEST);
     } else if (studentDTO.getEmail().isEmpty()) {
       throw new StudentDetailsException("Student email cannot be empty", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(studentDTO.getMobile_number()).isEmpty()) {
+    } else if (Optional.ofNullable(studentDTO.getMobileNumber()).isEmpty()) {
       throw new StudentDetailsException("Student mobile number cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getClass_number() < 1) {
+    } else if (studentDTO.getClassNumber() < 1) {
       throw new StudentDetailsException("Student class number cannot be less than 1", HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getClass_number() > 11) {
+    } else if (studentDTO.getClassNumber() > 11) {
       throw new StudentDetailsException("Student class number cannot be greater than 11", HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getMobile_number().toString().length() != 10) {
+    } else if (studentDTO.getMobileNumber().toString().length() != 10) {
       throw new StudentDetailsException("Student mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
     }
   }

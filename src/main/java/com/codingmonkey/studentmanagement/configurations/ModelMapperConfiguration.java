@@ -21,7 +21,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.codingmonkey.studentmanagement.dto.StudentDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherDTO;
 import com.codingmonkey.studentmanagement.entity.StudentEntity;
+import com.codingmonkey.studentmanagement.entity.TeacherEntity;
 
 @Configuration
 public class ModelMapperConfiguration {
@@ -31,7 +33,7 @@ public class ModelMapperConfiguration {
 
     final ModelMapper modelMapper = new ModelMapper();
 
-    PropertyMap<StudentDTO, StudentEntity> barRequestDtoEntityMap = new PropertyMap<StudentDTO, StudentEntity>() {
+    PropertyMap<StudentDTO, StudentEntity> studentRequestDtoEntityMap = new PropertyMap<StudentDTO, StudentEntity>() {
       protected void configure() {
         map().setFirstName(source.getFirstName());
         map().setLastName(source.getLastName());
@@ -42,7 +44,17 @@ public class ModelMapperConfiguration {
       }
     };
 
-    modelMapper.addMappings(barRequestDtoEntityMap);
+    PropertyMap<TeacherDTO, TeacherEntity> teacherRequestDtoEntityMap = new PropertyMap<TeacherDTO, TeacherEntity>() {
+      protected void configure() {
+        map().setFirstName(source.getFirst_name());
+        map().setLastName(source.getLast_name());
+        map().setEmail(source.getEmail());
+        map().setMobileNumber(source.getMobile_number());
+      }
+    };
+
+    modelMapper.addMappings(studentRequestDtoEntityMap);
+    modelMapper.addMappings(teacherRequestDtoEntityMap);
     return modelMapper;
   }
 }

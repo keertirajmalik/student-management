@@ -41,6 +41,7 @@ public class StudentServiceImpl implements StudentService {
 
   private StudentDTO convertEntityToDto(StudentEntity studentEntity) {
     StudentDTO studentDTO = new StudentDTO();
+    studentDTO.setStudentId(studentEntity.getStudentId());
     studentDTO.setFirstName(studentEntity.getFirstName());
     studentDTO.setLastName(studentEntity.getLastName());
     studentDTO.setEmail(studentEntity.getEmail());

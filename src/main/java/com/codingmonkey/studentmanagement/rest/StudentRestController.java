@@ -44,12 +44,9 @@ public class StudentRestController {
   }
 
   @PostMapping("/students")
-  public StudentEntity addStudent(@RequestBody StudentEntity studentEntity) {
-    studentEntity.setStudent_id(0);
+  public ResponseEntity<StudentDTO> addStudent(@RequestBody StudentDTO studentDTO) {
 
-    studentService.save(studentEntity);
-
-    return studentEntity;
+    return studentService.saveStudentDetails(studentDTO);
   }
 
   @PutMapping("/students")

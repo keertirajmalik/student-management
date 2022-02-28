@@ -3,6 +3,7 @@ package com.codingmonkey.studentmanagement.rest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codingmonkey.studentmanagement.dto.StudentDTO;
-import com.codingmonkey.studentmanagement.entity.StudentEntity;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.service.StudentService;
 
@@ -50,11 +50,9 @@ public class StudentRestController {
   }
 
   @PutMapping("/students")
-  public StudentEntity updateStudent(@RequestBody StudentEntity studentEntity) {
+  public ResponseEntity<StudentDTO> updateStudent(@RequestBody StudentDTO studentDTO) {
 
-    studentService.save(studentEntity);
-
-    return studentEntity;
+    return studentService.saveStudentDetails(studentDTO);
   }
 
   @DeleteMapping("/students/{studentId}")

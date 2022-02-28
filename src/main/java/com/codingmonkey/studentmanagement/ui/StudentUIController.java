@@ -48,7 +48,7 @@ public class StudentUIController {
   public String saveStudent(@ModelAttribute("student") StudentEntity studentEntity) {
 
     // save the customer using our service
-    studentService.save(studentEntity);
+    //    studentService.save(studentEntity);
 
     return "redirect:/student/list";
   }

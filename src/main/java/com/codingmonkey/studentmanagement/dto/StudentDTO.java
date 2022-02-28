@@ -3,44 +3,53 @@ package com.codingmonkey.studentmanagement.dto;
 import java.util.List;
 
 public class StudentDTO {
-  private String first_name;
-  private String last_name;
-  private int roll_number;
-  private Long mobile_number;
+  private int studentId;
+  private String firstName;
+  private String lastName;
+  private int rollNumber;
+  private Long mobileNumber;
   private String email;
   private int classNumber;
   private List<String> subjects;
 
-  public String getFirst_name() {
-    return first_name;
+  public int getStudentId() {
+    return studentId;
   }
 
-  public void setFirst_name(final String first_name) {
-    this.first_name = first_name;
+  public void setStudentId(final int studentId) {
+    this.studentId = studentId;
   }
 
-  public String getLast_name() {
-    return last_name;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public void setLast_name(final String last_name) {
-    this.last_name = last_name;
+  public void setFirstName(final String firstName) {
+    this.firstName = firstName;
   }
 
-  public int getRoll_number() {
-    return roll_number;
+  public String getLastName() {
+    return lastName;
   }
 
-  public void setRoll_number(final int roll_number) {
-    this.roll_number = roll_number;
+  public void setLastName(final String lastName) {
+    this.lastName = lastName;
   }
 
-  public Long getMobile_number() {
-    return mobile_number;
+  public int getRollNumber() {
+    return rollNumber;
   }
 
-  public void setMobile_number(final Long mobile_number) {
-    this.mobile_number = mobile_number;
+  public void setRollNumber(final int rollNumber) {
+    this.rollNumber = rollNumber;
+  }
+
+  public Long getMobileNumber() {
+    return mobileNumber;
+  }
+
+  public void setMobileNumber(final Long mobileNumber) {
+    this.mobileNumber = mobileNumber;
   }
 
   public String getEmail() {
@@ -65,5 +74,12 @@ public class StudentDTO {
 
   public void setSubjects(final List<String> subjects) {
     this.subjects = subjects;
+  }
+
+  @Override
+  public String toString() {
+    return "StudentDTO{" + "studentId=" + studentId + ", firstName='" + firstName + '\'' + ", lastName='" + lastName
+        + '\'' + ", rollNumber=" + rollNumber + ", mobileNumber=" + mobileNumber + ", email='" + email + '\''
+        + ", classNumber=" + classNumber + ", subjects=" + subjects + '}';
   }
 }

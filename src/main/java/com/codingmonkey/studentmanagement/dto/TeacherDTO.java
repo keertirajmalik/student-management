@@ -54,7 +54,7 @@ public class TeacherDTO {
 
   private SubjectDTO convertEntityToDto(SubjectEntity subjectEntity) {
     SubjectDTO subjectDTO = new SubjectDTO();
-    subjectDTO.setClass_number(subjectEntity.getClass_number());
+    subjectDTO.setClassNumber(subjectEntity.getClassNumber());
     subjectDTO.setSubject(subjectEntity.getSubject());
 
     return subjectDTO;

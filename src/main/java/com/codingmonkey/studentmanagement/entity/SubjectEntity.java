@@ -24,7 +24,7 @@ public class SubjectEntity {
   private String subject;
 
   @Column(name = "class_number")
-  private int class_number;
+  private int classNumber;
 
   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
       CascadeType.DETACH}, fetch = FetchType.LAZY)
@@ -56,18 +56,18 @@ public class SubjectEntity {
     this.subject = subject;
   }
 
-  public int getClass_number() {
-    return class_number;
+  public int getClassNumber() {
+    return classNumber;
   }
 
-  public void setClass_number(final int class_number) {
-    this.class_number = class_number;
+  public void setClassNumber(final int class_number) {
+    this.classNumber = class_number;
   }
 
   @Override
   public String toString() {
     return "SubjectEntity{" + "subject_id=" + subject_id + ", subject='" + subject + '\'' + ", class_number="
-        + class_number + '}';
+        + classNumber + '}';
   }
 }
 

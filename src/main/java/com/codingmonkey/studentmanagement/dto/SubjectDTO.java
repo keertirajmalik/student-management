@@ -3,7 +3,7 @@ package com.codingmonkey.studentmanagement.dto;
 public class SubjectDTO {
 
   private String subject;
-  private int class_number;
+  private int classNumber;
 
   public String getSubject() {
     return subject;
@@ -13,11 +13,11 @@ public class SubjectDTO {
     this.subject = subject;
   }
 
-  public int getClass_number() {
-    return class_number;
+  public int getClassNumber() {
+    return classNumber;
   }
 
-  public void setClass_number(final int class_number) {
-    this.class_number = class_number;
+  public void setClassNumber(final int classNumber) {
+    this.classNumber = classNumber;
   }
 }

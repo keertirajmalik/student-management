@@ -2,8 +2,9 @@ package com.codingmonkey.studentmanagement.service;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import com.codingmonkey.studentmanagement.dto.StudentDTO;
-import com.codingmonkey.studentmanagement.entity.StudentEntity;
 
 public interface StudentService {
 
@@ -11,7 +12,7 @@ public interface StudentService {
 
   StudentDTO findById(int studentId);
 
-  void save(StudentEntity studentEntity);
+  ResponseEntity<StudentDTO> saveStudentDetails(StudentDTO studentDTO);
 
   void deleteById(int studentId);
 }

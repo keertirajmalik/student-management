@@ -53,15 +53,15 @@
               baseTableName="subject_details"/>
   </changeSet>
 
-  <changeSet dbms="mysql" author="fico" id="1605500811268-4">
+  <changeSet dbms="mysql" author="keertiraj" id="1605500811268-4">
     <sqlFile dbms="mysql" path="db/changelog/v1/scripts/ADD STUDENT DETAILS.sql"/>
   </changeSet>
 
-  <changeSet dbms="mysql" author="fico" id="1605500811268-5">
+  <changeSet dbms="mysql" author="keertiraj" id="1605500811268-5">
     <sqlFile dbms="mysql" path="db/changelog/v1/scripts/ADD TEACHER DETAILS.sql"/>
   </changeSet>
 
-  <changeSet dbms="mysql" author="fico" id="1605500811268-6">
+  <changeSet dbms="mysql" author="keertiraj" id="1605500811268-6">
     <sqlFile dbms="mysql" path="db/changelog/v1/scripts/ADD SUBJECTS.sql"/>
   </changeSet>
 

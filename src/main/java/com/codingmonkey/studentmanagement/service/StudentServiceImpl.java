@@ -1,5 +1,6 @@
 package com.codingmonkey.studentmanagement.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ public class StudentServiceImpl implements StudentService {
   private static final Logger LOGGER = LoggerFactory.getLogger(StudentServiceImpl.class);
   private final StudentRepository studentRepository;
   private final SubjectRepository subjectRepository;
+
   @Autowired
   ModelMapper modelMapper;
 
@@ -47,6 +49,7 @@ public class StudentServiceImpl implements StudentService {
     studentDTO.setEmail(studentEntity.getEmail());
     studentDTO.setMobileNumber(studentEntity.getMobileNumber());
     studentDTO.setClassNumber(studentEntity.getClassNumber());
+    studentDTO.setRollNumber(studentEntity.getRollNumber());
 
     List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber())
         .orElseThrow(
@@ -81,10 +84,39 @@ public class StudentServiceImpl implements StudentService {
   private ResponseEntity<StudentDTO> saveStudentDetailsToDB(final StudentDTO studentDTO) {
     StudentEntity studentEntity = modelMapper.map(studentDTO, StudentEntity.class);
 
+    studentEntity.setRollNumber(getRollNumber(studentDTO));
     studentRepository.save(studentEntity);
 
     return new ResponseEntity(studentEntity, HttpStatus.CREATED);
 
+  }
+
+  private int getRollNumber(final StudentDTO studentDTO) {
+    String logPrefix = "# " + " #saveStudentDetails(): ";
+    LOGGER.info("{} Getting max roll number of class [{}] new student belong to ", logPrefix,
+        studentDTO.getClassNumber());
+
+    final Optional<List<StudentEntity>> optionalStudentEntityList = studentRepository.findByClassNumber(
+        studentDTO.getClassNumber());
+
+    int rollNumber = 0;
+
+    /**
+     * Since when classNumber has no student Optional[[]] is returned which passes the optionalStudentEntityList.isPresent() check
+     * So replaced with optionalStudentEntityList.get().size() > 0 check
+     * Since we are just trying to get the list size shouldn't cause any exception.
+     */
+
+    if (optionalStudentEntityList.get().size() > 0) {
+      List<StudentEntity> studentEntityList = optionalStudentEntityList.get();
+
+      rollNumber = studentEntityList.stream()
+          .max(Comparator.comparing(StudentEntity::getRollNumber))
+          .get()
+          .getRollNumber();
+    }
+
+    return rollNumber + 1;
   }
 
   private void validateFieldsInRequestDto(final StudentDTO studentDTO) {

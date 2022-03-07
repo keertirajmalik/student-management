@@ -43,11 +43,10 @@ public class StudentServiceImpl implements StudentService {
 
   @Override
   public List<StudentDTO> findByFirstNameAndLastName(final String firstName, final String lastName) {
-    Optional<List<StudentEntity>> optionalStudentEntityList = studentRepository.findByFirstNameAndLastName(firstName,
-        lastName);
+    List<StudentEntity> studentEntityList = studentRepository.findByFirstNameAndLastName(firstName, lastName);
 
-    if (optionalStudentEntityList.get().size() > 0) {
-      return optionalStudentEntityList.get().stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    if (!studentEntityList.isEmpty()) {
+      return studentEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
     throw new RuntimeException("Did not find student with first name " + firstName + " last name " + lastName);
   }
@@ -78,9 +77,11 @@ public class StudentServiceImpl implements StudentService {
     studentDTO.setClassNumber(studentEntity.getClassNumber());
     studentDTO.setRollNumber(studentEntity.getRollNumber());
 
-    List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber())
-        .orElseThrow(
-            () -> new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirstName()));
+    List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber());
+
+    if (subjectEntities.isEmpty()) {
+      throw new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirstName());
+    }
 
     studentDTO.setSubjects(subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
 
@@ -102,8 +103,7 @@ public class StudentServiceImpl implements StudentService {
     LOGGER.info("{} Getting max roll number of class [{}] new student belong to ", logPrefix,
         studentDTO.getClassNumber());
 
-    final Optional<List<StudentEntity>> optionalStudentEntityList = studentRepository.findByClassNumber(
-        studentDTO.getClassNumber());
+    final List<StudentEntity> studentEntityList = studentRepository.findByClassNumber(studentDTO.getClassNumber());
 
     int rollNumber = 0;
 
@@ -113,9 +113,7 @@ public class StudentServiceImpl implements StudentService {
      * Since we are just trying to get the list size shouldn't cause any exception.
      */
 
-    if (optionalStudentEntityList.get().size() > 0) {
-      List<StudentEntity> studentEntityList = optionalStudentEntityList.get();
-
+    if (!studentEntityList.isEmpty()) {
       rollNumber = studentEntityList.stream()
           .max(Comparator.comparing(StudentEntity::getRollNumber))
           .get()

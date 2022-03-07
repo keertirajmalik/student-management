@@ -10,9 +10,9 @@ public interface StudentService {
 
   List<StudentDTO> findAll();
 
-  StudentDTO findById(int studentId);
-
   ResponseEntity<StudentDTO> saveStudentDetails(StudentDTO studentDTO);
 
   void deleteById(int studentId);
+
+  List<StudentDTO> findByFirstNameAndLastName(String firstName, String lastName);
 }

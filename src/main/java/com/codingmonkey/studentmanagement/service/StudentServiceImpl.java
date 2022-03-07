@@ -41,6 +41,28 @@ public class StudentServiceImpl implements StudentService {
     return studentRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
   }
 
+  @Override
+  public List<StudentDTO> findByFirstNameAndLastName(final String firstName, final String lastName) {
+    Optional<List<StudentEntity>> optionalStudentEntityList = studentRepository.findByFirstNameAndLastName(firstName,
+        lastName);
+
+    if (optionalStudentEntityList.get().size() > 0) {
+      return optionalStudentEntityList.get().stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
+    throw new RuntimeException("Did not find student with first name " + firstName + " last name " + lastName);
+  }
+
+  @Override
+  public ResponseEntity<StudentDTO> saveStudentDetails(final StudentDTO studentDTO) {
+
+    String logPrefix = "# " + " #saveStudentDetails(): ";
+    LOGGER.info("{} Enter ", logPrefix);
+
+    validateFieldsInRequestDto(studentDTO);
+
+    return saveStudentDetailsToDB(studentDTO);
+  }
+
   private StudentDTO convertEntityToDto(StudentEntity studentEntity) {
     StudentDTO studentDTO = new StudentDTO();
     studentDTO.setStudentId(studentEntity.getStudentId());
@@ -58,27 +80,6 @@ public class StudentServiceImpl implements StudentService {
     studentDTO.setSubjects(subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
 
     return studentDTO;
-  }
-
-  @Override
-  public StudentDTO findById(final int studentId) {
-    Optional<StudentEntity> student = studentRepository.findById(studentId);
-
-    if (student.isPresent()) {
-      return convertEntityToDto(student.get());
-    }
-    throw new RuntimeException("Did not find student id: " + studentId);
-  }
-
-  @Override
-  public ResponseEntity<StudentDTO> saveStudentDetails(final StudentDTO studentDTO) {
-
-    String logPrefix = "# " + " #saveStudentDetails(): ";
-    LOGGER.info("{} Enter ", logPrefix);
-
-    validateFieldsInRequestDto(studentDTO);
-
-    return saveStudentDetailsToDB(studentDTO);
   }
 
   private ResponseEntity<StudentDTO> saveStudentDetailsToDB(final StudentDTO studentDTO) {

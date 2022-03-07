@@ -57,10 +57,10 @@ public class StudentUIController {
   public String showFormForUpdate(@RequestParam("studentId") int id, Model theModel) {
 
     // get the customer from our service
-    StudentDTO student = studentService.findById(id);
+    //    StudentDTO student = studentService.findById(id);
 
     // set customer as a model attribute to pre-populate the form
-    theModel.addAttribute("student", student);
+    //    theModel.addAttribute("student", student);
 
     // send over to our form
     return "student-form";

@@ -10,7 +10,7 @@ public interface TeacherService {
 
   List<TeacherDTO> findAll();
 
-  TeacherDTO findById(int teacherId);
+  List<TeacherDTO> findByFirstNameAndLastName(String firstName, String lastName);
 
   void deleteById(int teacherId);
 

@@ -61,13 +61,14 @@ public class StudentServiceImpl implements StudentService {
   }
 
   @Override
-  public StudentDTO findById(final int studentId) {
-    Optional<StudentEntity> student = studentRepository.findById(studentId);
+  public List<StudentDTO> findByFirstNameAndLastName(final String firstName, final String lastName) {
+    Optional<List<StudentEntity>> optionalStudentEntityList = studentRepository.findByFirstNameAndLastName(firstName,
+        lastName);
 
-    if (student.isPresent()) {
-      return convertEntityToDto(student.get());
+    if (optionalStudentEntityList.isPresent()) {
+      return studentRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
-    throw new RuntimeException("Did not find student id: " + studentId);
+    throw new RuntimeException("Did not find student with first name " + firstName + " last name " + lastName);
   }
 
   @Override

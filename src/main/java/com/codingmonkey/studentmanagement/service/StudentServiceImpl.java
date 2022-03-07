@@ -63,6 +63,11 @@ public class StudentServiceImpl implements StudentService {
     return saveStudentDetailsToDB(studentDTO);
   }
 
+  @Override
+  public void deleteById(final int studentId) {
+    studentRepository.deleteById(studentId);
+  }
+
   private StudentDTO convertEntityToDto(StudentEntity studentEntity) {
     StudentDTO studentDTO = new StudentDTO();
     studentDTO.setStudentId(studentEntity.getStudentId());
@@ -142,10 +147,5 @@ public class StudentServiceImpl implements StudentService {
     } else if (studentDTO.getMobileNumber().toString().length() != 10) {
       throw new StudentDetailsException("Student mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
     }
-  }
-
-  @Override
-  public void deleteById(final int studentId) {
-    studentRepository.deleteById(studentId);
   }
 }

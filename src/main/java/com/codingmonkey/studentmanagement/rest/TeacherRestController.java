@@ -2,6 +2,8 @@ package com.codingmonkey.studentmanagement.rest;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,16 +13,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codingmonkey.studentmanagement.dto.TeacherDTO;
 import com.codingmonkey.studentmanagement.entity.TeacherEntity;
+import com.codingmonkey.studentmanagement.service.StudentServiceImpl;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 
 @RestController
 @RequestMapping("/api")
 public class TeacherRestController {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(StudentServiceImpl.class);
   private final TeacherService teacherService;
 
   @Autowired
@@ -29,18 +34,16 @@ public class TeacherRestController {
   }
 
   @GetMapping("/teachers")
-  public List<TeacherDTO> findAll() {
-    return teacherService.findAll();
-  }
+  public List<TeacherDTO> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
+                                     @RequestParam(value = "lastName", required = false) String lastName) {
 
-  @GetMapping("/teachers/{teacherId}")
-  public TeacherDTO getTeacher(@PathVariable int teacherId) {
-    TeacherDTO teacher = teacherService.findById(teacherId);
-
-    if (teacher == null) {
-      throw new RuntimeException("Teacher not found with id: " + teacherId);
+    if (firstName == null && lastName == null) {
+      LOGGER.info("Get all Teacher details call received");
+      return teacherService.findAll();
     }
-    return teacher;
+
+    LOGGER.info("Get [{}] [{}] Teacher details call received", firstName, lastName);
+    return teacherService.findByFirstNameAndLastName(firstName, lastName);
   }
 
   @PostMapping("/teachers")

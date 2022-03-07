@@ -36,13 +36,14 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public TeacherDTO findById(final int teacherId) {
-    Optional<TeacherEntity> teacher = teacherRepository.findById(teacherId);
+  public List<TeacherDTO> findByFirstNameAndLastName(String firstName, String lastName) {
 
-    if (teacher.isPresent()) {
-      return convertEntityToDto(teacher.get());
+    List<TeacherEntity> teacherEntityList = teacherRepository.findByFirstNameAndLastName(firstName, lastName);
+
+    if (!teacherEntityList.isEmpty()) {
+      return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
-    throw new RuntimeException("Did not find teacher with id: " + teacherId);
+    throw new RuntimeException("Did not find Teacher with first name " + firstName + " last name " + lastName);
   }
 
   @Override

@@ -16,7 +16,7 @@
         <column name="mobile_number" type="BIGINT"/>
         <column name="email" type="VARCHAR(255)"/>
         <column name="class_number" type="INT"/>
-        <column name="gender" type="VARCHAR(255)"/>
+        <column name="gender" type="VARCHAR(10)"/>
     </createTable>
   </changeSet>
 
@@ -29,7 +29,7 @@
         <column name="last_name" type="VARCHAR(255)"/>
         <column name="mobile_number" type="BIGINT"/>
         <column name="email" type="VARCHAR(255)"/>
-        <column name="gender" type="VARCHAR(255)"/>
+        <column name="gender" type="VARCHAR(10)"/>
       </createTable>
   </changeSet>
 

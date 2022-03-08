@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.codingmonkey.studentmanagement.configurations.ApplicationConfiguration;
 import com.codingmonkey.studentmanagement.dto.StudentDTO;
 import com.codingmonkey.studentmanagement.entity.StudentEntity;
 import com.codingmonkey.studentmanagement.entity.SubjectEntity;
@@ -27,13 +28,17 @@ public class StudentServiceImpl implements StudentService {
   private static final Logger LOGGER = LoggerFactory.getLogger(StudentServiceImpl.class);
   private final StudentRepository studentRepository;
   private final SubjectRepository subjectRepository;
+  private final ApplicationConfiguration applicationConfiguration;
 
   @Autowired
   ModelMapper modelMapper;
 
-  public StudentServiceImpl(final StudentRepository studentRepository, final SubjectRepository subjectRepository) {
+  public StudentServiceImpl(final StudentRepository studentRepository,
+                            final SubjectRepository subjectRepository,
+                            final ApplicationConfiguration applicationConfiguration) {
     this.studentRepository = studentRepository;
     this.subjectRepository = subjectRepository;
+    this.applicationConfiguration = applicationConfiguration;
   }
 
   @Override
@@ -140,8 +145,10 @@ public class StudentServiceImpl implements StudentService {
       throw new StudentDetailsException("Student mobile number cannot be null", HttpStatus.BAD_REQUEST);
     } else if (studentDTO.getClassNumber() < 1) {
       throw new StudentDetailsException("Student class number cannot be less than 1", HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getClassNumber() > 11) {
-      throw new StudentDetailsException("Student class number cannot be greater than 11", HttpStatus.BAD_REQUEST);
+    } else if (studentDTO.getClassNumber() > applicationConfiguration.getMaxClassAllowed()) {
+      throw new StudentDetailsException(
+          "Student class number cannot be greater than " + applicationConfiguration.getMaxClassAllowed(),
+          HttpStatus.BAD_REQUEST);
     } else if (studentDTO.getMobileNumber().toString().length() != 10) {
       throw new StudentDetailsException("Student mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
     }

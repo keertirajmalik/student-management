@@ -5,9 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
+import com.codingmonkey.studentmanagement.configurations.ApplicationConfiguration;
+
 @SpringBootApplication
+@EnableConfigurationProperties(ApplicationConfiguration.class)
 public class StudentManagementApplication extends SpringBootServletInitializer {
 
   private static final Logger logger = LoggerFactory.getLogger(StudentManagementApplication.class);

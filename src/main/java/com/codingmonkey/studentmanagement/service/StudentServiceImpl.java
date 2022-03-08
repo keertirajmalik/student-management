@@ -100,8 +100,16 @@ public class StudentServiceImpl implements StudentService {
     studentEntity.setRollNumber(getRollNumber(studentDTO));
     studentRepository.save(studentEntity);
 
-    return new ResponseEntity(studentEntity, HttpStatus.CREATED);
+    StudentDTO studentResponseDto = modelMapper.map(studentEntity, StudentDTO.class);
+    List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber());
 
+    if (subjectEntities.isEmpty()) {
+      throw new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirstName());
+    }
+    studentResponseDto.setSubjects(
+        subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
+
+    return new ResponseEntity(studentResponseDto, HttpStatus.CREATED);
   }
 
   private int getRollNumber(final StudentDTO studentDTO) {

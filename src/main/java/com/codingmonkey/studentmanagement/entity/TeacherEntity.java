@@ -5,12 +5,16 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.codingmonkey.studentmanagement.constant.Gender;
 
 @Entity
 @Table(name = "teacher_details")
@@ -34,6 +38,17 @@ public class TeacherEntity {
   @OneToMany(mappedBy = "teacher", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
       CascadeType.DETACH}, fetch = FetchType.LAZY)
   private List<SubjectEntity> subjects;
+
+  @Enumerated(EnumType.STRING)
+  private Gender gender;
+
+  public Gender getGender() {
+    return gender;
+  }
+
+  public void setGender(final Gender gender) {
+    this.gender = gender;
+  }
 
   public int getTeacherId() {
     return teacherId;
@@ -86,6 +101,7 @@ public class TeacherEntity {
   @Override
   public String toString() {
     return "TeacherEntity{" + "teacherId=" + teacherId + ", firstName='" + firstName + '\'' + ", lastName='" + lastName
-        + '\'' + ", mobileNumber=" + mobileNumber + ", email='" + email + '\'' + ", subjects=" + subjects + '}';
+        + '\'' + ", mobileNumber=" + mobileNumber + ", email='" + email + '\'' + ", subjects=" + subjects + ", gender="
+        + gender + '}';
   }
 }

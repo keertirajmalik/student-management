@@ -3,6 +3,7 @@ package com.codingmonkey.studentmanagement.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.codingmonkey.studentmanagement.constant.Gender;
 import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 
 public class TeacherDTO {
@@ -11,6 +12,15 @@ public class TeacherDTO {
   private Long mobileNumber;
   private String email;
   private List<SubjectDTO> subjects;
+  private Gender Gender;
+
+  public Gender getGender() {
+    return Gender;
+  }
+
+  public void setGender(final Gender gender) {
+    Gender = gender;
+  }
 
   public String getFirstName() {
     return firstName;
@@ -60,4 +70,9 @@ public class TeacherDTO {
     return subjectDTO;
   }
 
+  @Override
+  public String toString() {
+    return "TeacherDTO{" + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", mobileNumber="
+        + mobileNumber + ", email='" + email + '\'' + ", subjects=" + subjects + ", Gender=" + Gender + '}';
+  }
 }

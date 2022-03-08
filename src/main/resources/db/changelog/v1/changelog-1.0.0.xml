@@ -16,18 +16,20 @@
         <column name="mobile_number" type="BIGINT"/>
         <column name="email" type="VARCHAR(255)"/>
         <column name="class_number" type="INT"/>
+        <column name="gender" type="VARCHAR(10)"/>
     </createTable>
   </changeSet>
 
   <changeSet id="1645696722528-3" author="keertirajlaxmanmalik">
       <createTable tableName="teacher_details">
-        <column name="teacher_id" type="INT">
+        <column autoIncrement="true" name="teacher_id" type="INT">
             <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teacher_details"/>
         </column>
         <column name="first_name" type="VARCHAR(255)"/>
         <column name="last_name" type="VARCHAR(255)"/>
         <column name="mobile_number" type="BIGINT"/>
         <column name="email" type="VARCHAR(255)"/>
+        <column name="gender" type="VARCHAR(10)"/>
       </createTable>
   </changeSet>
 

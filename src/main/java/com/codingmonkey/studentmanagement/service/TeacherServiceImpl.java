@@ -84,6 +84,8 @@ public class TeacherServiceImpl implements TeacherService {
       throw new StudentDetailsException("Teacher email cannot be empty", HttpStatus.BAD_REQUEST);
     } else if (Optional.ofNullable(teacherDTO.getMobileNumber()).isEmpty()) {
       throw new StudentDetailsException("Teacher mobile number cannot be null", HttpStatus.BAD_REQUEST);
+    } else if (Optional.ofNullable(teacherDTO.getGender()).isEmpty()) {
+      throw new StudentDetailsException("Provide Teacher gender type", HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -99,6 +101,8 @@ public class TeacherServiceImpl implements TeacherService {
     teacherDTO.setEmail(teacherEntity.getEmail());
     teacherDTO.setMobileNumber(teacherEntity.getMobileNumber());
     teacherDTO.setSubjects(teacherEntity.getSubjects());
+    teacherDTO.setGender(teacherEntity.getGender());
+
     return teacherDTO;
   }
 }

@@ -2,6 +2,8 @@ package com.codingmonkey.studentmanagement.dto;
 
 import java.util.List;
 
+import com.codingmonkey.studentmanagement.constant.Gender;
+
 public class StudentDTO {
   private int studentId;
   private String firstName;
@@ -11,6 +13,15 @@ public class StudentDTO {
   private String email;
   private int classNumber;
   private List<String> subjects;
+  private Gender Gender;
+
+  public Gender getGender() {
+    return Gender;
+  }
+
+  public void setGender(final Gender gender) {
+    Gender = gender;
+  }
 
   public int getStudentId() {
     return studentId;
@@ -80,6 +91,6 @@ public class StudentDTO {
   public String toString() {
     return "StudentDTO{" + "studentId=" + studentId + ", firstName='" + firstName + '\'' + ", lastName='" + lastName
         + '\'' + ", rollNumber=" + rollNumber + ", mobileNumber=" + mobileNumber + ", email='" + email + '\''
-        + ", classNumber=" + classNumber + ", subjects=" + subjects + '}';
+        + ", classNumber=" + classNumber + ", subjects=" + subjects + ", Gender=" + Gender + '}';
   }
 }

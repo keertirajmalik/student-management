@@ -81,6 +81,7 @@ public class StudentServiceImpl implements StudentService {
     studentDTO.setMobileNumber(studentEntity.getMobileNumber());
     studentDTO.setClassNumber(studentEntity.getClassNumber());
     studentDTO.setRollNumber(studentEntity.getRollNumber());
+    studentDTO.setGender(studentEntity.getGender());
 
     List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber());
 
@@ -151,6 +152,8 @@ public class StudentServiceImpl implements StudentService {
           HttpStatus.BAD_REQUEST);
     } else if (studentDTO.getMobileNumber().toString().length() != 10) {
       throw new StudentDetailsException("Student mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
+    } else if (Optional.ofNullable(studentDTO.getGender()).isEmpty()) {
+      throw new StudentDetailsException("Provide Student gender type", HttpStatus.BAD_REQUEST);
     }
   }
 }

@@ -13,8 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.codingmonkey.studentmanagement.dto.TeacherDTO;
+import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 import com.codingmonkey.studentmanagement.entity.TeacherEntity;
 import com.codingmonkey.studentmanagement.exception.StudentDetailsException;
+import com.codingmonkey.studentmanagement.repositories.SubjectRepository;
 import com.codingmonkey.studentmanagement.repositories.TeacherRepository;
 
 @Service
@@ -22,12 +24,14 @@ public class TeacherServiceImpl implements TeacherService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TeacherServiceImpl.class);
   private final TeacherRepository teacherRepository;
+  private final SubjectRepository subjectRepository;
 
   @Autowired
   ModelMapper modelMapper;
 
-  public TeacherServiceImpl(final TeacherRepository teacherRepository) {
+  public TeacherServiceImpl(final TeacherRepository teacherRepository, final SubjectRepository subjectRepository) {
     this.teacherRepository = teacherRepository;
+    this.subjectRepository = subjectRepository;
   }
 
   @Override
@@ -54,8 +58,6 @@ public class TeacherServiceImpl implements TeacherService {
 
     validateFieldsInRequestDto(teacherDTO);
 
-    //    Optional<StudentEntity> studentEntityOptional = teacherRepository.find(studentDTO.getStudentId());
-
     return saveStudentDetailsToDB(teacherDTO);
   }
 
@@ -65,8 +67,11 @@ public class TeacherServiceImpl implements TeacherService {
 
     teacherRepository.save(teacherEntity);
 
-    return new ResponseEntity(teacherEntity, HttpStatus.CREATED);
+    final List<SubjectEntity> subjectEntityList = subjectRepository.findSubjectByTeacher_TeacherId(
+        teacherEntity.getTeacherId());
+    teacherEntity.setSubjects(subjectEntityList);
 
+    return new ResponseEntity(convertEntityToDto(teacherEntity), HttpStatus.CREATED);
   }
 
   private void validateFieldsInRequestDto(final TeacherDTO teacherDTO) {

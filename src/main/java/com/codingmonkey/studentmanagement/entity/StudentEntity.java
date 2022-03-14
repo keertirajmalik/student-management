@@ -39,6 +39,25 @@ public class StudentEntity {
   @Enumerated(EnumType.STRING)
   private Gender gender;
 
+  public StudentEntity(final String firstName,
+                       final String lastName,
+                       final int rollNumber,
+                       final Long mobileNumber,
+                       final String email,
+                       final int classNumber,
+                       final Gender gender) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.rollNumber = rollNumber;
+    this.mobileNumber = mobileNumber;
+    this.email = email;
+    this.classNumber = classNumber;
+    this.gender = gender;
+  }
+
+  public StudentEntity() {
+  }
+
   public Gender getGender() {
     return gender;
   }

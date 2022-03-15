@@ -64,16 +64,75 @@ class StudentRestControllerTest {
     studentRepository.saveAndFlush(
         new StudentEntity("Keertiraj", "Malik", 1, 8277272285L, "keerti@gmailcom", 10, Gender.MALE));
     subjectRepository.saveAndFlush(new SubjectEntity("Kannda", 10));
+    subjectRepository.saveAndFlush(new SubjectEntity("English", 10));
   }
 
   @Test
-  void saveStudentDetails_savingOneStudentDetail_expectStatusCreatedAndVerifiedResponseAndStudentDetailsIsSavedInDb() {
-    subjectRepository.saveAndFlush(new SubjectEntity("English", 10));
-
+  void saveStudentDetail_inputValidStudentDetailRequest_verifiedStatusCodeStudentIdAndSubjects() {
+    studentRepository.deleteAll();
     final ResponseEntity<StudentDTO> studentResponseEntity = restTemplate.postForEntity(
-        createURLWithPort(STUDENTS_DETAILS_PATH), new HttpEntity(createStudentDetailsRequest()), StudentDTO.class);
+        createURLWithPort(STUDENTS_DETAILS_PATH), new HttpEntity<>(
+            createStudentDetailsRequest("test", "test", 1, 8277272285L, 10, "keerti@gmailcom", Gender.MALE)),
+        StudentDTO.class);
     assertThat(studentResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-    assertThat(Objects.requireNonNull(studentResponseEntity.getBody()).getStudentId()).isEqualTo(2);
+    assertThat(Objects.requireNonNull(studentResponseEntity.getBody()).getStudentId()).isEqualTo(10);
+    assertThat(studentResponseEntity.getBody().getStudentId()).isEqualTo(2);
+    assertThat(studentResponseEntity.getBody().getSubjects()).hasSize(2);
+
+  }
+
+  @Test
+  void saveStudentDetails_inputNullNameForFirstName_verifiedStatusCode() {
+    final ResponseEntity<StudentDTO> studentResponseEntity = restTemplate.postForEntity(
+        createURLWithPort(STUDENTS_DETAILS_PATH),
+        new HttpEntity<>(createStudentDetailsRequest(null, "test", 1, 8277272285L, 10, "keerti@gmailcom", Gender.MALE)),
+        StudentDTO.class);
+    assertThat(studentResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void saveStudentDetails_inputNullNameForLastName_verifiedStatusCode() {
+    final ResponseEntity<StudentDTO> studentResponseEntity = restTemplate.postForEntity(
+        createURLWithPort(STUDENTS_DETAILS_PATH),
+        new HttpEntity<>(createStudentDetailsRequest("test", null, 1, 8277272285L, 10, "keerti@gmailcom", Gender.MALE)),
+        StudentDTO.class);
+    assertThat(studentResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void saveStudentDetails_inputNullNameForEmail_verifiedStatusCode() {
+    final ResponseEntity<StudentDTO> studentResponseEntity = restTemplate.postForEntity(
+        createURLWithPort(STUDENTS_DETAILS_PATH),
+        new HttpEntity<>(createStudentDetailsRequest("test", "test", 1, 8277272285L, 10, null, Gender.MALE)),
+        StudentDTO.class);
+    assertThat(studentResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void saveStudentDetails_inputClassNumberMoreThanAllowed_verifiedStatusCode() {
+    final ResponseEntity<StudentDTO> studentResponseEntity = restTemplate.postForEntity(
+        createURLWithPort(STUDENTS_DETAILS_PATH), new HttpEntity<>(
+            createStudentDetailsRequest("test", "test", 1, 8277272285L, 11, "keerti@gmailcom", Gender.MALE)),
+        StudentDTO.class);
+    assertThat(studentResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void saveStudentDetails_inputMobileNumberWithMoreThanTenDigits_verifiedStatusCode() {
+    final ResponseEntity<StudentDTO> studentResponseEntity = restTemplate.postForEntity(
+        createURLWithPort(STUDENTS_DETAILS_PATH), new HttpEntity<>(
+            createStudentDetailsRequest("test", "test", 1, 12345678900L, 11, "keerti@gmailcom", Gender.MALE)),
+        StudentDTO.class);
+    assertThat(studentResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+  }
+
+  @Test
+  void saveStudentDetails_inputGenderAsNull_verifiedStatusCode() {
+    final ResponseEntity<StudentDTO> studentResponseEntity = restTemplate.postForEntity(
+        createURLWithPort(STUDENTS_DETAILS_PATH),
+        new HttpEntity<>(createStudentDetailsRequest("test", "test", 1, 12345678900L, 11, "keerti@gmailcom", null)),
+        StudentDTO.class);
+    assertThat(studentResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
   }
 
   @Test
@@ -88,15 +147,21 @@ class StudentRestControllerTest {
     mockMvc.perform(get(URL)).andExpect(status().isOk()).andReturn();
   }
 
-  private StudentDTO createStudentDetailsRequest() {
+  private StudentDTO createStudentDetailsRequest(String firstName,
+                                                 String lastName,
+                                                 int rollNumber,
+                                                 long mobileNumber,
+                                                 int classNumber,
+                                                 String email,
+                                                 Gender gender) {
     StudentDTO studentDTO = new StudentDTO();
-    studentDTO.setFirstName("Keertiraj");
-    studentDTO.setLastName("Malik");
-    studentDTO.setRollNumber(1);
-    studentDTO.setMobileNumber(8277272285L);
-    studentDTO.setClassNumber(10);
-    studentDTO.setEmail("keerti@gmailcom");
-    studentDTO.setGender(Gender.MALE);
+    studentDTO.setFirstName(firstName);
+    studentDTO.setLastName(lastName);
+    studentDTO.setRollNumber(rollNumber);
+    studentDTO.setMobileNumber(mobileNumber);
+    studentDTO.setClassNumber(classNumber);
+    studentDTO.setEmail(email);
+    studentDTO.setGender(gender);
     studentDTO.setSubjects(null);
     return studentDTO;
   }

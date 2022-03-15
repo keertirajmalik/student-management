@@ -76,9 +76,7 @@ class StudentRestControllerTest {
         StudentDTO.class);
     assertThat(studentResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     assertThat(Objects.requireNonNull(studentResponseEntity.getBody()).getStudentId()).isEqualTo(10);
-    assertThat(studentResponseEntity.getBody().getStudentId()).isEqualTo(2);
     assertThat(studentResponseEntity.getBody().getSubjects()).hasSize(2);
-
   }
 
   @Test

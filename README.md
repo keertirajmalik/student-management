@@ -1,4 +1,5 @@
 # Student Management Project
+[![Maven Package](https://github.com/keertirajmalik/student-management/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/keertirajmalik/student-management/actions/workflows/maven-publish.yml)
 
 I am creating this web app to learn about the Spring. Where I plan to create a system where Students, Teachers details are stored. Those details are exposed using the API end points.
 

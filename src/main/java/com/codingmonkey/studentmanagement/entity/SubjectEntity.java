@@ -32,6 +32,14 @@ public class SubjectEntity {
   @JsonIgnore
   private TeacherEntity teacher;
 
+  public SubjectEntity() {
+  }
+
+  public SubjectEntity(final String subject, final int classNumber) {
+    this.subject = subject;
+    this.classNumber = classNumber;
+  }
+
   public TeacherEntity getTeacher() {
     return teacher;
   }

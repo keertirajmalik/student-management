@@ -48,6 +48,8 @@ public class StudentRestController {
   @PostMapping("/students")
   public ResponseEntity<StudentDTO> addStudent(@RequestBody StudentDTO studentDTO) {
 
+    String logPrefix = "#saveStudentDetails(): ";
+    LOGGER.info("{} Request Received as {} ", logPrefix, studentDTO.toString());
     return studentService.saveStudentDetails(studentDTO);
   }
 

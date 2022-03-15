@@ -59,11 +59,13 @@ public class StudentServiceImpl implements StudentService {
   @Override
   public ResponseEntity<StudentDTO> saveStudentDetails(final StudentDTO studentDTO) {
 
-    String logPrefix = "# " + " #saveStudentDetails(): ";
+    String logPrefix = "#saveStudentDetails(): ";
     LOGGER.info("{} Enter ", logPrefix);
 
     validateFieldsInRequestDto(studentDTO);
 
+    LOGGER.info("{} Creating new record for student [{}] [{}]", logPrefix, studentDTO.getFirstName(),
+        studentDTO.getLastName());
     return saveStudentDetailsToDB(studentDTO);
   }
 

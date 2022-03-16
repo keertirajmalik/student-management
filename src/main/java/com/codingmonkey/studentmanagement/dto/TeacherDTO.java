@@ -6,6 +6,17 @@ import java.util.stream.Collectors;
 import com.codingmonkey.studentmanagement.constant.Gender;
 import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class TeacherDTO {
   private String firstName;
   private String lastName;
@@ -13,50 +24,6 @@ public class TeacherDTO {
   private String email;
   private List<SubjectDTO> subjects;
   private Gender Gender;
-
-  public Gender getGender() {
-    return Gender;
-  }
-
-  public void setGender(final Gender gender) {
-    Gender = gender;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public void setFirstName(final String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(final String lastName) {
-    this.lastName = lastName;
-  }
-
-  public Long getMobileNumber() {
-    return mobileNumber;
-  }
-
-  public void setMobileNumber(final Long mobileNumber) {
-    this.mobileNumber = mobileNumber;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(final String email) {
-    this.email = email;
-  }
-
-  public List<SubjectDTO> getSubjects() {
-    return subjects;
-  }
 
   public void setSubjects(final List<SubjectEntity> subjects) {
     this.subjects = subjects.stream().map(this::convertEntityToDto).collect(Collectors.toList());
@@ -68,11 +35,5 @@ public class TeacherDTO {
     subjectDTO.setSubject(subjectEntity.getSubject());
 
     return subjectDTO;
-  }
-
-  @Override
-  public String toString() {
-    return "TeacherDTO{" + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", mobileNumber="
-        + mobileNumber + ", email='" + email + '\'' + ", subjects=" + subjects + ", Gender=" + Gender + '}';
   }
 }

@@ -1,5 +1,7 @@
 package com.codingmonkey.studentmanagement.rest;
 
+import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATION_JSON_VALUE;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -22,7 +24,7 @@ import com.codingmonkey.studentmanagement.service.StudentServiceImpl;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value = "/api/teachers")
 public class TeacherRestController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(StudentServiceImpl.class);
@@ -33,7 +35,7 @@ public class TeacherRestController {
     this.teacherService = teacherService;
   }
 
-  @GetMapping("/teachers")
+  @GetMapping()
   public List<TeacherDTO> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
                                      @RequestParam(value = "lastName", required = false) String lastName) {
 
@@ -46,7 +48,7 @@ public class TeacherRestController {
     return teacherService.findByFirstNameAndLastName(firstName, lastName);
   }
 
-  @PostMapping("/teachers")
+  @PostMapping(consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<TeacherDTO> addTeacher(@RequestBody TeacherDTO teacherDTO) {
 
     //    teacherEntity.setTeacherId(0);
@@ -54,7 +56,7 @@ public class TeacherRestController {
     return teacherService.saveTeacherDetails(teacherDTO);
   }
 
-  @PutMapping("/teachers")
+  @PutMapping(consumes = APPLICATION_JSON_VALUE)
   public TeacherEntity updateTeacher(@RequestBody TeacherEntity teacherEntity) {
 
     //    teacherService.saveTeacherDetails(teacherEntity);
@@ -62,7 +64,7 @@ public class TeacherRestController {
     return teacherEntity;
   }
 
-  @DeleteMapping("/teachers/{teacherId}")
+  @DeleteMapping("{teacherId}")
   public String deleteTeacher(@PathVariable int teacherId) {
 
     teacherService.deleteById(teacherId);

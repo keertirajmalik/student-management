@@ -16,7 +16,18 @@ import javax.persistence.Table;
 
 import com.codingmonkey.studentmanagement.constant.Gender;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "teacher_details")
 public class TeacherEntity {
   @Id
@@ -37,71 +48,9 @@ public class TeacherEntity {
 
   @OneToMany(mappedBy = "teacher", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH,
       CascadeType.DETACH}, fetch = FetchType.LAZY)
+  @ToString.Exclude
   private List<SubjectEntity> subjects;
 
   @Enumerated(EnumType.STRING)
   private Gender gender;
-
-  public Gender getGender() {
-    return gender;
-  }
-
-  public void setGender(final Gender gender) {
-    this.gender = gender;
-  }
-
-  public int getTeacherId() {
-    return teacherId;
-  }
-
-  public void setTeacherId(final int teacherId) {
-    this.teacherId = teacherId;
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public void setFirstName(final String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(final String lastName) {
-    this.lastName = lastName;
-  }
-
-  public Long getMobileNumber() {
-    return mobileNumber;
-  }
-
-  public void setMobileNumber(final Long mobileNumber) {
-    this.mobileNumber = mobileNumber;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(final String email) {
-    this.email = email;
-  }
-
-  public List<SubjectEntity> getSubjects() {
-    return subjects;
-  }
-
-  public void setSubjects(final List<SubjectEntity> subjects) {
-    this.subjects = subjects;
-  }
-
-  @Override
-  public String toString() {
-    return "TeacherEntity{" + "teacherId=" + teacherId + ", firstName='" + firstName + '\'' + ", lastName='" + lastName
-        + '\'' + ", mobileNumber=" + mobileNumber + ", email='" + email + '\'' + ", subjects=" + subjects + ", gender="
-        + gender + '}';
-  }
 }

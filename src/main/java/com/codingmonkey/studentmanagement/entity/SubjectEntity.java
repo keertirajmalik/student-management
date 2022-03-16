@@ -13,7 +13,18 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "subject_details")
 public class SubjectEntity {
   @Id
@@ -30,52 +41,11 @@ public class SubjectEntity {
       CascadeType.DETACH}, fetch = FetchType.LAZY)
   @JoinColumn(name = "teacher_id")
   @JsonIgnore
+  @ToString.Exclude
   private TeacherEntity teacher;
-
-  public SubjectEntity() {
-  }
 
   public SubjectEntity(final String subject, final int classNumber) {
     this.subject = subject;
     this.classNumber = classNumber;
   }
-
-  public TeacherEntity getTeacher() {
-    return teacher;
-  }
-
-  public void setTeacher(TeacherEntity teacher) {
-    this.teacher = teacher;
-  }
-
-  public Integer getSubjectId() {
-    return subject_id;
-  }
-
-  public void setSubjectId(final Integer id) {
-    this.subject_id = id;
-  }
-
-  public String getSubject() {
-    return subject;
-  }
-
-  public void setSubject(final String subject) {
-    this.subject = subject;
-  }
-
-  public int getClassNumber() {
-    return classNumber;
-  }
-
-  public void setClassNumber(final int class_number) {
-    this.classNumber = class_number;
-  }
-
-  @Override
-  public String toString() {
-    return "SubjectEntity{" + "subject_id=" + subject_id + ", subject='" + subject + '\'' + ", class_number="
-        + classNumber + '}';
-  }
 }
-

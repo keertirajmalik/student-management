@@ -1,5 +1,7 @@
 package com.codingmonkey.studentmanagement.rest;
 
+import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATION_JSON_VALUE;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -21,7 +23,7 @@ import com.codingmonkey.studentmanagement.service.StudentService;
 import com.codingmonkey.studentmanagement.service.StudentServiceImpl;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value = "/api/students")
 public class StudentRestController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(StudentServiceImpl.class);
@@ -32,7 +34,7 @@ public class StudentRestController {
     this.studentService = studentService;
   }
 
-  @GetMapping("/students")
+  @GetMapping()
   public List<StudentDTO> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
                                      @RequestParam(value = "lastName", required = false) String lastName) {
 
@@ -45,7 +47,7 @@ public class StudentRestController {
     return studentService.findByFirstNameAndLastName(firstName, lastName);
   }
 
-  @PostMapping("/students")
+  @PostMapping(consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<StudentDTO> addStudent(@RequestBody StudentDTO studentDTO) {
 
     String logPrefix = "#saveStudentDetails(): ";
@@ -53,13 +55,13 @@ public class StudentRestController {
     return studentService.saveStudentDetails(studentDTO);
   }
 
-  @PutMapping("/students")
+  @PutMapping(consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<StudentDTO> updateStudent(@RequestBody StudentDTO studentDTO) {
 
     return studentService.saveStudentDetails(studentDTO);
   }
 
-  @DeleteMapping("/students/{studentId}")
+  @DeleteMapping("/{studentId}")
   public String deleteStudent(@PathVariable int studentId) {
 
     studentService.deleteById(studentId);

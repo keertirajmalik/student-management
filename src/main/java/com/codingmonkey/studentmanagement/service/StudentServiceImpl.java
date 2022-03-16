@@ -111,7 +111,7 @@ public class StudentServiceImpl implements StudentService {
     studentResponseDto.setSubjects(
         subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
 
-    return new ResponseEntity(studentResponseDto, HttpStatus.CREATED);
+    return ResponseEntity.status(HttpStatus.CREATED).body(studentResponseDto);
   }
 
   private int getRollNumber(final StudentDTO studentDTO) {
@@ -123,10 +123,10 @@ public class StudentServiceImpl implements StudentService {
 
     int rollNumber = 0;
 
-    /**
-     * Since when classNumber has no student Optional[[]] is returned which passes the optionalStudentEntityList.isPresent() check
-     * So replaced with optionalStudentEntityList.get().size() > 0 check
-     * Since we are just trying to get the list size shouldn't cause any exception.
+    /*
+      Since when classNumber has no student Optional[[]] is returned which passes the optionalStudentEntityList.isPresent() check
+      So replaced with optionalStudentEntityList.get().size() > 0 check
+      Since we are just trying to get the list size shouldn't cause any exception.
      */
 
     if (!studentEntityList.isEmpty()) {

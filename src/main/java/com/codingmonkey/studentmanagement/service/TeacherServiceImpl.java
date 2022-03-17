@@ -71,24 +71,12 @@ public class TeacherServiceImpl implements TeacherService {
         teacherEntity.getTeacherId());
     teacherEntity.setSubjects(subjectEntityList);
 
-    return new ResponseEntity(convertEntityToDto(teacherEntity), HttpStatus.CREATED);
+    return ResponseEntity.status(HttpStatus.CREATED).body(convertEntityToDto(teacherEntity));
   }
 
   private void validateFieldsInRequestDto(final TeacherDTO teacherDTO) {
-    if (Optional.ofNullable(teacherDTO.getFirstName()).isEmpty()) {
-      throw new StudentDetailsException("Teacher First Name cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (teacherDTO.getFirstName().isEmpty()) {
-      throw new StudentDetailsException("Teacher First Name cannot be empty", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(teacherDTO.getLastName()).isEmpty()) {
-      throw new StudentDetailsException("Teacher Last Name cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (teacherDTO.getLastName().isEmpty()) {
-      throw new StudentDetailsException("Teacher Last Name cannot be empty", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(teacherDTO.getEmail()).isEmpty()) {
-      throw new StudentDetailsException("Teacher email cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (teacherDTO.getEmail().isEmpty()) {
-      throw new StudentDetailsException("Teacher email cannot be empty", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(teacherDTO.getMobileNumber()).isEmpty()) {
-      throw new StudentDetailsException("Teacher mobile number cannot be null", HttpStatus.BAD_REQUEST);
+    if (teacherDTO.getMobileNumber().toString().length() != 10) {
+      throw new StudentDetailsException("Mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
     } else if (Optional.ofNullable(teacherDTO.getGender()).isEmpty()) {
       throw new StudentDetailsException("Provide Teacher gender type", HttpStatus.BAD_REQUEST);
     }

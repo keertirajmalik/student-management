@@ -2,6 +2,7 @@ package com.codingmonkey.studentmanagement.service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -145,6 +146,8 @@ public class StudentServiceImpl implements StudentService {
           HttpStatus.BAD_REQUEST);
     } else if (studentDTO.getMobileNumber().toString().length() != 10) {
       throw new StudentDetailsException("Mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
+    } else if (Optional.ofNullable(studentDTO.getGender()).isEmpty()) {
+      throw new StudentDetailsException("Provide Teacher gender type", HttpStatus.BAD_REQUEST);
     }
   }
 }

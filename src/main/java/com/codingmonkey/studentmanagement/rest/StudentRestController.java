@@ -4,6 +4,8 @@ import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATI
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +50,7 @@ public class StudentRestController {
   }
 
   @PostMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<StudentDTO> addStudent(@RequestBody StudentDTO studentDTO) {
+  public ResponseEntity<StudentDTO> addStudent(@Valid @RequestBody StudentDTO studentDTO) {
 
     String logPrefix = "#saveStudentDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, studentDTO.toString());
@@ -56,7 +58,7 @@ public class StudentRestController {
   }
 
   @PutMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<StudentDTO> updateStudent(@RequestBody StudentDTO studentDTO) {
+  public ResponseEntity<StudentDTO> updateStudent(@Valid @RequestBody StudentDTO studentDTO) {
 
     return studentService.saveStudentDetails(studentDTO);
   }

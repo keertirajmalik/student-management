@@ -27,31 +27,31 @@ public class StudentDTO {
 
   private int studentId;
 
-  @NotNull(message = "Student First Name cannot be null")
-  @NotBlank(message = "Student First Name cannot be empty")
+  @NotNull(message = "First Name cannot be null")
+  @NotBlank(message = "First Name cannot be empty")
   @Pattern(regexp = "^[a-zA-Z]*$", message = "First name should contain only [a-z, A-Z]")
   private String firstName;
 
-  @NotNull(message = "Student First Name cannot be null")
-  @NotBlank(message = "Student First Name cannot be empty")
+  @NotNull(message = "First Name cannot be null")
+  @NotBlank(message = "First Name cannot be empty")
   @Pattern(regexp = "^[a-zA-Z]*$", message = "Last name should contain only [a-z, A-Z]")
   private String lastName;
   private int rollNumber;
 
-  @NotNull(message = "Student mobile number cannot be null")
-  @NotBlank(message = "Student mobile number cannot be empty")
+  @NotNull(message = "Mobile number cannot be null")
+  @NotBlank(message = "Mobile number cannot be empty")
   private Long mobileNumber;
 
-  @NotNull(message = "Student email cannot be null")
-  @NotBlank(message = "Student email cannot be empty")
+  @NotNull(message = "Email cannot be null")
+  @NotBlank(message = "Email cannot be empty")
   @Email(message = "Provide valid email address")
   private String email;
 
-  @Min(value = 1, message = "Student class number cannot be less than 1")
+  @Min(value = 1, message = "Class number cannot be less than 1")
   private int classNumber;
   private List<String> subjects;
 
-  @NotNull(message = "Student gender cannot be null")
-  @NotBlank(message = "Student gender cannot be empty")
+  @NotNull(message = "Gender cannot be null")
+  @NotBlank(message = "Gender cannot be empty")
   private Gender Gender;
 }

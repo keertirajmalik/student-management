@@ -141,10 +141,10 @@ public class StudentServiceImpl implements StudentService {
   private void validateFieldsInRequestDto(final StudentDTO studentDTO) {
     if (studentDTO.getClassNumber() > applicationConfiguration.getMaxClassAllowed()) {
       throw new StudentDetailsException(
-          "Student class number cannot be greater than " + applicationConfiguration.getMaxClassAllowed(),
+          "Class number cannot be greater than " + applicationConfiguration.getMaxClassAllowed(),
           HttpStatus.BAD_REQUEST);
     } else if (studentDTO.getMobileNumber().toString().length() != 10) {
-      throw new StudentDetailsException("Student mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
+      throw new StudentDetailsException("Mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
     }
   }
 }

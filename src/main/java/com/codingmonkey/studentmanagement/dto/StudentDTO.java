@@ -39,12 +39,11 @@ public class StudentDTO {
   private int rollNumber;
 
   @NotNull(message = "Mobile number cannot be null")
-  @NotBlank(message = "Mobile number cannot be empty")
   private Long mobileNumber;
 
   @NotNull(message = "Email cannot be null")
   @NotBlank(message = "Email cannot be empty")
-  @Email(message = "Provide valid email address")
+  @Email
   private String email;
 
   @Min(value = 1, message = "Class number cannot be less than 1")
@@ -52,6 +51,5 @@ public class StudentDTO {
   private List<String> subjects;
 
   @NotNull(message = "Gender cannot be null")
-  @NotBlank(message = "Gender cannot be empty")
   private Gender Gender;
 }

@@ -2,7 +2,6 @@ package com.codingmonkey.studentmanagement.service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -140,30 +139,12 @@ public class StudentServiceImpl implements StudentService {
   }
 
   private void validateFieldsInRequestDto(final StudentDTO studentDTO) {
-    if (Optional.ofNullable(studentDTO.getFirstName()).isEmpty()) {
-      throw new StudentDetailsException("Student First Name cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getFirstName().isEmpty()) {
-      throw new StudentDetailsException("Student First Name cannot be empty", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(studentDTO.getLastName()).isEmpty()) {
-      throw new StudentDetailsException("Student Last Name cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getLastName().isEmpty()) {
-      throw new StudentDetailsException("Student Last Name cannot be empty", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(studentDTO.getEmail()).isEmpty()) {
-      throw new StudentDetailsException("Student email cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getEmail().isEmpty()) {
-      throw new StudentDetailsException("Student email cannot be empty", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(studentDTO.getMobileNumber()).isEmpty()) {
-      throw new StudentDetailsException("Student mobile number cannot be null", HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getClassNumber() < 1) {
-      throw new StudentDetailsException("Student class number cannot be less than 1", HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getClassNumber() > applicationConfiguration.getMaxClassAllowed()) {
+    if (studentDTO.getClassNumber() > applicationConfiguration.getMaxClassAllowed()) {
       throw new StudentDetailsException(
           "Student class number cannot be greater than " + applicationConfiguration.getMaxClassAllowed(),
           HttpStatus.BAD_REQUEST);
     } else if (studentDTO.getMobileNumber().toString().length() != 10) {
       throw new StudentDetailsException("Student mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(studentDTO.getGender()).isEmpty()) {
-      throw new StudentDetailsException("Provide Student gender type", HttpStatus.BAD_REQUEST);
     }
   }
 }

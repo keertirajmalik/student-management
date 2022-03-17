@@ -4,6 +4,8 @@ import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATI
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,7 @@ public class TeacherRestController {
   }
 
   @PostMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<TeacherDTO> addTeacher(@RequestBody TeacherDTO teacherDTO) {
+  public ResponseEntity<TeacherDTO> addTeacher(@Valid @RequestBody TeacherDTO teacherDTO) {
 
     //    teacherEntity.setTeacherId(0);
 

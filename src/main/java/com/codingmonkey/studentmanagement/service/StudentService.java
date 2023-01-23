@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
+import com.codingmonkey.studentmanagement.constant.Gender;
 import com.codingmonkey.studentmanagement.dto.StudentDTO;
 
 public interface StudentService {

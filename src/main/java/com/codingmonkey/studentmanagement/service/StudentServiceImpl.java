@@ -148,6 +148,8 @@ public class StudentServiceImpl implements StudentService {
       throw new StudentDetailsException("Mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
     } else if (Optional.ofNullable(studentDTO.getGender()).isEmpty()) {
       throw new StudentDetailsException("Provide Teacher gender type", HttpStatus.BAD_REQUEST);
+    } else if (studentDTO.getRollNumber() < 0) {
+      throw new StudentDetailsException("Roll number should be more than 0", HttpStatus.BAD_REQUEST);
     }
   }
 }

@@ -1,4 +1,4 @@
-package com.codingmonkey.studentmanagement.rest;
+package com.codingmonkey.studentmanagement.controller;
 
 import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATION_JSON_VALUE;
 

@@ -28,7 +28,7 @@ public class StudentUIController {
 
   @GetMapping("/list")
   public String listCustomers(Model model) {
-    List<StudentDTO> studentList = studentService.findAll();
+    List<StudentDTO> studentList = studentService.getAllStudents();
     model.addAttribute("student", studentList);
     return "list-students";
   }

@@ -38,11 +38,11 @@ public class StudentRestController {
                                      @RequestParam(value = "lastName", required = false) String lastName) {
     if (firstName == null && lastName == null) {
       LOGGER.info("Get all student details call received");
-      return studentService.findAll();
+      return studentService.getAllStudents();
     }
 
     LOGGER.info("Get [{}] [{}] student details call received", firstName, lastName);
-    return studentService.findByFirstNameAndLastName(firstName, lastName);
+    return studentService.getStudentByFirstNameAndLastName(firstName, lastName);
   }
 
   @PostMapping(consumes = APPLICATION_JSON_VALUE)

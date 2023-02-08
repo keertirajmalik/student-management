@@ -29,8 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(StudentRestController.class)
 class StudentRestControllerTest {
-  private final StudentDTO studentDTO = createStudentDetailsRequest("test", "test", 1, 8277272285L, 10,
-      "keerti@gmailcom", Gender.MALE);
+  private final StudentDTO studentDTO = new StudentDTO(1, "test", "test", 1, 8277272285L, "keerti@gmailcom", 10,
+      List.of("Test"), Gender.MALE);
 
   private static final String URL = "/api/students";
   static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -44,7 +44,7 @@ class StudentRestControllerTest {
   void saveStudentDetail_inputValidStudentDetailRequest_verifiedStatusCodeStudentIdAndSubjects() throws Exception {
     when(studentService.saveStudentDetails(any(StudentDTO.class))).thenReturn(ResponseEntity.ok(studentDTO));
 
-    this.mockMvc.perform(post(URL).content(asJson(studentDTO)).contentType("application/json"))
+    mockMvc.perform(post(URL).content(asJson(studentDTO)).contentType("application/json"))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().json(asJson(studentDTO), true));
@@ -57,15 +57,16 @@ class StudentRestControllerTest {
   @Test
   void saveStudentDetails_inputNullNameForFirstName_verifiedStatusCode() throws Exception {
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(asJson(createStudentDetailsRequest(null, "test", 1, 8277272285L, 10, "keerti@gmailcom", Gender.MALE)));
-
+        .content(asJson(
+            new StudentDTO(1, null, "test", 1, 8277272285L, "keerti@gmailcom", 10, List.of("Test"), Gender.MALE)));
     this.mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
 
   @Test
   void saveStudentDetails_inputNullNameForLastName_verifiedStatusCode() throws Exception {
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(asJson(createStudentDetailsRequest("test", null, 1, 8277272285L, 10, "keerti@gmailcom", Gender.MALE)));
+        .content(asJson(
+            new StudentDTO(1, "test", null, 1, 8277272285L, "keerti@gmailcom", 10, List.of("Test"), Gender.MALE)));
 
     this.mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
@@ -73,7 +74,7 @@ class StudentRestControllerTest {
   @Test
   void saveStudentDetails_inputNullNameForEmail_verifiedStatusCode() throws Exception {
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(asJson(createStudentDetailsRequest("test", "test", 1, 8277272285L, 10, null, Gender.MALE)));
+        .content(asJson(new StudentDTO(1, "test", "test", 1, 8277272285L, null, 10, List.of("Test"), Gender.MALE)));
 
     this.mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
@@ -83,10 +84,10 @@ class StudentRestControllerTest {
     when(studentService.saveStudentDetails(any(StudentDTO.class))).thenThrow(new StudentDetailsException());
 
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(
-            asJson(createStudentDetailsRequest("test", "test", 1, 8277272285L, 11, "keerti@gmailcom", Gender.MALE)));
+        .content(asJson(
+            new StudentDTO(1, "test", "test", 1, 8277272285L, "keerti@gmailcom", 10, List.of("Test"), Gender.MALE)));
 
-    this.mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
+    mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
 
   @Test
@@ -94,10 +95,10 @@ class StudentRestControllerTest {
     when(studentService.saveStudentDetails(any(StudentDTO.class))).thenThrow(new StudentDetailsException());
 
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(
-            asJson(createStudentDetailsRequest("test", "test", -10, 8277272285L, 11, "keerti@gmailcom", Gender.MALE)));
+        .content(asJson(
+            new StudentDTO(1, "test", "test", -1, 8277272285L, "keerti@gmailcom", 10, List.of("Test"), Gender.MALE)));
 
-    this.mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
+    mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
 
   @Test
@@ -105,37 +106,18 @@ class StudentRestControllerTest {
     when(studentService.saveStudentDetails(any(StudentDTO.class))).thenThrow(new StudentDetailsException());
 
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(
-            asJson(createStudentDetailsRequest("test", "test", 1, 12345678900L, 11, "keerti@gmailcom", Gender.MALE)));
+        .content(asJson(
+            new StudentDTO(1, "test", "test", 1, 12345678900L, "keerti@gmailcom", 11, List.of("test"), Gender.MALE)));
 
-    this.mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
+    mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
 
   @Test
   void saveStudentDetails_inputGenderAsNull_verifiedStatusCode() throws Exception {
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(asJson(createStudentDetailsRequest("test", "test", 1, 12345678900L, 11, "keerti@gmailcom", null)));
+        .content(
+            asJson(new StudentDTO(1, "test", "test", 1, 12345678900L, "keerti@gmailcom", 11, List.of("test"), null)));
 
-    this.mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
+    mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
-
-  private StudentDTO createStudentDetailsRequest(String firstName,
-                                                 String lastName,
-                                                 int rollNumber,
-                                                 long mobileNumber,
-                                                 int classNumber,
-                                                 String email,
-                                                 Gender gender) {
-    StudentDTO studentDTO = new StudentDTO();
-    studentDTO.setFirstName(firstName);
-    studentDTO.setLastName(lastName);
-    studentDTO.setRollNumber(rollNumber);
-    studentDTO.setMobileNumber(mobileNumber);
-    studentDTO.setClassNumber(classNumber);
-    studentDTO.setEmail(email);
-    studentDTO.setGender(gender);
-    studentDTO.setSubjects(List.of("test"));
-    return studentDTO;
-  }
-
 }

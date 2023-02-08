@@ -8,7 +8,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import com.codingmonkey.studentmanagement.configurations.ApplicationConfiguration;
 import com.codingmonkey.studentmanagement.constant.Gender;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +22,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentDTO {
-  private ApplicationConfiguration applicationConfiguration;
 
   private int studentId;
 

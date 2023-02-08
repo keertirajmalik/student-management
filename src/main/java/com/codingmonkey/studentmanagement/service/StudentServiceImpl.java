@@ -34,7 +34,7 @@ public class StudentServiceImpl implements StudentService {
   ModelMapper modelMapper;
 
   public StudentServiceImpl(final StudentRepository studentRepository,
-                            final SubjectRepository subjectRepository,
+                            @Autowired final SubjectRepository subjectRepository,
                             final ApplicationConfiguration applicationConfiguration) {
     this.studentRepository = studentRepository;
     this.subjectRepository = subjectRepository;
@@ -42,18 +42,19 @@ public class StudentServiceImpl implements StudentService {
   }
 
   @Override
-  public List<StudentDTO> findAll() {
-    return studentRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
+  public List<StudentDTO> getAllStudents() {
+    final List<StudentEntity> studentList = studentRepository.findAll();
+    return studentList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
   }
 
   @Override
-  public List<StudentDTO> findByFirstNameAndLastName(final String firstName, final String lastName) {
+  public List<StudentDTO> getStudentByFirstNameAndLastName(final String firstName, final String lastName) {
     List<StudentEntity> studentEntityList = studentRepository.findByFirstNameAndLastName(firstName, lastName);
 
     if (!studentEntityList.isEmpty()) {
       return studentEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
-    throw new RuntimeException("Did not find student with first name " + firstName + " last name " + lastName);
+    throw new NotFoundException("Did not find student with first name " + firstName + " last name " + lastName);
   }
 
   @Override

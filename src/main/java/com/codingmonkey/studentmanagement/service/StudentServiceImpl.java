@@ -29,16 +29,16 @@ public class StudentServiceImpl implements StudentService {
   private final StudentRepository studentRepository;
   private final SubjectRepository subjectRepository;
   private final ApplicationConfiguration applicationConfiguration;
-
-  @Autowired
-  ModelMapper modelMapper;
+  private final ModelMapper modelMapper;
 
   public StudentServiceImpl(final StudentRepository studentRepository,
                             @Autowired final SubjectRepository subjectRepository,
-                            final ApplicationConfiguration applicationConfiguration) {
+                            final ApplicationConfiguration applicationConfiguration,
+                            @Autowired final ModelMapper modelMapper) {
     this.studentRepository = studentRepository;
     this.subjectRepository = subjectRepository;
     this.applicationConfiguration = applicationConfiguration;
+    this.modelMapper = modelMapper;
   }
 
   @Override
@@ -59,7 +59,6 @@ public class StudentServiceImpl implements StudentService {
 
   @Override
   public ResponseEntity<StudentDTO> saveStudentDetails(final StudentDTO studentDTO) {
-
     String logPrefix = "#saveStudentDetails(): ";
     LOGGER.info("{} Enter ", logPrefix);
 

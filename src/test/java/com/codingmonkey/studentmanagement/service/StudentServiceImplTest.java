@@ -24,6 +24,7 @@ import com.codingmonkey.studentmanagement.dto.StudentDTO;
 import com.codingmonkey.studentmanagement.entity.StudentEntity;
 import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
+import com.codingmonkey.studentmanagement.exception.StudentDetailsException;
 import com.codingmonkey.studentmanagement.repositories.StudentRepository;
 import com.codingmonkey.studentmanagement.repositories.SubjectRepository;
 
@@ -115,5 +116,61 @@ class StudentServiceImplTest {
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertEquals(studentDTO, response.getBody());
+  }
+
+  @Test
+  void saveStudentDetails_whenStudentsClassIsAboveMaxAllowed_expect_studentDetailsExceptionIsThrown() {
+    final StudentDTO studentDTO = new StudentDTO(1, "John", "Doe", 1, Long.valueOf("8277272285"), "keerti@gmailcom", 11,
+        List.of("Test"), Gender.MALE);
+
+    when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
+
+    assertThrows(StudentDetailsException.class, () -> studentService.saveStudentDetails(studentDTO));
+  }
+
+  @Test
+  void saveStudentDetails_whenStudentsMobileNumberIsInvalid_expect_studentDetailsExceptionIsThrown() {
+    final StudentDTO studentDTO = new StudentDTO(1, "John", "Doe", 1, Long.valueOf("827727228512"), "keerti@gmailcom",
+        10, List.of("Test"), Gender.MALE);
+
+    when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
+
+    assertThrows(StudentDetailsException.class, () -> studentService.saveStudentDetails(studentDTO));
+  }
+
+  @Test
+  void saveStudentDetails_whenStudentsGenderTypeIsInvalid_expect_studentDetailsExceptionIsThrown() {
+    final StudentDTO studentDTO = new StudentDTO(1, "John", "Doe", 1, Long.valueOf("8277272285"), "keerti@gmailcom", 10,
+        List.of("Test"), null);
+
+    when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
+
+    assertThrows(StudentDetailsException.class, () -> studentService.saveStudentDetails(studentDTO));
+  }
+
+  @Test
+  void saveStudentDetails_whenStudentsRollNumberIsNegative_expect_studentDetailsExceptionIsThrown() {
+    final StudentDTO studentDTO = new StudentDTO(1, "John", "Doe", -1, Long.valueOf("8277272285"), "keerti@gmailcom",
+        10, List.of("Test"), Gender.MALE);
+
+    when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
+
+    assertThrows(StudentDetailsException.class, () -> studentService.saveStudentDetails(studentDTO));
+  }
+
+  @Test
+  void saveStudentDetails_whenSubjectsAreNotPresent_expectNotFoundExceptionIsThrown() {
+    final StudentDTO studentDTO = new StudentDTO(1, "John", "Doe", 1, Long.valueOf("8277272285"), "keerti@gmailcom", 10,
+        null, Gender.MALE);
+    final StudentEntity studentEntity = new StudentEntity(1, "John", "Doe", 1, Long.valueOf("8277272285"),
+        "email@gmail.com", 10, Gender.MALE);
+
+    when(modelMapper.map(studentDTO, StudentEntity.class)).thenReturn(studentEntity);
+    when(subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber())).thenReturn(
+        Collections.emptyList());
+    when(modelMapper.map(studentEntity, StudentDTO.class)).thenReturn(studentDTO);
+    when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
+
+    assertThrows(NotFoundException.class, () -> studentService.saveStudentDetails(studentDTO));
   }
 }

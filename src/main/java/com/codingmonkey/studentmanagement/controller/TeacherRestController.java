@@ -43,11 +43,11 @@ public class TeacherRestController {
 
     if (firstName == null && lastName == null) {
       LOGGER.info("Get all Teacher details call received");
-      return teacherService.findAll();
+      return teacherService.getAllTeachers();
     }
 
     LOGGER.info("Get [{}] [{}] Teacher details call received", firstName, lastName);
-    return teacherService.findByFirstNameAndLastName(firstName, lastName);
+    return teacherService.getTeacherByFirstNameAndLastName(firstName, lastName);
   }
 
   @PostMapping(consumes = APPLICATION_JSON_VALUE)

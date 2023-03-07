@@ -50,7 +50,6 @@ public class StudentServiceImpl implements StudentService {
   @Override
   public List<StudentDTO> getStudentByFirstNameAndLastName(final String firstName, final String lastName) {
     List<StudentEntity> studentEntityList = studentRepository.findByFirstNameAndLastName(firstName, lastName);
-
     if (!studentEntityList.isEmpty()) {
       return studentEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
@@ -61,9 +60,7 @@ public class StudentServiceImpl implements StudentService {
   public ResponseEntity<StudentDTO> saveStudentDetails(final StudentDTO studentDTO) {
     String logPrefix = "#saveStudentDetails(): ";
     LOGGER.info("{} Enter ", logPrefix);
-
     validateFieldsInRequestDto(studentDTO);
-
     LOGGER.info("{} Creating new record for student [{}] [{}]", logPrefix, studentDTO.getFirstName(),
         studentDTO.getLastName());
     return saveStudentDetailsToDB(studentDTO);
@@ -84,27 +81,20 @@ public class StudentServiceImpl implements StudentService {
     studentDTO.setClassNumber(studentEntity.getClassNumber());
     studentDTO.setRollNumber(studentEntity.getRollNumber());
     studentDTO.setGender(studentEntity.getGender());
-
     List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber());
-
     if (subjectEntities.isEmpty()) {
       throw new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirstName());
     }
-
     studentDTO.setSubjects(subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
-
     return studentDTO;
   }
 
   private ResponseEntity<StudentDTO> saveStudentDetailsToDB(final StudentDTO studentDTO) {
     StudentEntity studentEntity = modelMapper.map(studentDTO, StudentEntity.class);
-
     studentEntity.setRollNumber(getRollNumber(studentDTO));
     studentRepository.save(studentEntity);
-
     StudentDTO studentResponseDto = modelMapper.map(studentEntity, StudentDTO.class);
     List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber());
-
     if (subjectEntities.isEmpty()) {
       throw new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirstName());
     }
@@ -118,24 +108,19 @@ public class StudentServiceImpl implements StudentService {
     String logPrefix = "# " + " #saveStudentDetails(): ";
     LOGGER.info("{} Getting max roll number of class [{}] new student belong to ", logPrefix,
         studentDTO.getClassNumber());
-
     final List<StudentEntity> studentEntityList = studentRepository.findByClassNumber(studentDTO.getClassNumber());
-
     int rollNumber = 0;
-
     /*
       Since when classNumber has no student Optional[[]] is returned which passes the optionalStudentEntityList.isPresent() check
       So replaced with optionalStudentEntityList.get().size() > 0 check
       Since we are just trying to get the list size shouldn't cause any exception.
      */
-
     if (!studentEntityList.isEmpty()) {
       rollNumber = studentEntityList.stream()
           .max(Comparator.comparing(StudentEntity::getRollNumber))
           .get()
           .getRollNumber();
     }
-
     return rollNumber + 1;
   }
 

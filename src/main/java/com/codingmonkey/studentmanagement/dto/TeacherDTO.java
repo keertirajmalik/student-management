@@ -1,7 +1,6 @@
 package com.codingmonkey.studentmanagement.dto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -9,7 +8,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import com.codingmonkey.studentmanagement.constant.Gender;
-import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +21,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeacherDTO {
+  private int studentId;
 
   @NotNull(message = "First name cannot be null")
   @NotBlank(message = "First name cannot be empty")
@@ -41,20 +40,8 @@ public class TeacherDTO {
   @NotBlank(message = "Email cannot be empty")
   @Email
   private String email;
-  private List<SubjectDTO> subjects;
+  private List<String> subjects;
 
   @NotNull(message = "Gender cannot be null")
   private Gender Gender;
-
-  public void setSubjects(final List<SubjectEntity> subjects) {
-    this.subjects = subjects.stream().map(this::convertEntityToDto).collect(Collectors.toList());
-  }
-
-  private SubjectDTO convertEntityToDto(SubjectEntity subjectEntity) {
-    SubjectDTO subjectDTO = new SubjectDTO();
-    subjectDTO.setClassNumber(subjectEntity.getClassNumber());
-    subjectDTO.setSubject(subjectEntity.getSubject());
-
-    return subjectDTO;
-  }
 }

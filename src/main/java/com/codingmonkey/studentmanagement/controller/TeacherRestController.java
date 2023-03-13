@@ -21,15 +21,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codingmonkey.studentmanagement.dto.TeacherDTO;
-import com.codingmonkey.studentmanagement.entity.TeacherEntity;
-import com.codingmonkey.studentmanagement.service.StudentServiceImpl;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 
 @RestController
 @RequestMapping(value = "/api/teachers")
 public class TeacherRestController {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(StudentServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TeacherRestController.class);
   private final TeacherService teacherService;
 
   @Autowired
@@ -52,18 +50,12 @@ public class TeacherRestController {
 
   @PostMapping(consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<TeacherDTO> addTeacher(@Valid @RequestBody TeacherDTO teacherDTO) {
-
-    //    teacherEntity.setTeacherId(0);
-
     return teacherService.saveTeacherDetails(teacherDTO);
   }
 
   @PutMapping(consumes = APPLICATION_JSON_VALUE)
-  public TeacherEntity updateTeacher(@RequestBody TeacherEntity teacherEntity) {
-
-    //    teacherService.saveTeacherDetails(teacherEntity);
-
-    return teacherEntity;
+  public ResponseEntity<TeacherDTO> updateTeacher(@RequestBody TeacherDTO teacherDTO) {
+    return teacherService.saveTeacherDetails(teacherDTO);
   }
 
   @DeleteMapping("{teacherId}")

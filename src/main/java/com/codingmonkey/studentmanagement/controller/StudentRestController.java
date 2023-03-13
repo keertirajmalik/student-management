@@ -21,12 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codingmonkey.studentmanagement.dto.StudentDTO;
 import com.codingmonkey.studentmanagement.service.StudentService;
-import com.codingmonkey.studentmanagement.service.StudentServiceImpl;
 
 @RestController
 @RequestMapping(value = "/api/students")
 public class StudentRestController {
-  private static final Logger LOGGER = LoggerFactory.getLogger(StudentServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(StudentRestController.class);
   private final StudentService studentService;
 
   public StudentRestController(final StudentService studentService) {
@@ -48,7 +47,7 @@ public class StudentRestController {
   @PostMapping(consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<StudentDTO> addStudent(@Valid @RequestBody StudentDTO studentDTO) {
     String logPrefix = "#saveStudentDetails(): ";
-    LOGGER.info("{} Request Received as {} ", logPrefix, studentDTO.toString());
+    LOGGER.info("{} Request Received as {} ", logPrefix, studentDTO);
     return studentService.saveStudentDetails(studentDTO);
   }
 

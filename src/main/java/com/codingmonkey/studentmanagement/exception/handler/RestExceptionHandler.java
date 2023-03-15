@@ -34,8 +34,8 @@ public class RestExceptionHandler {
   }
 
   @ExceptionHandler
-  protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(final HttpMediaTypeNotAcceptableException exception,
-                                                                    final HttpStatus status) {
+  protected ResponseEntity<ErrorResponse> handleHttpMediaTypeNotAcceptable(final HttpMediaTypeNotAcceptableException exception,
+                                                                           final HttpStatus status) {
     LOGGER.error("Unsupported media type exception :: Status Code: {} , Error Message : {}", status,
         exception.getMessage());
     return ResponseEntity.status(status)

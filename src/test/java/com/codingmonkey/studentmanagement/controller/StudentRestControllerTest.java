@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -81,7 +82,8 @@ class StudentRestControllerTest {
 
   @Test
   void saveStudentDetails_inputClassNumberMoreThanAllowed_verifiedStatusCode() throws Exception {
-    when(studentService.saveStudentDetails(any(StudentDTO.class))).thenThrow(new StudentDetailsException());
+    when(studentService.saveStudentDetails(any(StudentDTO.class))).thenThrow(
+        new StudentDetailsException("Class number cannot be greater than 10", HttpStatus.BAD_REQUEST));
 
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
         .content(asJson(
@@ -92,7 +94,8 @@ class StudentRestControllerTest {
 
   @Test
   void saveStudentDetails_inputNegativeRollNumber_verifiedStatusCode() throws Exception {
-    when(studentService.saveStudentDetails(any(StudentDTO.class))).thenThrow(new StudentDetailsException());
+    when(studentService.saveStudentDetails(any(StudentDTO.class))).thenThrow(
+        new StudentDetailsException("Roll number should be more than 0", HttpStatus.BAD_REQUEST));
 
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
         .content(asJson(
@@ -103,7 +106,8 @@ class StudentRestControllerTest {
 
   @Test
   void saveStudentDetails_inputMobileNumberWithMoreThanTenDigits_verifiedStatusCode() throws Exception {
-    when(studentService.saveStudentDetails(any(StudentDTO.class))).thenThrow(new StudentDetailsException());
+    when(studentService.saveStudentDetails(any(StudentDTO.class))).thenThrow(
+        new StudentDetailsException("Mobile number should have only 10 digits", HttpStatus.BAD_REQUEST));
 
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
         .content(asJson(

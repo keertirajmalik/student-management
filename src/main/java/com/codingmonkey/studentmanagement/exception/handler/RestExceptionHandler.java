@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -19,7 +18,6 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 
 import com.codingmonkey.studentmanagement.exception.ErrorResponse;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
@@ -36,22 +34,21 @@ public class RestExceptionHandler {
   }
 
   @ExceptionHandler
-  protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(final HttpMediaTypeNotAcceptableException ex,
-                                                                    final HttpHeaders headers,
-                                                                    final HttpStatus status,
-                                                                    final WebRequest request) {
-    final String errorMessage = ex.getMessage();
-    LOGGER.error("Unsupported media type exception :: Status Code:" + status + ", Error Message : " + errorMessage);
+  protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(final HttpMediaTypeNotAcceptableException exception,
+                                                                    final HttpStatus status) {
+    LOGGER.error("Unsupported media type exception :: Status Code: {} , Error Message : {}", status,
+        exception.getMessage());
     return ResponseEntity.status(status)
-        .body(new ErrorResponse(NOT_ACCEPTABLE.value(), errorMessage, Instant.now().toString()));
+        .body(new ErrorResponse(NOT_ACCEPTABLE.value(), exception.getMessage(), Instant.now().toString()));
   }
 
   @ExceptionHandler
-  public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupported(final HttpMediaTypeNotSupportedException exception) {
-    LOGGER.error("Unsupported media type exception :: Error Message :" + exception.getMessage());
-
+  public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupported(final HttpMediaTypeNotSupportedException exception,
+                                                                       final HttpStatus status) {
+    LOGGER.error("Unsupported media type exception :: Status Code: {} , Error Message : {}", status,
+        exception.getMessage());
     return ResponseEntity.status(UNSUPPORTED_MEDIA_TYPE)
-        .body(new ErrorResponse(UNSUPPORTED_MEDIA_TYPE.value(), "exception.getMessage()", Instant.now().toString()));
+        .body(new ErrorResponse(UNSUPPORTED_MEDIA_TYPE.value(), exception.getMessage(), Instant.now().toString()));
   }
 
   @ExceptionHandler

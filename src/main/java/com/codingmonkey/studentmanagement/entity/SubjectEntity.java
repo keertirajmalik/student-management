@@ -29,7 +29,7 @@ import lombok.ToString;
 public class SubjectEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer subject_id;
+  private Integer subjectId;
 
   @Column(name = "subject")
   private String subject;

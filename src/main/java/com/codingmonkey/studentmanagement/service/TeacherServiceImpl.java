@@ -62,7 +62,7 @@ public class TeacherServiceImpl implements TeacherService {
     TeacherEntity teacherEntity = modelMapper.map(teacherDTO, TeacherEntity.class);
     teacherRepository.save(teacherEntity);
     TeacherDTO teacherResponseDTO = modelMapper.map(teacherEntity, TeacherDTO.class);
-    final List<SubjectEntity> subjectEntityList = subjectRepository.findSubjectByTeacher_TeacherId(
+    final List<SubjectEntity> subjectEntityList = subjectRepository.findSubjectEntitiesByTeacherTeacherId(
         teacherEntity.getTeacherId());
     if (subjectEntityList.isEmpty()) {
       throw new NotFoundException("Subjects list not found for teacherEntity: " + teacherEntity.getFirstName());
@@ -92,7 +92,7 @@ public class TeacherServiceImpl implements TeacherService {
     teacherDTO.setEmail(teacherEntity.getEmail());
     teacherDTO.setMobileNumber(teacherEntity.getMobileNumber());
     teacherDTO.setGender(teacherEntity.getGender());
-    final List<SubjectEntity> subjectEntityList = subjectRepository.findSubjectByTeacher_TeacherId(
+    final List<SubjectEntity> subjectEntityList = subjectRepository.findSubjectEntitiesByTeacherTeacherId(
         teacherEntity.getTeacherId());
     if (subjectEntityList.isEmpty()) {
       throw new NotFoundException("Subject list not found for teacherEntity: " + teacherEntity.getFirstName());

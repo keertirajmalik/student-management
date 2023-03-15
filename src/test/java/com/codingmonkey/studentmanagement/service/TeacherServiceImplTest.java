@@ -44,11 +44,11 @@ class TeacherServiceImplTest {
         new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"), "email@gmail.com", Gender.MALE));
 
     when(teacherRepository.findAll()).thenReturn(teacherDetailsList);
-    when(subjectRepository.findSubjectByTeacher_TeacherId(teacherDetailsList.get(0).getTeacherId())).thenReturn(
+    when(subjectRepository.findSubjectEntitiesByTeacherTeacherId(teacherDetailsList.get(0).getTeacherId())).thenReturn(
         List.of(new SubjectEntity("Test", 10)));
     List<TeacherDTO> result = teacherService.getAllTeachers();
 
-    assertThat(result.size()).isEqualTo(1);
+    assertThat(result).hasSize(1);
     assertEquals("John", result.get(0).getFirstName());
   }
 
@@ -56,7 +56,7 @@ class TeacherServiceImplTest {
   void getAllTeachers_whenNoTeachersArePresent_expectAllTeachersDetails() {
     given(teacherRepository.findAll()).willReturn(Collections.emptyList());
 
-    assertEquals(teacherService.getAllTeachers(), Collections.emptyList());
+    assertEquals(Collections.emptyList(), teacherService.getAllTeachers());
   }
 
   @Test
@@ -73,13 +73,13 @@ class TeacherServiceImplTest {
         new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"), "email@gmail.com", Gender.MALE));
     when(teacherRepository.findByFirstNameAndLastName(teacherDetailsList.get(0).getFirstName(),
         teacherDetailsList.get(0).getLastName())).thenReturn(teacherDetailsList);
-    when(subjectRepository.findSubjectByTeacher_TeacherId(teacherDetailsList.get(0).getTeacherId())).thenReturn(
+    when(subjectRepository.findSubjectEntitiesByTeacherTeacherId(teacherDetailsList.get(0).getTeacherId())).thenReturn(
         List.of(new SubjectEntity("Test", teacherDetailsList.get(0).getTeacherId())));
     List<TeacherDTO> result = teacherService.getTeacherByFirstNameAndLastName(teacherDetailsList.get(0).getFirstName(),
         teacherDetailsList.get(0).getLastName());
 
     //    assertEquals(result, studentDetailsListDto); Unable to compare two lists
-    assertThat(result.size()).isEqualTo(1);
+    assertThat(result).hasSize(1);
     assertEquals("John", result.get(0).getFirstName());
   }
 
@@ -87,12 +87,11 @@ class TeacherServiceImplTest {
   void getTeacherByFirstNameAndLastName_whenTeacherIsNotPresent_expectNotFoundExceptionIsThrown() {
     List<TeacherEntity> teacherDetailsList = List.of(
         new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"), "email@gmail.com", Gender.MALE));
-    when(teacherRepository.findByFirstNameAndLastName(teacherDetailsList.get(0).getFirstName(),
-        teacherDetailsList.get(0).getLastName())).thenReturn(Collections.emptyList());
+    final String firstName = teacherDetailsList.get(0).getFirstName();
+    final String lastName = teacherDetailsList.get(0).getLastName();
+    when(teacherRepository.findByFirstNameAndLastName(firstName, lastName)).thenReturn(Collections.emptyList());
 
-    assertThrows(NotFoundException.class,
-        () -> teacherService.getTeacherByFirstNameAndLastName(teacherDetailsList.get(0).getFirstName(),
-            teacherDetailsList.get(0).getLastName()));
+    assertThrows(NotFoundException.class, () -> teacherService.getTeacherByFirstNameAndLastName(firstName, lastName));
   }
 
   @Test
@@ -103,7 +102,7 @@ class TeacherServiceImplTest {
         "email@gmail.com", Gender.MALE);
 
     when(modelMapper.map(teacherDTO, TeacherEntity.class)).thenReturn(teacherEntity);
-    when(subjectRepository.findSubjectByTeacher_TeacherId(teacherEntity.getTeacherId())).thenReturn(
+    when(subjectRepository.findSubjectEntitiesByTeacherTeacherId(teacherEntity.getTeacherId())).thenReturn(
         List.of(new SubjectEntity("Test", 10)));
     when(modelMapper.map(teacherEntity, TeacherDTO.class)).thenReturn(teacherDTO);
     ResponseEntity<TeacherDTO> response = teacherService.saveTeacherDetails(teacherDTO);
@@ -136,7 +135,7 @@ class TeacherServiceImplTest {
         "email@gmail.com", Gender.MALE);
 
     when(modelMapper.map(teacherDTO, TeacherEntity.class)).thenReturn(teacherEntity);
-    when(subjectRepository.findSubjectByTeacher_TeacherId(teacherEntity.getTeacherId())).thenReturn(
+    when(subjectRepository.findSubjectEntitiesByTeacherTeacherId(teacherEntity.getTeacherId())).thenReturn(
         Collections.emptyList());
     when(modelMapper.map(teacherEntity, TeacherDTO.class)).thenReturn(teacherDTO);
 

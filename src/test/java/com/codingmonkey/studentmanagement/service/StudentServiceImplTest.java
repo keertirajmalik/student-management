@@ -53,7 +53,7 @@ class StudentServiceImplTest {
     List<StudentDTO> result = studentService.getAllStudents();
 
     //    assertEquals(result, studentDetailsListDto); Unable to compare two lists
-    assertThat(result.size()).isEqualTo(1);
+    assertThat(result).hasSize(1);
     assertEquals("John", result.get(0).getFirstName());
   }
 
@@ -61,7 +61,7 @@ class StudentServiceImplTest {
   void getAllStudents_whenNoStudentsArePresent_expectAllStudentsDetails() {
     given(studentRepository.findAll()).willReturn(Collections.emptyList());
 
-    assertEquals(studentService.getAllStudents(), Collections.emptyList());
+    assertEquals(Collections.emptyList(), studentService.getAllStudents());
   }
 
   @Test
@@ -84,7 +84,7 @@ class StudentServiceImplTest {
         studentDetailsList.get(0).getLastName());
 
     //    assertEquals(result, studentDetailsListDto); Unable to compare two lists
-    assertThat(result.size()).isEqualTo(1);
+    assertThat(result).hasSize(1);
     assertEquals("John", result.get(0).getFirstName());
   }
 
@@ -92,12 +92,11 @@ class StudentServiceImplTest {
   void getStudentByFirstNameAndLastName_whenStudentIsNotPresent_expectNotFoundExceptionIsThrown() {
     List<StudentEntity> studentDetailsList = List.of(
         new StudentEntity(1, "test", "test", 10, Long.valueOf("8277272285"), "email@gmail.com", 1, Gender.MALE));
-    when(studentRepository.findByFirstNameAndLastName(studentDetailsList.get(0).getFirstName(),
-        studentDetailsList.get(0).getLastName())).thenReturn(Collections.emptyList());
+    final String firstName = studentDetailsList.get(0).getFirstName();
+    final String lastName = studentDetailsList.get(0).getLastName();
+    when(studentRepository.findByFirstNameAndLastName(firstName, lastName)).thenReturn(Collections.emptyList());
 
-    assertThrows(NotFoundException.class,
-        () -> studentService.getStudentByFirstNameAndLastName(studentDetailsList.get(0).getFirstName(),
-            studentDetailsList.get(0).getLastName()));
+    assertThrows(NotFoundException.class, () -> studentService.getStudentByFirstNameAndLastName(firstName, lastName));
   }
 
   @Test

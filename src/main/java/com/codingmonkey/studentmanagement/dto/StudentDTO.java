@@ -50,5 +50,5 @@ public class StudentDTO {
   private List<String> subjects;
 
   @NotNull(message = "Gender cannot be null")
-  private Gender Gender;
+  private Gender gender;
 }

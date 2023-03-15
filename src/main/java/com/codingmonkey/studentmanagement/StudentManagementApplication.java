@@ -14,7 +14,7 @@ import com.codingmonkey.studentmanagement.configurations.ApplicationConfiguratio
 @EnableConfigurationProperties(ApplicationConfiguration.class)
 public class StudentManagementApplication extends SpringBootServletInitializer {
 
-  private static final Logger logger = LoggerFactory.getLogger(StudentManagementApplication.class);
+  private static final Logger log = LoggerFactory.getLogger(StudentManagementApplication.class);
 
   @Override
   protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
@@ -22,7 +22,7 @@ public class StudentManagementApplication extends SpringBootServletInitializer {
   }
 
   public static void main(String... args) {
-    logger.info("Started Application with configurations :: {}", args);
+    log.info("Started Application with configurations :: {}", args);
     SpringApplication.run(StudentManagementApplication.class, args);
   }
 

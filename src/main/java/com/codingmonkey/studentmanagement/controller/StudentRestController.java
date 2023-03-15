@@ -53,7 +53,7 @@ public class StudentRestController {
 
   @PutMapping(consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<StudentDTO> updateStudent(@Valid @RequestBody StudentDTO studentDTO) {
-    return studentService.saveStudentDetails(studentDTO);
+    return studentService.updateStudentDetails(studentDTO);
   }
 
   @DeleteMapping("/{studentId}")

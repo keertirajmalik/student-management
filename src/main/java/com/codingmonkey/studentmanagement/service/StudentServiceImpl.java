@@ -1,6 +1,5 @@
 package com.codingmonkey.studentmanagement.service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,7 +52,8 @@ public class StudentServiceImpl implements StudentService {
     if (!studentEntityList.isEmpty()) {
       return studentEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
-    throw new NotFoundException("Did not find student with first name " + firstName + " last name " + lastName);
+    throw new NotFoundException(
+        String.format("Did not find student with first name %s  last name %s", firstName, lastName));
   }
 
   @Override
@@ -67,8 +67,19 @@ public class StudentServiceImpl implements StudentService {
   }
 
   @Override
-  public void deleteById(final int studentId) {
+  public ResponseEntity<StudentDTO> updateStudentDetails(final StudentDTO studentDTO) {
+    String logPrefix = "#updateStudentDetails(): ";
+    LOGGER.info("{} Enter ", logPrefix);
+    validateFieldsInRequestDto(studentDTO);
+    LOGGER.info("{} Updating record of student [{}] [{}]", logPrefix, studentDTO.getFirstName(),
+        studentDTO.getLastName());
+    return updateStudentDetailsToDB(studentDTO);
+  }
+
+  @Override
+  public ResponseEntity<StudentEntity> deleteById(final int studentId) {
     studentRepository.deleteById(studentId);
+    return ResponseEntity.status(HttpStatus.OK).body(studentRepository.getById(studentId));
   }
 
   private StudentDTO convertEntityToDto(StudentEntity studentEntity) {
@@ -100,8 +111,19 @@ public class StudentServiceImpl implements StudentService {
     }
     studentResponseDto.setSubjects(
         subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
-
     return ResponseEntity.status(HttpStatus.CREATED).body(studentResponseDto);
+  }
+
+  private ResponseEntity<StudentDTO> updateStudentDetailsToDB(final StudentDTO studentDTO) {
+    StudentEntity studentEntity = studentRepository.findByFirstNameAndLastNameAndStudentId(studentDTO.getFirstName(),
+        studentDTO.getLastName(), studentDTO.getStudentId());
+    if (studentEntity == null) {
+      throw new NotFoundException("Did not find student with first name " + studentDTO.getFirstName() + " last name "
+          + studentDTO.getLastName());
+    }
+    studentEntity.setRollNumber(getRollNumber(studentDTO));
+    studentRepository.save(studentEntity);
+    return ResponseEntity.status(HttpStatus.OK).body(studentDTO);
   }
 
   private int getRollNumber(final StudentDTO studentDTO) {
@@ -110,16 +132,8 @@ public class StudentServiceImpl implements StudentService {
         studentDTO.getClassNumber());
     final List<StudentEntity> studentEntityList = studentRepository.findByClassNumber(studentDTO.getClassNumber());
     int rollNumber = 0;
-    /*
-      Since when classNumber has no student Optional[[]] is returned which passes the optionalStudentEntityList.isPresent() check
-      So replaced with optionalStudentEntityList.get().size() > 0 check
-      Since we are just trying to get the list size shouldn't cause any exception.
-     */
     if (!studentEntityList.isEmpty()) {
-      rollNumber = studentEntityList.stream()
-          .max(Comparator.comparing(StudentEntity::getRollNumber))
-          .get()
-          .getRollNumber();
+      rollNumber = studentEntityList.stream().mapToInt(StudentEntity::getRollNumber).max().orElse(0);
     }
     return rollNumber + 1;
   }

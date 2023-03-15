@@ -23,7 +23,8 @@ import lombok.ToString;
 @AllArgsConstructor
 public class StudentDTO {
 
-  private int studentId;
+  @NotNull(message = "Student Id cannot be null")
+  private Integer studentId;
 
   @NotNull(message = "First Name cannot be null")
   @NotBlank(message = "First Name cannot be empty")

@@ -8,9 +8,9 @@ import com.codingmonkey.studentmanagement.dto.TeacherDTO;
 
 public interface TeacherService {
 
-  List<TeacherDTO> findAll();
+  List<TeacherDTO> getAllTeachers();
 
-  List<TeacherDTO> findByFirstNameAndLastName(String firstName, String lastName);
+  List<TeacherDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName);
 
   void deleteById(int teacherId);
 

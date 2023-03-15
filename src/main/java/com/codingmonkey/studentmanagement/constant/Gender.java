@@ -1,7 +1,8 @@
 package com.codingmonkey.studentmanagement.constant;
 
 public enum Gender {
-  MALE("Male"), FEMALE("Female");
+  MALE("Male"),
+  FEMALE("Female");
 
   private final String genderType;
 

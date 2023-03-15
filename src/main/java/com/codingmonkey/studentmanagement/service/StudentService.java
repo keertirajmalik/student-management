@@ -5,14 +5,17 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 import com.codingmonkey.studentmanagement.dto.StudentDTO;
+import com.codingmonkey.studentmanagement.entity.StudentEntity;
 
 public interface StudentService {
 
-  List<StudentDTO> findAll();
+  List<StudentDTO> getAllStudents();
 
   ResponseEntity<StudentDTO> saveStudentDetails(StudentDTO studentDTO);
 
-  void deleteById(int studentId);
+  ResponseEntity<StudentDTO> updateStudentDetails(StudentDTO studentDTO);
 
-  List<StudentDTO> findByFirstNameAndLastName(String firstName, String lastName);
+  ResponseEntity<StudentEntity> deleteById(int studentId);
+
+  List<StudentDTO> getStudentByFirstNameAndLastName(String firstName, String lastName);
 }

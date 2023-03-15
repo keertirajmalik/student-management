@@ -1,6 +1,5 @@
 package com.codingmonkey.studentmanagement.service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,49 +28,58 @@ public class StudentServiceImpl implements StudentService {
   private final StudentRepository studentRepository;
   private final SubjectRepository subjectRepository;
   private final ApplicationConfiguration applicationConfiguration;
-
-  @Autowired
-  ModelMapper modelMapper;
+  private final ModelMapper modelMapper;
 
   public StudentServiceImpl(final StudentRepository studentRepository,
-                            final SubjectRepository subjectRepository,
-                            final ApplicationConfiguration applicationConfiguration) {
+                            @Autowired final SubjectRepository subjectRepository,
+                            final ApplicationConfiguration applicationConfiguration,
+                            @Autowired final ModelMapper modelMapper) {
     this.studentRepository = studentRepository;
     this.subjectRepository = subjectRepository;
     this.applicationConfiguration = applicationConfiguration;
+    this.modelMapper = modelMapper;
   }
 
   @Override
-  public List<StudentDTO> findAll() {
-    return studentRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
+  public List<StudentDTO> getAllStudents() {
+    final List<StudentEntity> studentList = studentRepository.findAll();
+    return studentList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
   }
 
   @Override
-  public List<StudentDTO> findByFirstNameAndLastName(final String firstName, final String lastName) {
+  public List<StudentDTO> getStudentByFirstNameAndLastName(final String firstName, final String lastName) {
     List<StudentEntity> studentEntityList = studentRepository.findByFirstNameAndLastName(firstName, lastName);
-
     if (!studentEntityList.isEmpty()) {
       return studentEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
-    throw new RuntimeException("Did not find student with first name " + firstName + " last name " + lastName);
+    throw new NotFoundException(
+        String.format("Did not find student with first name %s  last name %s", firstName, lastName));
   }
 
   @Override
   public ResponseEntity<StudentDTO> saveStudentDetails(final StudentDTO studentDTO) {
-
     String logPrefix = "#saveStudentDetails(): ";
     LOGGER.info("{} Enter ", logPrefix);
-
     validateFieldsInRequestDto(studentDTO);
-
     LOGGER.info("{} Creating new record for student [{}] [{}]", logPrefix, studentDTO.getFirstName(),
         studentDTO.getLastName());
     return saveStudentDetailsToDB(studentDTO);
   }
 
   @Override
-  public void deleteById(final int studentId) {
+  public ResponseEntity<StudentDTO> updateStudentDetails(final StudentDTO studentDTO) {
+    String logPrefix = "#updateStudentDetails(): ";
+    LOGGER.info("{} Enter ", logPrefix);
+    validateFieldsInRequestDto(studentDTO);
+    LOGGER.info("{} Updating record of student [{}] [{}]", logPrefix, studentDTO.getFirstName(),
+        studentDTO.getLastName());
+    return updateStudentDetailsToDB(studentDTO);
+  }
+
+  @Override
+  public ResponseEntity<StudentEntity> deleteById(final int studentId) {
     studentRepository.deleteById(studentId);
+    return ResponseEntity.status(HttpStatus.OK).body(studentRepository.getById(studentId));
   }
 
   private StudentDTO convertEntityToDto(StudentEntity studentEntity) {
@@ -84,58 +92,49 @@ public class StudentServiceImpl implements StudentService {
     studentDTO.setClassNumber(studentEntity.getClassNumber());
     studentDTO.setRollNumber(studentEntity.getRollNumber());
     studentDTO.setGender(studentEntity.getGender());
-
     List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber());
-
     if (subjectEntities.isEmpty()) {
       throw new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirstName());
     }
-
     studentDTO.setSubjects(subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
-
     return studentDTO;
   }
 
   private ResponseEntity<StudentDTO> saveStudentDetailsToDB(final StudentDTO studentDTO) {
     StudentEntity studentEntity = modelMapper.map(studentDTO, StudentEntity.class);
-
     studentEntity.setRollNumber(getRollNumber(studentDTO));
     studentRepository.save(studentEntity);
-
     StudentDTO studentResponseDto = modelMapper.map(studentEntity, StudentDTO.class);
     List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber());
-
     if (subjectEntities.isEmpty()) {
       throw new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirstName());
     }
     studentResponseDto.setSubjects(
         subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
-
     return ResponseEntity.status(HttpStatus.CREATED).body(studentResponseDto);
+  }
+
+  private ResponseEntity<StudentDTO> updateStudentDetailsToDB(final StudentDTO studentDTO) {
+    StudentEntity studentEntity = studentRepository.findByFirstNameAndLastNameAndStudentId(studentDTO.getFirstName(),
+        studentDTO.getLastName(), studentDTO.getStudentId());
+    if (studentEntity == null) {
+      throw new NotFoundException("Did not find student with first name " + studentDTO.getFirstName() + " last name "
+          + studentDTO.getLastName());
+    }
+    studentEntity.setRollNumber(getRollNumber(studentDTO));
+    studentRepository.save(studentEntity);
+    return ResponseEntity.status(HttpStatus.OK).body(studentDTO);
   }
 
   private int getRollNumber(final StudentDTO studentDTO) {
     String logPrefix = "# " + " #saveStudentDetails(): ";
     LOGGER.info("{} Getting max roll number of class [{}] new student belong to ", logPrefix,
         studentDTO.getClassNumber());
-
     final List<StudentEntity> studentEntityList = studentRepository.findByClassNumber(studentDTO.getClassNumber());
-
     int rollNumber = 0;
-
-    /*
-      Since when classNumber has no student Optional[[]] is returned which passes the optionalStudentEntityList.isPresent() check
-      So replaced with optionalStudentEntityList.get().size() > 0 check
-      Since we are just trying to get the list size shouldn't cause any exception.
-     */
-
     if (!studentEntityList.isEmpty()) {
-      rollNumber = studentEntityList.stream()
-          .max(Comparator.comparing(StudentEntity::getRollNumber))
-          .get()
-          .getRollNumber();
+      rollNumber = studentEntityList.stream().mapToInt(StudentEntity::getRollNumber).max().orElse(0);
     }
-
     return rollNumber + 1;
   }
 
@@ -148,6 +147,8 @@ public class StudentServiceImpl implements StudentService {
       throw new StudentDetailsException("Mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
     } else if (Optional.ofNullable(studentDTO.getGender()).isEmpty()) {
       throw new StudentDetailsException("Provide Teacher gender type", HttpStatus.BAD_REQUEST);
+    } else if (studentDTO.getRollNumber() < 0) {
+      throw new StudentDetailsException("Roll number should be more than 0", HttpStatus.BAD_REQUEST);
     }
   }
 }

@@ -40,7 +40,6 @@ public class StudentRestController {
       LOGGER.info("Get all student details call received");
       return studentService.getAllStudents();
     }
-
     LOGGER.info("Get [{}] [{}] student details call received", firstName, lastName);
     return studentService.getStudentByFirstNameAndLastName(firstName, lastName);
   }

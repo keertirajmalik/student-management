@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codingmonkey.studentmanagement.dto.StudentDTO;
+import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
+import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
 import com.codingmonkey.studentmanagement.service.StudentService;
 
 @RestController
@@ -33,8 +34,8 @@ public class StudentRestController {
   }
 
   @GetMapping()
-  public List<StudentDTO> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
-                                     @RequestParam(value = "lastName", required = false) String lastName) {
+  public List<StudentResponseDTO> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
+                                             @RequestParam(value = "lastName", required = false) String lastName) {
     if (firstName == null && lastName == null) {
       LOGGER.info("Get all student details call received");
       return studentService.getAllStudents();
@@ -45,14 +46,14 @@ public class StudentRestController {
   }
 
   @PostMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<StudentDTO> addStudent(@Valid @RequestBody StudentDTO studentDTO) {
+  public ResponseEntity<StudentResponseDTO> addStudent(@Valid @RequestBody StudentRequestDTO studentDTO) {
     String logPrefix = "#saveStudentDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, studentDTO);
     return studentService.saveStudentDetails(studentDTO);
   }
 
   @PutMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<StudentDTO> updateStudent(@Valid @RequestBody StudentDTO studentDTO) {
+  public ResponseEntity<StudentResponseDTO> updateStudent(@Valid @RequestBody StudentRequestDTO studentDTO) {
     return studentService.updateStudentDetails(studentDTO);
   }
 

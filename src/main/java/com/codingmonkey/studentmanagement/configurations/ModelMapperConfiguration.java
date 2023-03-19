@@ -5,7 +5,8 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.codingmonkey.studentmanagement.dto.StudentDTO;
+import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
+import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
 import com.codingmonkey.studentmanagement.dto.TeacherDTO;
 import com.codingmonkey.studentmanagement.entity.StudentEntity;
 import com.codingmonkey.studentmanagement.entity.TeacherEntity;
@@ -18,13 +19,22 @@ public class ModelMapperConfiguration {
 
     final ModelMapper modelMapper = new ModelMapper();
 
-    PropertyMap<StudentDTO, StudentEntity> studentRequestDtoEntityMap = new PropertyMap<StudentDTO, StudentEntity>() {
+    PropertyMap<StudentRequestDTO, StudentEntity> studentRequestDtoEntityMap = new PropertyMap<StudentRequestDTO, StudentEntity>() {
       protected void configure() {
         map().setFirstName(source.getFirstName());
         map().setLastName(source.getLastName());
         map().setEmail(source.getEmail());
         map().setClassNumber(source.getClassNumber());
-        map().setRollNumber(source.getRollNumber());
+        map().setMobileNumber(source.getMobileNumber());
+      }
+    };
+
+    PropertyMap<StudentResponseDTO, StudentEntity> studentResponseDtoEntityMap = new PropertyMap<StudentResponseDTO, StudentEntity>() {
+      protected void configure() {
+        map().setFirstName(source.getFirstName());
+        map().setLastName(source.getLastName());
+        map().setEmail(source.getEmail());
+        map().setClassNumber(source.getClassNumber());
         map().setMobileNumber(source.getMobileNumber());
       }
     };
@@ -39,6 +49,7 @@ public class ModelMapperConfiguration {
     };
 
     modelMapper.addMappings(studentRequestDtoEntityMap);
+    modelMapper.addMappings(studentResponseDtoEntityMap);
     modelMapper.addMappings(teacherRequestDtoEntityMap);
     return modelMapper;
   }

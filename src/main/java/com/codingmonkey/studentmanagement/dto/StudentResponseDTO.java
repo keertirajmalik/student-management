@@ -21,7 +21,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentDTO {
+public class StudentResponseDTO {
 
   @NotNull(message = "Student Id cannot be null")
   private Integer studentId;
@@ -35,6 +35,8 @@ public class StudentDTO {
   @NotBlank(message = "First Name cannot be empty")
   @Pattern(regexp = "^[a-zA-Z]*$", message = "Last name should contain only [a-z, A-Z]")
   private String lastName;
+
+  @Min(value = 1, message = "Roll number cannot be less than 1")
   private int rollNumber;
 
   @NotNull(message = "Mobile number cannot be null")
@@ -47,6 +49,7 @@ public class StudentDTO {
 
   @Min(value = 1, message = "Class number cannot be less than 1")
   private int classNumber;
+
   private List<String> subjects;
 
   @NotNull(message = "Gender cannot be null")

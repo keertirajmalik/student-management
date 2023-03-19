@@ -36,6 +36,7 @@ public class ModelMapperConfiguration {
         map().setEmail(source.getEmail());
         map().setClassNumber(source.getClassNumber());
         map().setMobileNumber(source.getMobileNumber());
+        map().setRollNumber(source.getRollNumber());
       }
     };
 

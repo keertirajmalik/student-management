@@ -49,6 +49,7 @@ public class StudentResponseDTO {
 
   @Min(value = 1, message = "Class number cannot be less than 1")
   private int classNumber;
+
   private List<String> subjects;
 
   @NotNull(message = "Gender cannot be null")

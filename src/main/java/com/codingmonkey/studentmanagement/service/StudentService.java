@@ -14,7 +14,7 @@ public interface StudentService {
 
   ResponseEntity<StudentResponseDTO> saveStudentDetails(StudentRequestDTO studentDTO);
 
-  ResponseEntity<StudentResponseDTO> updateStudentDetails(StudentRequestDTO studentDTO);
+  ResponseEntity<StudentResponseDTO> updateStudentDetails(int studentId, StudentRequestDTO studentDTO);
 
   ResponseEntity<StudentEntity> deleteById(int studentId);
 

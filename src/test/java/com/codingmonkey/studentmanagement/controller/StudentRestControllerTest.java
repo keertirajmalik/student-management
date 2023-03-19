@@ -59,14 +59,14 @@ class StudentRestControllerTest {
   @Test
   void saveStudentDetails_inputNullNameForFirstName_verifiedStatusCode() throws Exception {
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(asJson(new StudentRequestDTO(1, null, "test", 8277272285L, "keerti@gmailcom", 10, Gender.MALE)));
+        .content(asJson(new StudentRequestDTO(null, "test", 8277272285L, "keerti@gmailcom", 10, Gender.MALE)));
     this.mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
 
   @Test
   void saveStudentDetails_inputNullNameForLastName_verifiedStatusCode() throws Exception {
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(asJson(new StudentRequestDTO(1, "test", null, 8277272285L, "keerti@gmailcom", 10, Gender.MALE)));
+        .content(asJson(new StudentRequestDTO("test", null, 8277272285L, "keerti@gmailcom", 10, Gender.MALE)));
 
     this.mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
@@ -74,7 +74,7 @@ class StudentRestControllerTest {
   @Test
   void saveStudentDetails_inputNullNameForEmail_verifiedStatusCode() throws Exception {
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(asJson(new StudentRequestDTO(1, "test", "test", 8277272285L, null, 10, Gender.MALE)));
+        .content(asJson(new StudentRequestDTO("test", "test", 8277272285L, null, 10, Gender.MALE)));
 
     this.mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
@@ -85,7 +85,7 @@ class StudentRestControllerTest {
         new StudentDetailsException("Class number cannot be greater than 10", HttpStatus.BAD_REQUEST));
 
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(asJson(new StudentRequestDTO(1, "test", "test", 8277272285L, "keerti@gmailcom", 10, Gender.MALE)));
+        .content(asJson(new StudentRequestDTO("test", "test", 8277272285L, "keerti@gmailcom", 10, Gender.MALE)));
 
     mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
@@ -96,7 +96,7 @@ class StudentRestControllerTest {
         new StudentDetailsException("Mobile number should have only 10 digits", HttpStatus.BAD_REQUEST));
 
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(asJson(new StudentRequestDTO(1, "test", "test", 12345678900L, "keerti@gmailcom", 11, Gender.MALE)));
+        .content(asJson(new StudentRequestDTO("test", "test", 12345678900L, "keerti@gmailcom", 11, Gender.MALE)));
 
     mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }
@@ -104,7 +104,7 @@ class StudentRestControllerTest {
   @Test
   void saveStudentDetails_inputGenderAsNull_verifiedStatusCode() throws Exception {
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(asJson(new StudentRequestDTO(1, "test", "test", 12345678900L, "keerti@gmailcom", 11, null)));
+        .content(asJson(new StudentRequestDTO("test", "test", 12345678900L, "keerti@gmailcom", 11, null)));
 
     mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }

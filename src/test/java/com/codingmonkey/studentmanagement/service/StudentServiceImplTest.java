@@ -102,7 +102,7 @@ class StudentServiceImplTest {
 
   @Test
   void saveStudentDetails_whenStudentsArePresent_expectStudentsDetailsAreSaved() {
-    final StudentRequestDTO studentDTO = new StudentRequestDTO(1, "John", "Doe", 8277272285L, "keerti@gmailcom", 10,
+    final StudentRequestDTO studentDTO = new StudentRequestDTO( "John", "Doe", 8277272285L, "keerti@gmailcom", 10,
         Gender.MALE);
     final StudentResponseDTO studentResponseDTO = new StudentResponseDTO(1, "John", "Doe", 1,
         Long.valueOf("8277272285"), "keerti@gmailcom", 10, List.of("Test"), Gender.MALE);
@@ -122,7 +122,7 @@ class StudentServiceImplTest {
 
   @Test
   void saveStudentDetails_whenStudentsClassIsAboveMaxAllowed_expect_studentDetailsExceptionIsThrown() {
-    final StudentRequestDTO studentDTO = new StudentRequestDTO(1, "John", "Doe", Long.valueOf("8277272285"),
+    final StudentRequestDTO studentDTO = new StudentRequestDTO( "John", "Doe", Long.valueOf("8277272285"),
         "keerti@gmailcom", 11, Gender.MALE);
 
     when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
@@ -132,7 +132,7 @@ class StudentServiceImplTest {
 
   @Test
   void saveStudentDetails_whenStudentsMobileNumberIsInvalid_expect_studentDetailsExceptionIsThrown() {
-    final StudentRequestDTO studentDTO = new StudentRequestDTO(1, "John", "Doe", Long.valueOf("827727228512"),
+    final StudentRequestDTO studentDTO = new StudentRequestDTO( "John", "Doe", Long.valueOf("827727228512"),
         "keerti@gmailcom", 10, Gender.MALE);
 
     when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
@@ -142,7 +142,7 @@ class StudentServiceImplTest {
 
   @Test
   void saveStudentDetails_whenStudentsGenderTypeIsInvalid_expect_studentDetailsExceptionIsThrown() {
-    final StudentRequestDTO studentDTO = new StudentRequestDTO(1, "John", "Doe", Long.valueOf("8277272285"),
+    final StudentRequestDTO studentDTO = new StudentRequestDTO( "John", "Doe", Long.valueOf("8277272285"),
         "keerti@gmailcom", 10, null);
 
     when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
@@ -152,7 +152,7 @@ class StudentServiceImplTest {
 
   @Test
   void saveStudentDetails_whenSubjectsAreNotPresent_expectNotFoundExceptionIsThrown() {
-    final StudentRequestDTO studentDTO = new StudentRequestDTO(1, "John", "Doe", Long.valueOf("8277272285"),
+    final StudentRequestDTO studentDTO = new StudentRequestDTO( "John", "Doe", Long.valueOf("8277272285"),
         "keerti@gmailcom", 10, Gender.MALE);
     final StudentResponseDTO studentResponseDTO = new StudentResponseDTO(1, "John", "Doe", 1,
         Long.valueOf("8277272285"), "keerti@gmailcom", 10, List.of("Test"), Gender.MALE);

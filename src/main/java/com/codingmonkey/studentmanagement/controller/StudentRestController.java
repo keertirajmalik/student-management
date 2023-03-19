@@ -52,9 +52,10 @@ public class StudentRestController {
     return studentService.saveStudentDetails(studentDTO);
   }
 
-  @PutMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<StudentResponseDTO> updateStudent(@Valid @RequestBody StudentRequestDTO studentDTO) {
-    return studentService.updateStudentDetails(studentDTO);
+  @PutMapping(value = "/{studentId}", consumes = APPLICATION_JSON_VALUE)
+  public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable int studentId,
+                                                          @Valid @RequestBody StudentRequestDTO studentDTO) {
+    return studentService.updateStudentDetails(studentId, studentDTO);
   }
 
   @DeleteMapping("/{studentId}")

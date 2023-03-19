@@ -47,6 +47,20 @@ public class StudentServiceImpl implements StudentService {
     return studentList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
   }
 
+  private StudentResponseDTO convertEntityToDto(StudentEntity studentEntity) {
+    StudentResponseDTO studentDTO = new StudentResponseDTO();
+    studentDTO.setStudentId(studentEntity.getStudentId());
+    studentDTO.setFirstName(studentEntity.getFirstName());
+    studentDTO.setLastName(studentEntity.getLastName());
+    studentDTO.setEmail(studentEntity.getEmail());
+    studentDTO.setMobileNumber(studentEntity.getMobileNumber());
+    studentDTO.setClassNumber(studentEntity.getClassNumber());
+    studentDTO.setRollNumber(studentEntity.getRollNumber());
+    studentDTO.setGender(studentEntity.getGender());
+    studentDTO.setSubjects(getSubjects(studentEntity));
+    return studentDTO;
+  }
+
   @Override
   public List<StudentResponseDTO> getStudentByFirstNameAndLastName(final String firstName, final String lastName) {
     List<StudentEntity> studentEntityList = studentRepository.findByFirstNameAndLastName(firstName, lastName);
@@ -66,41 +80,16 @@ public class StudentServiceImpl implements StudentService {
     return saveStudentDetailsToDB(studentDTO);
   }
 
-  @Override
-  public ResponseEntity<StudentResponseDTO> updateStudentDetails(final StudentRequestDTO studentDTO) {
-    String logPrefix = "#updateStudentDetails(): ";
-    validateFieldsInRequestDto(studentDTO);
-    LOGGER.info("{} Updating record of student [{}] [{}]", logPrefix, studentDTO.getFirstName(),
-        studentDTO.getLastName());
-    return updateStudentDetailsToDB(studentDTO);
-  }
-
-  @Override
-  public ResponseEntity<StudentEntity> deleteById(final int studentId) {
-    studentRepository.deleteById(studentId);
-    return ResponseEntity.status(HttpStatus.OK).body(studentRepository.getById(studentId));
-  }
-
-  private StudentResponseDTO convertEntityToDto(StudentEntity studentEntity) {
-    StudentResponseDTO studentDTO = new StudentResponseDTO();
-    studentDTO.setStudentId(studentEntity.getStudentId());
-    studentDTO.setFirstName(studentEntity.getFirstName());
-    studentDTO.setLastName(studentEntity.getLastName());
-    studentDTO.setEmail(studentEntity.getEmail());
-    studentDTO.setMobileNumber(studentEntity.getMobileNumber());
-    studentDTO.setClassNumber(studentEntity.getClassNumber());
-    studentDTO.setRollNumber(studentEntity.getRollNumber());
-    studentDTO.setGender(studentEntity.getGender());
-    return getSubjects(studentEntity, studentDTO);
-  }
-
-  private StudentResponseDTO getSubjects(final StudentEntity studentEntity, final StudentResponseDTO studentDTO) {
-    List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber());
-    if (subjectEntities.isEmpty()) {
-      throw new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirstName());
+  private void validateFieldsInRequestDto(final StudentRequestDTO studentDTO) {
+    if (studentDTO.getClassNumber() > applicationConfiguration.getMaxClassAllowed()) {
+      throw new StudentDetailsException(
+          "Class number cannot be greater than " + applicationConfiguration.getMaxClassAllowed(),
+          HttpStatus.BAD_REQUEST);
+    } else if (studentDTO.getMobileNumber().toString().length() != 10) {
+      throw new StudentDetailsException("Mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
+    } else if (Optional.ofNullable(studentDTO.getGender()).isEmpty()) {
+      throw new StudentDetailsException("Provide Teacher gender type", HttpStatus.BAD_REQUEST);
     }
-    studentDTO.setSubjects(subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
-    return studentDTO;
   }
 
   private ResponseEntity<StudentResponseDTO> saveStudentDetailsToDB(final StudentRequestDTO studentDTO) {
@@ -108,22 +97,8 @@ public class StudentServiceImpl implements StudentService {
     studentEntity.setRollNumber(getRollNumber(studentDTO.getClassNumber()));
     studentRepository.save(studentEntity);
     StudentResponseDTO studentResponseDto = modelMapper.map(studentEntity, StudentResponseDTO.class);
-    getSubjects(studentEntity, studentResponseDto);
+    studentResponseDto.setSubjects(getSubjects(studentEntity));
     return ResponseEntity.status(HttpStatus.CREATED).body(studentResponseDto);
-  }
-
-  private ResponseEntity<StudentResponseDTO> updateStudentDetailsToDB(final StudentRequestDTO studentDTO) {
-    StudentEntity studentEntity = studentRepository.findByFirstNameAndLastNameAndStudentId(studentDTO.getFirstName(),
-        studentDTO.getLastName(), studentDTO.getStudentId());
-    if (studentEntity == null) {
-      throw new NotFoundException("Did not find student with first name " + studentDTO.getFirstName() + " last name "
-          + studentDTO.getLastName());
-    }
-    modelMapper.map(studentDTO, studentEntity);
-    studentRepository.save(studentEntity);
-    StudentResponseDTO studentResponseDto = modelMapper.map(studentEntity, StudentResponseDTO.class);
-    getSubjects(studentEntity, studentResponseDto);
-    return ResponseEntity.status(HttpStatus.OK).body(studentResponseDto);
   }
 
   private int getRollNumber(final int classNumber) {
@@ -136,15 +111,42 @@ public class StudentServiceImpl implements StudentService {
     return rollNumber + 1;
   }
 
-  private void validateFieldsInRequestDto(final StudentRequestDTO studentDTO) {
-    if (studentDTO.getClassNumber() > applicationConfiguration.getMaxClassAllowed()) {
-      throw new StudentDetailsException(
-          "Class number cannot be greater than " + applicationConfiguration.getMaxClassAllowed(),
-          HttpStatus.BAD_REQUEST);
-    } else if (studentDTO.getMobileNumber().toString().length() != 10) {
-      throw new StudentDetailsException("Mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
-    } else if (Optional.ofNullable(studentDTO.getGender()).isEmpty()) {
-      throw new StudentDetailsException("Provide Teacher gender type", HttpStatus.BAD_REQUEST);
+  private List<String> getSubjects(final StudentEntity studentEntity) {
+    List<SubjectEntity> subjectEntities = subjectRepository.findSubjectsByClassNumber(studentEntity.getClassNumber());
+    if (subjectEntities.isEmpty()) {
+      throw new NotFoundException("Subjects list not found for studentEntity: " + studentEntity.getFirstName());
     }
+    return subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList());
+  }
+
+  @Override
+  public ResponseEntity<StudentResponseDTO> updateStudentDetails(final int studentId,
+                                                                 final StudentRequestDTO studentDTO) {
+    String logPrefix = "#updateStudentDetails(): ";
+    validateFieldsInRequestDto(studentDTO);
+    LOGGER.info("{} Updating record of student [{}] [{}]", logPrefix, studentDTO.getFirstName(),
+        studentDTO.getLastName());
+    return updateStudentDetailsToDB(studentId, studentDTO);
+  }
+
+  private ResponseEntity<StudentResponseDTO> updateStudentDetailsToDB(final int studentId,
+                                                                      final StudentRequestDTO studentDTO) {
+    StudentEntity studentEntity = studentRepository.findByFirstNameAndLastNameAndStudentId(studentDTO.getFirstName(),
+        studentDTO.getLastName(), studentId);
+    if (studentEntity == null) {
+      throw new NotFoundException("Did not find student with first name " + studentDTO.getFirstName() + " last name "
+          + studentDTO.getLastName());
+    }
+    modelMapper.map(studentDTO, studentEntity);
+    studentRepository.save(studentEntity);
+    StudentResponseDTO studentResponseDto = modelMapper.map(studentEntity, StudentResponseDTO.class);
+    studentResponseDto.setSubjects(getSubjects(studentEntity));
+    return ResponseEntity.status(HttpStatus.OK).body(studentResponseDto);
+  }
+
+  @Override
+  public ResponseEntity<StudentEntity> deleteById(final int studentId) {
+    studentRepository.deleteById(studentId);
+    return ResponseEntity.status(HttpStatus.OK).body(studentRepository.getById(studentId));
   }
 }

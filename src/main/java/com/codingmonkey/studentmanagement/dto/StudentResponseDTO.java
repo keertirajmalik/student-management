@@ -3,6 +3,7 @@ package com.codingmonkey.studentmanagement.dto;
 import java.util.List;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -20,18 +21,23 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeacherDTO {
-  private int studentId;
+public class StudentResponseDTO {
 
-  @NotNull(message = "First name cannot be null")
-  @NotBlank(message = "First name cannot be empty")
+  @NotNull(message = "Student Id cannot be null")
+  private Integer studentId;
+
+  @NotNull(message = "First Name cannot be null")
+  @NotBlank(message = "First Name cannot be empty")
   @Pattern(regexp = "^[a-zA-Z]*$", message = "First name should contain only [a-z, A-Z]")
   private String firstName;
 
-  @NotNull(message = "Last name cannot be null")
-  @NotBlank(message = "Last name cannot be empty")
+  @NotNull(message = "First Name cannot be null")
+  @NotBlank(message = "First Name cannot be empty")
   @Pattern(regexp = "^[a-zA-Z]*$", message = "Last name should contain only [a-z, A-Z]")
   private String lastName;
+
+  @Min(value = 1, message = "Roll number cannot be less than 1")
+  private int rollNumber;
 
   @NotNull(message = "Mobile number cannot be null")
   private Long mobileNumber;
@@ -40,6 +46,10 @@ public class TeacherDTO {
   @NotBlank(message = "Email cannot be empty")
   @Email
   private String email;
+
+  @Min(value = 1, message = "Class number cannot be less than 1")
+  private int classNumber;
+
   private List<String> subjects;
 
   @NotNull(message = "Gender cannot be null")

@@ -2,10 +2,10 @@ package com.codingmonkey.studentmanagement.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class StudentDetailsException extends RuntimeException {
+public class TeacherDetailsException extends RuntimeException {
   private final HttpStatus statusCode;
 
-  public StudentDetailsException(final String message, final HttpStatus statusCode) {
+  public TeacherDetailsException(final String message, final HttpStatus statusCode) {
     super(message);
     this.statusCode = statusCode;
   }

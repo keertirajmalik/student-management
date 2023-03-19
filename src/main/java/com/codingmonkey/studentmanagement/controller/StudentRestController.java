@@ -24,7 +24,7 @@ import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
 import com.codingmonkey.studentmanagement.service.StudentService;
 
 @RestController
-@RequestMapping(value = "/api/students")
+@RequestMapping(value = "/api/students", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 public class StudentRestController {
   private static final Logger LOGGER = LoggerFactory.getLogger(StudentRestController.class);
   private final StudentService studentService;
@@ -45,14 +45,14 @@ public class StudentRestController {
     return studentService.getStudentByFirstNameAndLastName(firstName, lastName);
   }
 
-  @PostMapping(consumes = APPLICATION_JSON_VALUE)
+  @PostMapping()
   public ResponseEntity<StudentResponseDTO> addStudent(@Valid @RequestBody StudentRequestDTO studentDTO) {
     String logPrefix = "#saveStudentDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, studentDTO);
     return studentService.saveStudentDetails(studentDTO);
   }
 
-  @PutMapping(value = "/{studentId}", consumes = APPLICATION_JSON_VALUE)
+  @PutMapping(value = "/{studentId}")
   public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable int studentId,
                                                           @Valid @RequestBody StudentRequestDTO studentDTO) {
     return studentService.updateStudentDetails(studentId, studentDTO);

@@ -24,7 +24,7 @@ import com.codingmonkey.studentmanagement.dto.TeacherDTO;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 
 @RestController
-@RequestMapping(value = "/api/teachers")
+@RequestMapping(value = "/api/teachers", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 public class TeacherRestController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TeacherRestController.class);
@@ -60,9 +60,7 @@ public class TeacherRestController {
 
   @DeleteMapping("{teacherId}")
   public String deleteTeacher(@PathVariable int teacherId) {
-
     teacherService.deleteById(teacherId);
-
     return "Teacher is successfully deleted";
   }
 }

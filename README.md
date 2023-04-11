@@ -18,7 +18,11 @@ docker run -d --net my-mysqldb -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -e M
 
 Add IP to the hosts file:
 ```bash
-sudo vi /etc/hosts ,     and inside the file add the following line at the end  127.0.0.1 mysqldb
+sudo vi /etc/hosts ,
+```
+and inside the file add the following line at the end  
+```bash
+127.0.0.1 mysqldb
 ```
 
 Use this line as DB url for the project in `application.yaml` file

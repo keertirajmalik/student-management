@@ -4,15 +4,18 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.codingmonkey.studentmanagement.dto.TeacherDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
 
 public interface TeacherService {
 
-  List<TeacherDTO> getAllTeachers();
+  List<TeacherResponseDTO> getAllTeachers();
 
-  List<TeacherDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName);
+  List<TeacherResponseDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName);
 
   void deleteById(int teacherId);
 
-  ResponseEntity<TeacherDTO> saveTeacherDetails(TeacherDTO teacherDTO);
+  ResponseEntity<TeacherResponseDTO> saveTeacherDetails(TeacherRequestDTO teacherDTO);
+
+  ResponseEntity<TeacherResponseDTO> updateTeacherDetails(int teacherId, TeacherRequestDTO teacherDTO);
 }

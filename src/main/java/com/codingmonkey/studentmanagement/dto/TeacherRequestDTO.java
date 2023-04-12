@@ -1,7 +1,5 @@
 package com.codingmonkey.studentmanagement.dto;
 
-import java.util.List;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,8 +18,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeacherDTO {
-  private int studentId;
+public class TeacherRequestDTO {
 
   @NotNull(message = "First name cannot be null")
   @NotBlank(message = "First name cannot be empty")
@@ -40,7 +37,6 @@ public class TeacherDTO {
   @NotBlank(message = "Email cannot be empty")
   @Email
   private String email;
-  private List<String> subjects;
 
   @NotNull(message = "Gender cannot be null")
   private Gender gender;

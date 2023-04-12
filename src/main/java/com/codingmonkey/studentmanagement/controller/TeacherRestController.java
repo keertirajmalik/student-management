@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codingmonkey.studentmanagement.dto.TeacherDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 
 @RestController
@@ -36,8 +37,8 @@ public class TeacherRestController {
   }
 
   @GetMapping()
-  public List<TeacherDTO> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
-                                     @RequestParam(value = "lastName", required = false) String lastName) {
+  public List<TeacherResponseDTO> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
+                                             @RequestParam(value = "lastName", required = false) String lastName) {
 
     if (firstName == null && lastName == null) {
       LOGGER.info("Get all Teacher details call received");
@@ -48,14 +49,19 @@ public class TeacherRestController {
     return teacherService.getTeacherByFirstNameAndLastName(firstName, lastName);
   }
 
-  @PostMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<TeacherDTO> addTeacher(@Valid @RequestBody TeacherDTO teacherDTO) {
+  @PostMapping()
+  public ResponseEntity<TeacherResponseDTO> addTeacher(@Valid @RequestBody TeacherRequestDTO teacherDTO) {
+    String logPrefix = "#addTeacherDetails(): ";
+    LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
     return teacherService.saveTeacherDetails(teacherDTO);
   }
 
-  @PutMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<TeacherDTO> updateTeacher(@RequestBody TeacherDTO teacherDTO) {
-    return teacherService.saveTeacherDetails(teacherDTO);
+  @PutMapping(value = "/{teacherId}")
+  public ResponseEntity<TeacherResponseDTO> updateTeacher(@PathVariable int teacherId,
+                                                          @RequestBody TeacherRequestDTO teacherDTO) {
+    String logPrefix = "#updateTeacherDetails(): ";
+    LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
+    return teacherService.updateTeacherDetails(teacherId, teacherDTO);
   }
 
   @DeleteMapping("{teacherId}")

@@ -9,4 +9,6 @@ import com.codingmonkey.studentmanagement.entity.TeacherEntity;
 public interface TeacherRepository extends JpaRepository<TeacherEntity, Integer> {
 
   List<TeacherEntity> findByFirstNameAndLastName(String firstName, String lastName);
+
+  TeacherEntity findByFirstNameAndLastNameAndTeacherId(String firstName, String lastName, int teacherId);
 }

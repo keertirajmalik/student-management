@@ -60,12 +60,12 @@ public class TeacherRestController {
 
   @PostMapping(consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<TeacherDTO> addTeacher(@Valid @RequestBody TeacherDTO teacherDTO) {
-    return teacherService.saveTeacherDetails(teacherDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.saveTeacherDetails(teacherDTO));
   }
 
   @PutMapping(consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<TeacherDTO> updateTeacher(@RequestBody TeacherDTO teacherDTO) {
-    return teacherService.saveTeacherDetails(teacherDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.saveTeacherDetails(teacherDTO));
   }
 
   @DeleteMapping("{teacherId}")

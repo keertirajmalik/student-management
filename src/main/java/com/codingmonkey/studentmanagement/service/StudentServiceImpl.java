@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.codingmonkey.studentmanagement.configurations.ApplicationConfiguration;
@@ -90,7 +89,7 @@ public class StudentServiceImpl implements StudentService {
   }
 
   @Override
-  public ResponseEntity<StudentResponseDTO> saveStudentDetails(final StudentRequestDTO studentDTO) {
+  public StudentResponseDTO saveStudentDetails(final StudentRequestDTO studentDTO) {
     String logPrefix = "#saveStudentDetails(): ";
     validateFieldsInRequestDto(studentDTO);
     LOGGER.info("{} Creating new record for student [{}] [{}]", logPrefix, studentDTO.getFirstName(),
@@ -110,13 +109,13 @@ public class StudentServiceImpl implements StudentService {
     }
   }
 
-  private ResponseEntity<StudentResponseDTO> saveStudentDetailsToDB(final StudentRequestDTO studentDTO) {
+  private StudentResponseDTO saveStudentDetailsToDB(final StudentRequestDTO studentDTO) {
     StudentEntity studentEntity = modelMapper.map(studentDTO, StudentEntity.class);
     studentEntity.setRollNumber(getRollNumber(studentDTO.getClassNumber()));
     studentRepository.save(studentEntity);
     StudentResponseDTO studentResponseDto = modelMapper.map(studentEntity, StudentResponseDTO.class);
     studentResponseDto.setSubjects(getSubjects(studentEntity));
-    return ResponseEntity.status(HttpStatus.CREATED).body(studentResponseDto);
+    return studentResponseDto;
   }
 
   private int getRollNumber(final int classNumber) {
@@ -138,8 +137,7 @@ public class StudentServiceImpl implements StudentService {
   }
 
   @Override
-  public ResponseEntity<StudentResponseDTO> updateStudentDetails(final int studentId,
-                                                                 final StudentRequestDTO studentDTO) {
+  public StudentResponseDTO updateStudentDetails(final int studentId, final StudentRequestDTO studentDTO) {
     String logPrefix = "#updateStudentDetails(): ";
     validateFieldsInRequestDto(studentDTO);
     LOGGER.info("{} Updating record of student [{}] [{}]", logPrefix, studentDTO.getFirstName(),
@@ -147,8 +145,7 @@ public class StudentServiceImpl implements StudentService {
     return updateStudentDetailsToDB(studentId, studentDTO);
   }
 
-  private ResponseEntity<StudentResponseDTO> updateStudentDetailsToDB(final int studentId,
-                                                                      final StudentRequestDTO studentDTO) {
+  private StudentResponseDTO updateStudentDetailsToDB(final int studentId, final StudentRequestDTO studentDTO) {
     StudentEntity studentEntity = studentRepository.findByFirstNameAndLastNameAndStudentId(studentDTO.getFirstName(),
         studentDTO.getLastName(), studentId);
     if (studentEntity == null) {
@@ -159,12 +156,11 @@ public class StudentServiceImpl implements StudentService {
     studentRepository.save(studentEntity);
     StudentResponseDTO studentResponseDto = modelMapper.map(studentEntity, StudentResponseDTO.class);
     studentResponseDto.setSubjects(getSubjects(studentEntity));
-    return ResponseEntity.status(HttpStatus.OK).body(studentResponseDto);
+    return studentResponseDto;
   }
 
   @Override
   public void deleteById(final int studentId) {
     studentRepository.deleteById(studentId);
-    ResponseEntity.status(HttpStatus.OK).body(studentRepository.getById(studentId));
   }
 }

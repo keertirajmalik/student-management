@@ -15,8 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import com.codingmonkey.studentmanagement.configurations.ApplicationConfiguration;
 import com.codingmonkey.studentmanagement.constant.Gender;
@@ -114,10 +112,9 @@ class StudentServiceImplTest {
     when(subjectRepository.findSubjectsByClassNumber(studentDTO.getClassNumber())).thenReturn(
         List.of(new SubjectEntity("Test", studentDTO.getClassNumber())));
     when(modelMapper.map(studentEntity, StudentResponseDTO.class)).thenReturn(studentResponseDTO);
-    ResponseEntity<StudentResponseDTO> response = studentService.saveStudentDetails(studentDTO);
+    StudentResponseDTO student = studentService.saveStudentDetails(studentDTO);
 
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    assertEquals(studentResponseDTO, response.getBody());
+    assertEquals(studentResponseDTO, student);
   }
 
   @Test

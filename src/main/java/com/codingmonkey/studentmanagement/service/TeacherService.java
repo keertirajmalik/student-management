@@ -2,8 +2,6 @@ package com.codingmonkey.studentmanagement.service;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
-
 import com.codingmonkey.studentmanagement.dto.TeacherDTO;
 
 public interface TeacherService {
@@ -14,7 +12,7 @@ public interface TeacherService {
 
   void deleteById(int teacherId);
 
-  ResponseEntity<TeacherDTO> saveTeacherDetails(TeacherDTO teacherDTO);
+  TeacherDTO saveTeacherDetails(TeacherDTO teacherDTO);
 
   List<TeacherDTO> getTeacherByFirstName(String firstName);
 

@@ -61,13 +61,13 @@ public class StudentRestController {
   public ResponseEntity<StudentResponseDTO> addStudent(@Valid @RequestBody StudentRequestDTO studentDTO) {
     String logPrefix = "#saveStudentDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, studentDTO);
-    return studentService.saveStudentDetails(studentDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(studentService.saveStudentDetails(studentDTO));
   }
 
   @PutMapping(value = "/{studentId}")
   public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable int studentId,
                                                           @Valid @RequestBody StudentRequestDTO studentDTO) {
-    return studentService.updateStudentDetails(studentId, studentDTO);
+    return ResponseEntity.status(HttpStatus.OK).body(studentService.updateStudentDetails(studentId, studentDTO));
   }
 
   @DeleteMapping("/{studentId}")

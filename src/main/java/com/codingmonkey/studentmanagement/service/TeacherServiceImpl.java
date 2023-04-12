@@ -58,6 +58,24 @@ public class TeacherServiceImpl implements TeacherService {
     return saveTeacherDetailsToDB(teacherDTO);
   }
 
+  @Override
+  public List<TeacherDTO> getTeacherByFirstName(final String firstName) {
+    List<TeacherEntity> teacherEntityList = teacherRepository.findByFirstName(firstName);
+    if (!teacherEntityList.isEmpty()) {
+      return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
+    throw new NotFoundException("Did not find Teacher with first name " + firstName);
+  }
+
+  @Override
+  public List<TeacherDTO> getTeacherByLastName(final String lastName) {
+    List<TeacherEntity> teacherEntityList = teacherRepository.findByLastName(lastName);
+    if (!teacherEntityList.isEmpty()) {
+      return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
+    throw new NotFoundException("Did not find Teacher with last name " + lastName);
+  }
+
   private ResponseEntity<TeacherDTO> saveTeacherDetailsToDB(final TeacherDTO teacherDTO) {
     TeacherEntity teacherEntity = modelMapper.map(teacherDTO, TeacherEntity.class);
     teacherRepository.save(teacherEntity);

@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
 import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
-import com.codingmonkey.studentmanagement.entity.StudentEntity;
 
 public interface StudentService {
 
@@ -16,7 +15,11 @@ public interface StudentService {
 
   ResponseEntity<StudentResponseDTO> updateStudentDetails(int studentId, StudentRequestDTO studentDTO);
 
-  ResponseEntity<StudentEntity> deleteById(int studentId);
+  void deleteById(int studentId);
 
   List<StudentResponseDTO> getStudentByFirstNameAndLastName(String firstName, String lastName);
+
+  List<StudentResponseDTO> getStudentByFirstName(String firstName);
+
+  List<StudentResponseDTO> getStudentByLastName(String lastName);
 }

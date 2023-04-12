@@ -72,6 +72,24 @@ public class StudentServiceImpl implements StudentService {
   }
 
   @Override
+  public List<StudentResponseDTO> getStudentByFirstName(final String firstName) {
+    List<StudentEntity> studentEntityList = studentRepository.findByFirstName(firstName);
+    if (!studentEntityList.isEmpty()) {
+      return studentEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
+    throw new NotFoundException(String.format("Did not find student with first name %s", firstName));
+  }
+
+  @Override
+  public List<StudentResponseDTO> getStudentByLastName(final String lastName) {
+    List<StudentEntity> studentEntityList = studentRepository.findByLastName(lastName);
+    if (!studentEntityList.isEmpty()) {
+      return studentEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
+    throw new NotFoundException(String.format("Did not find student with last name %s", lastName));
+  }
+
+  @Override
   public ResponseEntity<StudentResponseDTO> saveStudentDetails(final StudentRequestDTO studentDTO) {
     String logPrefix = "#saveStudentDetails(): ";
     validateFieldsInRequestDto(studentDTO);
@@ -145,8 +163,8 @@ public class StudentServiceImpl implements StudentService {
   }
 
   @Override
-  public ResponseEntity<StudentEntity> deleteById(final int studentId) {
+  public void deleteById(final int studentId) {
     studentRepository.deleteById(studentId);
-    return ResponseEntity.status(HttpStatus.OK).body(studentRepository.getById(studentId));
+    ResponseEntity.status(HttpStatus.OK).body(studentRepository.getById(studentId));
   }
 }

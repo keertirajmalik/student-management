@@ -3,6 +3,7 @@ package com.codingmonkey.studentmanagement.controller;
 import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATION_JSON_VALUE;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -37,16 +38,24 @@ public class TeacherRestController {
   }
 
   @GetMapping()
-  public List<TeacherDTO> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
-                                     @RequestParam(value = "lastName", required = false) String lastName) {
-
+  public ResponseEntity<Map<String, List<TeacherDTO>>> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
+                                                                  @RequestParam(value = "lastName", required = false) String lastName) {
+    List<TeacherDTO> students;
     if (firstName == null && lastName == null) {
       LOGGER.info("Get all Teacher details call received");
-      return teacherService.getAllTeachers();
+      students = teacherService.getAllTeachers();
+    } else if (firstName == null) {
+      LOGGER.info("Get [{}] student details call received", lastName);
+      students = teacherService.getTeacherByLastName(lastName);
+    } else if (lastName == null) {
+      LOGGER.info("Get [{}] student details call received", firstName);
+      students = teacherService.getTeacherByFirstName(firstName);
+    } else {
+      LOGGER.info("Get [{}] [{}] Teacher details call received", firstName, lastName);
+      students = teacherService.getTeacherByFirstNameAndLastName(firstName, lastName);
     }
-
-    LOGGER.info("Get [{}] [{}] Teacher details call received", firstName, lastName);
-    return teacherService.getTeacherByFirstNameAndLastName(firstName, lastName);
+    Map<String, List<TeacherDTO>> response = Map.of("teachers", students);
+    return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
   @PostMapping(consumes = APPLICATION_JSON_VALUE)

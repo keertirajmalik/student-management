@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,10 +59,8 @@ public class StudentRestController {
   }
 
   @DeleteMapping("/{studentId}")
-  public String deleteStudent(@PathVariable int studentId) {
+  public ResponseEntity<Void> deleteStudent(@PathVariable int studentId) {
     studentService.deleteById(studentId);
-
-    return "Student is successfully deleted";
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
-
 }

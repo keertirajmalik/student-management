@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -44,11 +43,11 @@ class StudentRestControllerTest {
 
   @Test
   void saveStudentDetail_inputValidStudentDetailRequest_verifiedStatusCodeStudentIdAndSubjects() throws Exception {
-    when(studentService.saveStudentDetails(any(StudentRequestDTO.class))).thenReturn(ResponseEntity.ok(studentDTO));
+    when(studentService.saveStudentDetails(any(StudentRequestDTO.class))).thenReturn(studentDTO);
 
     mockMvc.perform(post(URL).content(asJson(studentDTO)).contentType("application/json"))
         .andDo(print())
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(content().json(asJson(studentDTO), true));
   }
 

@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.codingmonkey.studentmanagement.dto.TeacherDTO;
@@ -51,14 +50,32 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public ResponseEntity<TeacherDTO> saveTeacherDetails(final TeacherDTO teacherDTO) {
+  public TeacherDTO saveTeacherDetails(final TeacherDTO teacherDTO) {
     String logPrefix = "# " + " #saveTeacherDetails(): ";
     LOGGER.info("{} Enter ", logPrefix);
     validateFieldsInRequestDto(teacherDTO);
     return saveTeacherDetailsToDB(teacherDTO);
   }
 
-  private ResponseEntity<TeacherDTO> saveTeacherDetailsToDB(final TeacherDTO teacherDTO) {
+  @Override
+  public List<TeacherDTO> getTeacherByFirstName(final String firstName) {
+    List<TeacherEntity> teacherEntityList = teacherRepository.findByFirstName(firstName);
+    if (!teacherEntityList.isEmpty()) {
+      return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
+    throw new NotFoundException("Did not find Teacher with first name " + firstName);
+  }
+
+  @Override
+  public List<TeacherDTO> getTeacherByLastName(final String lastName) {
+    List<TeacherEntity> teacherEntityList = teacherRepository.findByLastName(lastName);
+    if (!teacherEntityList.isEmpty()) {
+      return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
+    throw new NotFoundException("Did not find Teacher with last name " + lastName);
+  }
+
+  private TeacherDTO saveTeacherDetailsToDB(final TeacherDTO teacherDTO) {
     TeacherEntity teacherEntity = modelMapper.map(teacherDTO, TeacherEntity.class);
     teacherRepository.save(teacherEntity);
     TeacherDTO teacherResponseDTO = modelMapper.map(teacherEntity, TeacherDTO.class);
@@ -69,7 +86,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
     teacherResponseDTO.setSubjects(
         subjectEntityList.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
-    return ResponseEntity.status(HttpStatus.CREATED).body(teacherResponseDTO);
+    return teacherResponseDTO;
   }
 
   private void validateFieldsInRequestDto(final TeacherDTO teacherDTO) {

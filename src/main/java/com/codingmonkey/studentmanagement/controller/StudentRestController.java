@@ -3,11 +3,13 @@ package com.codingmonkey.studentmanagement.controller;
 import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATION_JSON_VALUE;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,35 +36,43 @@ public class StudentRestController {
   }
 
   @GetMapping()
-  public List<StudentResponseDTO> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
-                                             @RequestParam(value = "lastName", required = false) String lastName) {
+  public ResponseEntity<Map<String, List<StudentResponseDTO>>> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
+                                                                          @RequestParam(value = "lastName", required = false) String lastName) {
+    List<StudentResponseDTO> students;
     if (firstName == null && lastName == null) {
       LOGGER.info("Get all student details call received");
-      return studentService.getAllStudents();
-    }
+      students = studentService.getAllStudents();
+    } else if (firstName == null) {
+      LOGGER.info("Get [{}] student details call received", lastName);
+      students = studentService.getStudentByLastName(lastName);
+    } else if (lastName == null) {
+      LOGGER.info("Get [{}] student details call received", firstName);
+      students = studentService.getStudentByFirstName(firstName);
 
-    LOGGER.info("Get [{}] [{}] student details call received", firstName, lastName);
-    return studentService.getStudentByFirstNameAndLastName(firstName, lastName);
+    } else {
+      LOGGER.info("Get [{}] [{}] student details call received", firstName, lastName);
+      students = studentService.getStudentByFirstNameAndLastName(firstName, lastName);
+    }
+    Map<String, List<StudentResponseDTO>> response = Map.of("students", students);
+    return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
   @PostMapping()
   public ResponseEntity<StudentResponseDTO> addStudent(@Valid @RequestBody StudentRequestDTO studentDTO) {
     String logPrefix = "#saveStudentDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, studentDTO);
-    return studentService.saveStudentDetails(studentDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(studentService.saveStudentDetails(studentDTO));
   }
 
   @PutMapping(value = "/{studentId}")
   public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable int studentId,
                                                           @Valid @RequestBody StudentRequestDTO studentDTO) {
-    return studentService.updateStudentDetails(studentId, studentDTO);
+    return ResponseEntity.status(HttpStatus.OK).body(studentService.updateStudentDetails(studentId, studentDTO));
   }
 
   @DeleteMapping("/{studentId}")
-  public String deleteStudent(@PathVariable int studentId) {
+  public ResponseEntity<Void> deleteStudent(@PathVariable int studentId) {
     studentService.deleteById(studentId);
-
-    return "Student is successfully deleted";
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
-
 }

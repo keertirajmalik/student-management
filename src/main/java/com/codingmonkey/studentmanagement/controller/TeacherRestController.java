@@ -40,21 +40,21 @@ public class TeacherRestController {
   @GetMapping()
   public ResponseEntity<Map<String, List<TeacherDTO>>> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
                                                                   @RequestParam(value = "lastName", required = false) String lastName) {
-    List<TeacherDTO> students;
+    List<TeacherDTO> teachers;
     if (firstName == null && lastName == null) {
-      LOGGER.info("Get all Teacher details call received");
-      students = teacherService.getAllTeachers();
+      LOGGER.info("Get all teachers details call received");
+      teachers = teacherService.getAllTeachers();
     } else if (firstName == null) {
-      LOGGER.info("Get [{}] student details call received", lastName);
-      students = teacherService.getTeacherByLastName(lastName);
+      LOGGER.info("Get [{}] teacher details call received", lastName);
+      teachers = teacherService.getTeacherByLastName(lastName);
     } else if (lastName == null) {
-      LOGGER.info("Get [{}] student details call received", firstName);
-      students = teacherService.getTeacherByFirstName(firstName);
+      LOGGER.info("Get [{}] teacher details call received", firstName);
+      teachers = teacherService.getTeacherByFirstName(firstName);
     } else {
-      LOGGER.info("Get [{}] [{}] Teacher details call received", firstName, lastName);
-      students = teacherService.getTeacherByFirstNameAndLastName(firstName, lastName);
+      LOGGER.info("Get [{}] [{}] teacher details call received", firstName, lastName);
+      teachers = teacherService.getTeacherByFirstNameAndLastName(firstName, lastName);
     }
-    Map<String, List<TeacherDTO>> response = Map.of("teachers", students);
+    Map<String, List<TeacherDTO>> response = Map.of("teachers", teachers);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 

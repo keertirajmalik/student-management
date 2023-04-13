@@ -67,6 +67,8 @@ public class StudentRestController {
   @PutMapping(value = "/{studentId}")
   public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable int studentId,
                                                           @Valid @RequestBody StudentRequestDTO studentDTO) {
+    String logPrefix = "#updateStudentDetails(): ";
+    LOGGER.info("{} Request Received as {} ", logPrefix, studentDTO);
     return ResponseEntity.status(HttpStatus.OK).body(studentService.updateStudentDetails(studentId, studentDTO));
   }
 

@@ -2,19 +2,22 @@ package com.codingmonkey.studentmanagement.service;
 
 import java.util.List;
 
-import com.codingmonkey.studentmanagement.dto.TeacherDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
 
 public interface TeacherService {
 
-  List<TeacherDTO> getAllTeachers();
+  List<TeacherResponseDTO> getAllTeachers();
 
-  List<TeacherDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName);
+  List<TeacherResponseDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName);
 
   void deleteById(int teacherId);
 
-  TeacherDTO saveTeacherDetails(TeacherDTO teacherDTO);
+  TeacherResponseDTO saveTeacherDetails(TeacherRequestDTO teacherDTO);
 
-  List<TeacherDTO> getTeacherByFirstName(String firstName);
+  TeacherResponseDTO updateTeacherDetails(int teacherId, TeacherRequestDTO teacherDTO);
 
-  List<TeacherDTO> getTeacherByLastName(String lastName);
+  List<TeacherResponseDTO> getTeacherByFirstName(String firstName);
+
+  List<TeacherResponseDTO> getTeacherByLastName(String lastName);
 }

@@ -20,8 +20,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeacherDTO {
-  private int studentId;
+public class TeacherRequestDTO {
 
   @NotNull(message = "First name cannot be null")
   @NotBlank(message = "First name cannot be empty")
@@ -40,8 +39,10 @@ public class TeacherDTO {
   @NotBlank(message = "Email cannot be empty")
   @Email
   private String email;
-  private List<String> subjects;
 
   @NotNull(message = "Gender cannot be null")
   private Gender gender;
+
+  @NotNull(message = "subjects cannot be null")
+  private List<String> subjects;
 }

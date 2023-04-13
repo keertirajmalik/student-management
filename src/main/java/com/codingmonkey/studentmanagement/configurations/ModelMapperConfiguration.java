@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
 import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
-import com.codingmonkey.studentmanagement.dto.TeacherDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
 import com.codingmonkey.studentmanagement.entity.StudentEntity;
 import com.codingmonkey.studentmanagement.entity.TeacherEntity;
 
@@ -19,7 +20,7 @@ public class ModelMapperConfiguration {
 
     final ModelMapper modelMapper = new ModelMapper();
 
-    PropertyMap<StudentRequestDTO, StudentEntity> studentRequestDtoEntityMap = new PropertyMap<StudentRequestDTO, StudentEntity>() {
+    PropertyMap<StudentRequestDTO, StudentEntity> studentRequestDtoEntityMap = new PropertyMap<>() {
       protected void configure() {
         map().setFirstName(source.getFirstName());
         map().setLastName(source.getLastName());
@@ -29,7 +30,7 @@ public class ModelMapperConfiguration {
       }
     };
 
-    PropertyMap<StudentResponseDTO, StudentEntity> studentResponseDtoEntityMap = new PropertyMap<StudentResponseDTO, StudentEntity>() {
+    PropertyMap<StudentResponseDTO, StudentEntity> studentResponseDtoEntityMap = new PropertyMap<>() {
       protected void configure() {
         map().setFirstName(source.getFirstName());
         map().setLastName(source.getLastName());
@@ -40,7 +41,16 @@ public class ModelMapperConfiguration {
       }
     };
 
-    PropertyMap<TeacherDTO, TeacherEntity> teacherRequestDtoEntityMap = new PropertyMap<TeacherDTO, TeacherEntity>() {
+    PropertyMap<TeacherRequestDTO, TeacherEntity> teacherRequestDtoEntityMap = new PropertyMap<>() {
+      protected void configure() {
+        map().setFirstName(source.getFirstName());
+        map().setLastName(source.getLastName());
+        map().setEmail(source.getEmail());
+        map().setMobileNumber(source.getMobileNumber());
+      }
+    };
+
+    PropertyMap<TeacherResponseDTO, TeacherEntity> teacherResponseDtoEntityMap = new PropertyMap<>() {
       protected void configure() {
         map().setFirstName(source.getFirstName());
         map().setLastName(source.getLastName());
@@ -52,6 +62,7 @@ public class ModelMapperConfiguration {
     modelMapper.addMappings(studentRequestDtoEntityMap);
     modelMapper.addMappings(studentResponseDtoEntityMap);
     modelMapper.addMappings(teacherRequestDtoEntityMap);
+    modelMapper.addMappings(teacherResponseDtoEntityMap);
     return modelMapper;
   }
 }

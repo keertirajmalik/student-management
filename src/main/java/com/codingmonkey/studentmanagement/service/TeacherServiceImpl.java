@@ -1,5 +1,6 @@
 package com.codingmonkey.studentmanagement.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.codingmonkey.studentmanagement.dto.TeacherDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
 import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 import com.codingmonkey.studentmanagement.entity.TeacherEntity;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
@@ -36,12 +38,12 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public List<TeacherDTO> getAllTeachers() {
+  public List<TeacherResponseDTO> getAllTeachers() {
     return teacherRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
   }
 
   @Override
-  public List<TeacherDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName) {
+  public List<TeacherResponseDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName) {
     List<TeacherEntity> teacherEntityList = teacherRepository.findByFirstNameAndLastName(firstName, lastName);
     if (!teacherEntityList.isEmpty()) {
       return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
@@ -50,15 +52,40 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public TeacherDTO saveTeacherDetails(final TeacherDTO teacherDTO) {
+  public TeacherResponseDTO saveTeacherDetails(final TeacherRequestDTO teacherDTO) {
     String logPrefix = "# " + " #saveTeacherDetails(): ";
     LOGGER.info("{} Enter ", logPrefix);
     validateFieldsInRequestDto(teacherDTO);
+    LOGGER.info("{} Creating new record for teacher [{}] [{}]", logPrefix, teacherDTO.getFirstName(),
+        teacherDTO.getLastName());
     return saveTeacherDetailsToDB(teacherDTO);
   }
 
   @Override
-  public List<TeacherDTO> getTeacherByFirstName(final String firstName) {
+  public TeacherResponseDTO updateTeacherDetails(final int teacherId, final TeacherRequestDTO teacherDTO) {
+    String logPrefix = "#updateTeacherDetails(): ";
+    validateFieldsInRequestDto(teacherDTO);
+    LOGGER.info("{} Updating record of teacher [{}] [{}]", logPrefix, teacherDTO.getFirstName(),
+        teacherDTO.getLastName());
+    return updateTeacherDetailsToDB(teacherId, teacherDTO);
+  }
+
+  private TeacherResponseDTO updateTeacherDetailsToDB(final int teacherId, final TeacherRequestDTO teacherDTO) {
+    TeacherEntity teacherEntity = teacherRepository.findByFirstNameAndLastNameAndTeacherId(teacherDTO.getFirstName(),
+        teacherDTO.getLastName(), teacherId);
+    if (teacherEntity == null) {
+      throw new NotFoundException("Did not find teacher with first name " + teacherDTO.getFirstName() + " last name "
+          + teacherDTO.getLastName());
+    }
+    modelMapper.map(teacherDTO, teacherEntity);
+    teacherRepository.save(teacherEntity);
+    TeacherResponseDTO teacherResponseDTO = modelMapper.map(teacherEntity, TeacherResponseDTO.class);
+    teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
+    return teacherResponseDTO;
+  }
+
+  @Override
+  public List<TeacherResponseDTO> getTeacherByFirstName(final String firstName) {
     List<TeacherEntity> teacherEntityList = teacherRepository.findByFirstName(firstName);
     if (!teacherEntityList.isEmpty()) {
       return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
@@ -67,7 +94,7 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public List<TeacherDTO> getTeacherByLastName(final String lastName) {
+  public List<TeacherResponseDTO> getTeacherByLastName(final String lastName) {
     List<TeacherEntity> teacherEntityList = teacherRepository.findByLastName(lastName);
     if (!teacherEntityList.isEmpty()) {
       return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
@@ -75,25 +102,24 @@ public class TeacherServiceImpl implements TeacherService {
     throw new NotFoundException("Did not find Teacher with last name " + lastName);
   }
 
-  private TeacherDTO saveTeacherDetailsToDB(final TeacherDTO teacherDTO) {
+  private TeacherResponseDTO saveTeacherDetailsToDB(final TeacherRequestDTO teacherDTO) {
     TeacherEntity teacherEntity = modelMapper.map(teacherDTO, TeacherEntity.class);
     teacherRepository.save(teacherEntity);
-    TeacherDTO teacherResponseDTO = modelMapper.map(teacherEntity, TeacherDTO.class);
-    final List<SubjectEntity> subjectEntityList = subjectRepository.findSubjectEntitiesByTeacherTeacherId(
-        teacherEntity.getTeacherId());
-    if (subjectEntityList.isEmpty()) {
-      throw new NotFoundException("Subjects list not found for teacherEntity: " + teacherEntity.getFirstName());
-    }
-    teacherResponseDTO.setSubjects(
-        subjectEntityList.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
+    TeacherResponseDTO teacherResponseDTO = modelMapper.map(teacherEntity, TeacherResponseDTO.class);
+    teacherResponseDTO.setSubjects(teacherDTO.getSubjects());
     return teacherResponseDTO;
   }
 
-  private void validateFieldsInRequestDto(final TeacherDTO teacherDTO) {
+  private void validateFieldsInRequestDto(final TeacherRequestDTO teacherDTO) {
     if (teacherDTO.getMobileNumber().toString().length() != 10) {
       throw new TeacherDetailsException("Mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
     } else if (Optional.ofNullable(teacherDTO.getGender()).isEmpty()) {
       throw new TeacherDetailsException("Provide Teacher gender type", HttpStatus.BAD_REQUEST);
+    } else if (Optional.ofNullable(teacherDTO.getSubjects()).isEmpty()) {
+      throw new TeacherDetailsException("Provide Teacher subjects", HttpStatus.BAD_REQUEST);
+    } else if (!new HashSet<>(getSubjects(modelMapper.map(teacherDTO, TeacherEntity.class))).containsAll(
+        teacherDTO.getSubjects())) {
+      throw new TeacherDetailsException("Provide proper subjects", HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -102,19 +128,22 @@ public class TeacherServiceImpl implements TeacherService {
     teacherRepository.deleteById(teacherId);
   }
 
-  private TeacherDTO convertEntityToDto(TeacherEntity teacherEntity) {
-    TeacherDTO teacherDTO = new TeacherDTO();
+  private TeacherResponseDTO convertEntityToDto(TeacherEntity teacherEntity) {
+    TeacherResponseDTO teacherDTO = new TeacherResponseDTO();
     teacherDTO.setFirstName(teacherEntity.getFirstName());
     teacherDTO.setLastName(teacherEntity.getLastName());
     teacherDTO.setEmail(teacherEntity.getEmail());
     teacherDTO.setMobileNumber(teacherEntity.getMobileNumber());
     teacherDTO.setGender(teacherEntity.getGender());
-    final List<SubjectEntity> subjectEntityList = subjectRepository.findSubjectEntitiesByTeacherTeacherId(
-        teacherEntity.getTeacherId());
-    if (subjectEntityList.isEmpty()) {
-      throw new NotFoundException("Subject list not found for teacherEntity: " + teacherEntity.getFirstName());
-    }
-    teacherDTO.setSubjects(subjectEntityList.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
+    teacherDTO.setSubjects(getSubjects(teacherEntity));
     return teacherDTO;
+  }
+
+  private List<String> getSubjects(final TeacherEntity teacherEntity) {
+    List<SubjectEntity> subjectEntities = subjectRepository.findAll();
+    if (subjectEntities.isEmpty()) {
+      throw new NotFoundException("Subjects list not found for teacherEntity: " + teacherEntity.getFirstName());
+    }
+    return subjectEntities.stream().map(SubjectEntity::getSubject).collect(Collectors.toList());
   }
 }

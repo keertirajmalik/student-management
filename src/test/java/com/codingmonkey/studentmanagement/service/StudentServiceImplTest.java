@@ -48,7 +48,7 @@ class StudentServiceImplTest {
 
     when(studentRepository.findAll()).thenReturn(studentDetailsList);
     when(subjectRepository.findSubjectsByClassNumber(studentDetailsList.get(0).getClassNumber())).thenReturn(
-        List.of(new SubjectEntity("Test", studentDetailsList.get(0).getClassNumber())));
+        List.of(new SubjectEntity(1, "Test", 10)));
     List<StudentResponseDTO> result = studentService.getAllStudents();
 
     //    assertEquals(result, studentDetailsListDto); Unable to compare two lists
@@ -78,7 +78,7 @@ class StudentServiceImplTest {
     when(studentRepository.findByFirstNameAndLastName(studentDetailsList.get(0).getFirstName(),
         studentDetailsList.get(0).getLastName())).thenReturn(studentDetailsList);
     when(subjectRepository.findSubjectsByClassNumber(studentDetailsList.get(0).getClassNumber())).thenReturn(
-        List.of(new SubjectEntity("Test", studentDetailsList.get(0).getClassNumber())));
+        List.of(new SubjectEntity(1, "Test", 10)));
     List<StudentResponseDTO> result = studentService.getStudentByFirstNameAndLastName(
         studentDetailsList.get(0).getFirstName(), studentDetailsList.get(0).getLastName());
 
@@ -100,7 +100,7 @@ class StudentServiceImplTest {
 
   @Test
   void saveStudentDetails_whenStudentsArePresent_expectStudentsDetailsAreSaved() {
-    final StudentRequestDTO studentDTO = new StudentRequestDTO( "John", "Doe", 8277272285L, "keerti@gmailcom", 10,
+    final StudentRequestDTO studentDTO = new StudentRequestDTO("John", "Doe", 8277272285L, "keerti@gmailcom", 10,
         Gender.MALE);
     final StudentResponseDTO studentResponseDTO = new StudentResponseDTO(1, "John", "Doe", 1,
         Long.valueOf("8277272285"), "keerti@gmailcom", 10, List.of("Test"), Gender.MALE);
@@ -110,7 +110,7 @@ class StudentServiceImplTest {
     when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
     when(modelMapper.map(studentDTO, StudentEntity.class)).thenReturn(studentEntity);
     when(subjectRepository.findSubjectsByClassNumber(studentDTO.getClassNumber())).thenReturn(
-        List.of(new SubjectEntity("Test", studentDTO.getClassNumber())));
+        List.of(new SubjectEntity(1, "Test", 10)));
     when(modelMapper.map(studentEntity, StudentResponseDTO.class)).thenReturn(studentResponseDTO);
     StudentResponseDTO student = studentService.saveStudentDetails(studentDTO);
 
@@ -119,7 +119,7 @@ class StudentServiceImplTest {
 
   @Test
   void saveStudentDetails_whenStudentsClassIsAboveMaxAllowed_expect_studentDetailsExceptionIsThrown() {
-    final StudentRequestDTO studentDTO = new StudentRequestDTO( "John", "Doe", Long.valueOf("8277272285"),
+    final StudentRequestDTO studentDTO = new StudentRequestDTO("John", "Doe", Long.valueOf("8277272285"),
         "keerti@gmailcom", 11, Gender.MALE);
 
     when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
@@ -129,7 +129,7 @@ class StudentServiceImplTest {
 
   @Test
   void saveStudentDetails_whenStudentsMobileNumberIsInvalid_expect_studentDetailsExceptionIsThrown() {
-    final StudentRequestDTO studentDTO = new StudentRequestDTO( "John", "Doe", Long.valueOf("827727228512"),
+    final StudentRequestDTO studentDTO = new StudentRequestDTO("John", "Doe", Long.valueOf("827727228512"),
         "keerti@gmailcom", 10, Gender.MALE);
 
     when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
@@ -139,7 +139,7 @@ class StudentServiceImplTest {
 
   @Test
   void saveStudentDetails_whenStudentsGenderTypeIsInvalid_expect_studentDetailsExceptionIsThrown() {
-    final StudentRequestDTO studentDTO = new StudentRequestDTO( "John", "Doe", Long.valueOf("8277272285"),
+    final StudentRequestDTO studentDTO = new StudentRequestDTO("John", "Doe", Long.valueOf("8277272285"),
         "keerti@gmailcom", 10, null);
 
     when(applicationConfiguration.getMaxClassAllowed()).thenReturn(10);
@@ -149,7 +149,7 @@ class StudentServiceImplTest {
 
   @Test
   void saveStudentDetails_whenSubjectsAreNotPresent_expectNotFoundExceptionIsThrown() {
-    final StudentRequestDTO studentDTO = new StudentRequestDTO( "John", "Doe", Long.valueOf("8277272285"),
+    final StudentRequestDTO studentDTO = new StudentRequestDTO("John", "Doe", Long.valueOf("8277272285"),
         "keerti@gmailcom", 10, Gender.MALE);
     final StudentResponseDTO studentResponseDTO = new StudentResponseDTO(1, "John", "Doe", 1,
         Long.valueOf("8277272285"), "keerti@gmailcom", 10, List.of("Test"), Gender.MALE);

@@ -22,7 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codingmonkey.studentmanagement.dto.TeacherDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 
 @RestController
@@ -38,9 +39,9 @@ public class TeacherRestController {
   }
 
   @GetMapping()
-  public ResponseEntity<Map<String, List<TeacherDTO>>> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
-                                                                  @RequestParam(value = "lastName", required = false) String lastName) {
-    List<TeacherDTO> teachers;
+  public ResponseEntity<Map<String, List<TeacherResponseDTO>>> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
+                                                                          @RequestParam(value = "lastName", required = false) String lastName) {
+    List<TeacherResponseDTO> teachers;
     if (firstName == null && lastName == null) {
       LOGGER.info("Get all teachers details call received");
       teachers = teacherService.getAllTeachers();
@@ -54,18 +55,23 @@ public class TeacherRestController {
       LOGGER.info("Get [{}] [{}] teacher details call received", firstName, lastName);
       teachers = teacherService.getTeacherByFirstNameAndLastName(firstName, lastName);
     }
-    Map<String, List<TeacherDTO>> response = Map.of("teachers", teachers);
+    Map<String, List<TeacherResponseDTO>> response = Map.of("teachers", teachers);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
-  @PostMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<TeacherDTO> addTeacher(@Valid @RequestBody TeacherDTO teacherDTO) {
+  @PostMapping()
+  public ResponseEntity<TeacherResponseDTO> addTeacher(@Valid @RequestBody TeacherRequestDTO teacherDTO) {
+    String logPrefix = "#addTeacherDetails(): ";
+    LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.saveTeacherDetails(teacherDTO));
   }
 
-  @PutMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<TeacherDTO> updateTeacher(@RequestBody TeacherDTO teacherDTO) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.saveTeacherDetails(teacherDTO));
+  @PutMapping("{teacherId}")
+  public ResponseEntity<TeacherResponseDTO> updateTeacher(@PathVariable int teacherId,
+                                                          @RequestBody TeacherRequestDTO teacherDTO) {
+    String logPrefix = "#updateTeacherDetails(): ";
+    LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
+    return ResponseEntity.status(HttpStatus.OK).body(teacherService.updateTeacherDetails(teacherId, teacherDTO));
   }
 
   @DeleteMapping("{teacherId}")

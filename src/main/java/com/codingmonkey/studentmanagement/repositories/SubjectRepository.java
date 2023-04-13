@@ -9,6 +9,4 @@ import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 public interface SubjectRepository extends JpaRepository<SubjectEntity, Integer> {
 
   List<SubjectEntity> findSubjectsByClassNumber(int classNumber);
-
-  List<SubjectEntity> findSubjectEntitiesByTeacherTeacherId(int teacherId);
 }

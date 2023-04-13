@@ -13,4 +13,6 @@ public interface TeacherRepository extends JpaRepository<TeacherEntity, Integer>
   List<TeacherEntity> findByFirstName(String firstName);
 
   List<TeacherEntity> findByLastName(String lastName);
+
+  TeacherEntity findByFirstNameAndLastNameAndTeacherId(String firstName, String lastName, int teacherId);
 }

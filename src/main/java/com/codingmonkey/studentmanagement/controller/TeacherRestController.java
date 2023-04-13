@@ -71,7 +71,7 @@ public class TeacherRestController {
                                                           @RequestBody TeacherRequestDTO teacherDTO) {
     String logPrefix = "#updateTeacherDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
-    return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.updateTeacherDetails(teacherId, teacherDTO));
+    return ResponseEntity.status(HttpStatus.OK).body(teacherService.updateTeacherDetails(teacherId, teacherDTO));
   }
 
   @DeleteMapping("{teacherId}")

@@ -61,8 +61,7 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public ResponseEntity<TeacherResponseDTO> updateTeacherDetails(final int teacherId,
-                                                                 final TeacherRequestDTO teacherDTO) {
+  public TeacherResponseDTO updateTeacherDetails(final int teacherId, final TeacherRequestDTO teacherDTO) {
     String logPrefix = "#updateTeacherDetails(): ";
     validateFieldsInRequestDto(teacherDTO);
     LOGGER.info("{} Updating record of teacher [{}] [{}]", logPrefix, teacherDTO.getFirstName(),
@@ -70,8 +69,7 @@ public class TeacherServiceImpl implements TeacherService {
     return updateTeacherDetailsToDB(teacherId, teacherDTO);
   }
 
-  private ResponseEntity<TeacherResponseDTO> updateTeacherDetailsToDB(final int teacherId,
-                                                                      final TeacherRequestDTO teacherDTO) {
+  private TeacherResponseDTO updateTeacherDetailsToDB(final int teacherId, final TeacherRequestDTO teacherDTO) {
     TeacherEntity teacherEntity = teacherRepository.findByFirstNameAndLastNameAndTeacherId(teacherDTO.getFirstName(),
         teacherDTO.getLastName(), teacherId);
     if (teacherEntity == null) {
@@ -82,12 +80,11 @@ public class TeacherServiceImpl implements TeacherService {
     teacherRepository.save(teacherEntity);
     TeacherResponseDTO teacherResponseDTO = modelMapper.map(teacherEntity, TeacherResponseDTO.class);
     teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
-    return ResponseEntity.status(HttpStatus.OK).body(teacherResponseDTO);
+    return teacherResponseDTO;
   }
 
-  private ResponseEntity<TeacherResponseDTO> saveTeacherDetailsToDB(final TeacherRequestDTO teacherDTO) {
   @Override
-  public List<TeacherDTO> getTeacherByFirstName(final String firstName) {
+  public List<TeacherResponseDTO> getTeacherByFirstName(final String firstName) {
     List<TeacherEntity> teacherEntityList = teacherRepository.findByFirstName(firstName);
     if (!teacherEntityList.isEmpty()) {
       return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
@@ -96,7 +93,7 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public List<TeacherDTO> getTeacherByLastName(final String lastName) {
+  public List<TeacherResponseDTO> getTeacherByLastName(final String lastName) {
     List<TeacherEntity> teacherEntityList = teacherRepository.findByLastName(lastName);
     if (!teacherEntityList.isEmpty()) {
       return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
@@ -104,20 +101,11 @@ public class TeacherServiceImpl implements TeacherService {
     throw new NotFoundException("Did not find Teacher with last name " + lastName);
   }
 
-  private TeacherDTO saveTeacherDetailsToDB(final TeacherDTO teacherDTO) {
+  private TeacherResponseDTO saveTeacherDetailsToDB(final TeacherRequestDTO teacherDTO) {
     TeacherEntity teacherEntity = modelMapper.map(teacherDTO, TeacherEntity.class);
     teacherRepository.save(teacherEntity);
     TeacherResponseDTO teacherResponseDTO = modelMapper.map(teacherEntity, TeacherResponseDTO.class);
     teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
-    return ResponseEntity.status(HttpStatus.CREATED).body(teacherResponseDTO);
-    TeacherDTO teacherResponseDTO = modelMapper.map(teacherEntity, TeacherDTO.class);
-    final List<SubjectEntity> subjectEntityList = subjectRepository.findSubjectEntitiesByTeacherTeacherId(
-        teacherEntity.getTeacherId());
-    if (subjectEntityList.isEmpty()) {
-      throw new NotFoundException("Subjects list not found for teacherEntity: " + teacherEntity.getFirstName());
-    }
-    teacherResponseDTO.setSubjects(
-        subjectEntityList.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
     return teacherResponseDTO;
   }
 

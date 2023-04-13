@@ -59,18 +59,19 @@ public class TeacherRestController {
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
-  @PostMapping(consumes = APPLICATION_JSON_VALUE)
+  @PostMapping()
   public ResponseEntity<TeacherResponseDTO> addTeacher(@Valid @RequestBody TeacherRequestDTO teacherDTO) {
     String logPrefix = "#addTeacherDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.saveTeacherDetails(teacherDTO));
   }
 
-  @PutMapping(consumes = APPLICATION_JSON_VALUE)
-  public ResponseEntity<TeacherResponseDTO> updateTeacher(@RequestBody TeacherRequestDTO teacherDTO) {
+  @PutMapping("{teacherId}")
+  public ResponseEntity<TeacherResponseDTO> updateTeacher(@PathVariable int teacherId,
+                                                          @RequestBody TeacherRequestDTO teacherDTO) {
     String logPrefix = "#updateTeacherDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
-    return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.saveTeacherDetails(teacherDTO));
+    return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.updateTeacherDetails(teacherId, teacherDTO));
   }
 
   @DeleteMapping("{teacherId}")

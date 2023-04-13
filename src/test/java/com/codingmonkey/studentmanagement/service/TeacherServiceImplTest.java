@@ -74,8 +74,8 @@ class TeacherServiceImplTest {
         teacherDetailsList.get(0).getLastName())).thenReturn(teacherDetailsList);
     when(subjectRepository.findSubjectEntitiesByTeacherTeacherId(teacherDetailsList.get(0).getTeacherId())).thenReturn(
         List.of(new SubjectEntity("Test", teacherDetailsList.get(0).getTeacherId())));
-    List<TeacherDTO> result = teacherService.getTeacherByFirstNameAndLastName(teacherDetailsList.get(0).getFirstName(),
-        teacherDetailsList.get(0).getLastName());
+    List<TeacherResponseDTO> result = teacherService.getTeacherByFirstNameAndLastName(
+        teacherDetailsList.get(0).getFirstName(), teacherDetailsList.get(0).getLastName());
 
     //    assertEquals(result, studentDetailsListDto); Unable to compare two lists
     assertThat(result).hasSize(1);
@@ -96,7 +96,7 @@ class TeacherServiceImplTest {
   @Test
   void saveTeacherDetails_whenTeachersArePresent_expectTeachersDetailsAreSaved() {
     final TeacherRequestDTO teacherDTO = new TeacherRequestDTO("John", "Doe", Long.valueOf("8277272285"),
-        "keerti@gmailcom", Gender.MALE);
+        "keerti@gmailcom", Gender.MALE, List.of("Test"));
     final TeacherResponseDTO teacherResponseDTO = new TeacherResponseDTO(1, "John", "Doe", Long.valueOf("8277272285"),
         "email@gmail.com", Gender.MALE, List.of("Test"));
     final TeacherEntity teacherEntity = new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"),
@@ -106,19 +106,15 @@ class TeacherServiceImplTest {
     when(subjectRepository.findSubjectEntitiesByTeacherTeacherId(teacherEntity.getTeacherId())).thenReturn(
         List.of(new SubjectEntity("Test", 10)));
     when(modelMapper.map(teacherEntity, TeacherResponseDTO.class)).thenReturn(teacherResponseDTO);
-    ResponseEntity<TeacherResponseDTO> response = teacherService.saveTeacherDetails(teacherDTO);
-    when(modelMapper.map(teacherEntity, TeacherDTO.class)).thenReturn(teacherDTO);
-    TeacherDTO teacher = teacherService.saveTeacherDetails(teacherDTO);
+    TeacherResponseDTO teacher = teacherService.saveTeacherDetails(teacherDTO);
 
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    assertEquals(teacherResponseDTO, response.getBody());
-    assertEquals(teacherDTO, teacher);
+    assertEquals(teacherResponseDTO, teacher);
   }
 
   @Test
   void saveTeacherDetails_whenTeacherMobileNumberIsInvalid_expect_TeacherDetailsExceptionIsThrown() {
     final TeacherRequestDTO teacherDTO = new TeacherRequestDTO("John", "Doe", Long.valueOf("827727228545"),
-        "keerti@gmailcom", Gender.MALE);
+        "keerti@gmailcom", Gender.MALE, List.of("Test"));
 
     assertThrows(TeacherDetailsException.class, () -> teacherService.saveTeacherDetails(teacherDTO));
   }
@@ -126,7 +122,7 @@ class TeacherServiceImplTest {
   @Test
   void saveTeacherDetails_whenTeacherGenderTypeIsInvalid_expect_TeacherDetailsExceptionIsThrown() {
     final TeacherRequestDTO teacherDTO = new TeacherRequestDTO("John", "Doe", Long.valueOf("8277272285"),
-        "keerti@gmailcom", null);
+        "keerti@gmailcom", null, List.of("Test"));
 
     assertThrows(TeacherDetailsException.class, () -> teacherService.saveTeacherDetails(teacherDTO));
   }
@@ -134,7 +130,7 @@ class TeacherServiceImplTest {
   @Test
   void saveTeacherDetails_whenSubjectsAreNotPresent_expectNotFoundExceptionIsThrown() {
     final TeacherRequestDTO teacherDTO = new TeacherRequestDTO("John", "Doe", Long.valueOf("8277272285"),
-        "keerti@gmailcom", Gender.MALE);
+        "keerti@gmailcom", Gender.MALE, List.of("Test"));
     final TeacherResponseDTO teacherResponseDTO = new TeacherResponseDTO(1, "John", "Doe", Long.valueOf("8277272285"),
         "email@gmail.com", Gender.MALE, List.of("Test"));
     final TeacherEntity teacherEntity = new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"),

@@ -1,5 +1,7 @@
 package com.codingmonkey.studentmanagement.dto;
 
+import java.util.List;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -40,4 +42,7 @@ public class TeacherRequestDTO {
 
   @NotNull(message = "Gender cannot be null")
   private Gender gender;
+
+  @NotNull(message = "subjects cannot be null")
+  private List<String> subjects;
 }

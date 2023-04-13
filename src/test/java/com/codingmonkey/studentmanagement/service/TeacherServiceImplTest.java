@@ -43,8 +43,7 @@ class TeacherServiceImplTest {
         new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"), "email@gmail.com", Gender.MALE));
 
     when(teacherRepository.findAll()).thenReturn(teacherDetailsList);
-    when(subjectRepository.findSubjectEntitiesByTeacherTeacherId(teacherDetailsList.get(0).getTeacherId())).thenReturn(
-        List.of(new SubjectEntity("Test", 10)));
+    when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
     List<TeacherResponseDTO> result = teacherService.getAllTeachers();
 
     assertThat(result).hasSize(1);
@@ -72,8 +71,7 @@ class TeacherServiceImplTest {
         new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"), "email@gmail.com", Gender.MALE));
     when(teacherRepository.findByFirstNameAndLastName(teacherDetailsList.get(0).getFirstName(),
         teacherDetailsList.get(0).getLastName())).thenReturn(teacherDetailsList);
-    when(subjectRepository.findSubjectEntitiesByTeacherTeacherId(teacherDetailsList.get(0).getTeacherId())).thenReturn(
-        List.of(new SubjectEntity("Test", teacherDetailsList.get(0).getTeacherId())));
+    when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
     List<TeacherResponseDTO> result = teacherService.getTeacherByFirstNameAndLastName(
         teacherDetailsList.get(0).getFirstName(), teacherDetailsList.get(0).getLastName());
 
@@ -103,8 +101,7 @@ class TeacherServiceImplTest {
         "email@gmail.com", Gender.MALE);
 
     when(modelMapper.map(teacherDTO, TeacherEntity.class)).thenReturn(teacherEntity);
-    when(subjectRepository.findSubjectEntitiesByTeacherTeacherId(teacherEntity.getTeacherId())).thenReturn(
-        List.of(new SubjectEntity("Test", 10)));
+    when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
     when(modelMapper.map(teacherEntity, TeacherResponseDTO.class)).thenReturn(teacherResponseDTO);
     TeacherResponseDTO teacher = teacherService.saveTeacherDetails(teacherDTO);
 
@@ -131,15 +128,11 @@ class TeacherServiceImplTest {
   void saveTeacherDetails_whenSubjectsAreNotPresent_expectNotFoundExceptionIsThrown() {
     final TeacherRequestDTO teacherDTO = new TeacherRequestDTO("John", "Doe", Long.valueOf("8277272285"),
         "keerti@gmailcom", Gender.MALE, List.of("Test"));
-    final TeacherResponseDTO teacherResponseDTO = new TeacherResponseDTO(1, "John", "Doe", Long.valueOf("8277272285"),
-        "email@gmail.com", Gender.MALE, List.of("Test"));
     final TeacherEntity teacherEntity = new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"),
         "email@gmail.com", Gender.MALE);
 
     when(modelMapper.map(teacherDTO, TeacherEntity.class)).thenReturn(teacherEntity);
-    when(subjectRepository.findSubjectEntitiesByTeacherTeacherId(teacherEntity.getTeacherId())).thenReturn(
-        Collections.emptyList());
-    when(modelMapper.map(teacherEntity, TeacherResponseDTO.class)).thenReturn(teacherResponseDTO);
+    when(subjectRepository.findAll()).thenReturn(Collections.emptyList());
 
     assertThrows(NotFoundException.class, () -> teacherService.saveTeacherDetails(teacherDTO));
   }

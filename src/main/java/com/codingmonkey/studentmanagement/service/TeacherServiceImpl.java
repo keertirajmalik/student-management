@@ -1,5 +1,6 @@
 package com.codingmonkey.studentmanagement.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -105,7 +106,7 @@ public class TeacherServiceImpl implements TeacherService {
     TeacherEntity teacherEntity = modelMapper.map(teacherDTO, TeacherEntity.class);
     teacherRepository.save(teacherEntity);
     TeacherResponseDTO teacherResponseDTO = modelMapper.map(teacherEntity, TeacherResponseDTO.class);
-    teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
+    teacherResponseDTO.setSubjects(teacherDTO.getSubjects());
     return teacherResponseDTO;
   }
 
@@ -114,6 +115,11 @@ public class TeacherServiceImpl implements TeacherService {
       throw new TeacherDetailsException("Mobile number should have only 10 digits", HttpStatus.BAD_REQUEST);
     } else if (Optional.ofNullable(teacherDTO.getGender()).isEmpty()) {
       throw new TeacherDetailsException("Provide Teacher gender type", HttpStatus.BAD_REQUEST);
+    } else if (Optional.ofNullable(teacherDTO.getSubjects()).isEmpty()) {
+      throw new TeacherDetailsException("Provide Teacher subjects", HttpStatus.BAD_REQUEST);
+    } else if (!new HashSet<>(getSubjects(modelMapper.map(teacherDTO, TeacherEntity.class))).containsAll(
+        teacherDTO.getSubjects())) {
+      throw new TeacherDetailsException("Provide proper subjects", HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -134,8 +140,7 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   private List<String> getSubjects(final TeacherEntity teacherEntity) {
-    List<SubjectEntity> subjectEntities = subjectRepository.findSubjectEntitiesByTeacherTeacherId(
-        teacherEntity.getTeacherId());
+    List<SubjectEntity> subjectEntities = subjectRepository.findAll();
     if (subjectEntities.isEmpty()) {
       throw new NotFoundException("Subjects list not found for teacherEntity: " + teacherEntity.getFirstName());
     }

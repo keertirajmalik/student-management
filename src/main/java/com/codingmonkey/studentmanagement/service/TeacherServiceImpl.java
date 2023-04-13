@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
@@ -52,7 +51,7 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public ResponseEntity<TeacherResponseDTO> saveTeacherDetails(final TeacherRequestDTO teacherDTO) {
+  public TeacherResponseDTO saveTeacherDetails(final TeacherRequestDTO teacherDTO) {
     String logPrefix = "# " + " #saveTeacherDetails(): ";
     LOGGER.info("{} Enter ", logPrefix);
     validateFieldsInRequestDto(teacherDTO);
@@ -87,11 +86,39 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   private ResponseEntity<TeacherResponseDTO> saveTeacherDetailsToDB(final TeacherRequestDTO teacherDTO) {
+  @Override
+  public List<TeacherDTO> getTeacherByFirstName(final String firstName) {
+    List<TeacherEntity> teacherEntityList = teacherRepository.findByFirstName(firstName);
+    if (!teacherEntityList.isEmpty()) {
+      return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
+    throw new NotFoundException("Did not find Teacher with first name " + firstName);
+  }
+
+  @Override
+  public List<TeacherDTO> getTeacherByLastName(final String lastName) {
+    List<TeacherEntity> teacherEntityList = teacherRepository.findByLastName(lastName);
+    if (!teacherEntityList.isEmpty()) {
+      return teacherEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
+    throw new NotFoundException("Did not find Teacher with last name " + lastName);
+  }
+
+  private TeacherDTO saveTeacherDetailsToDB(final TeacherDTO teacherDTO) {
     TeacherEntity teacherEntity = modelMapper.map(teacherDTO, TeacherEntity.class);
     teacherRepository.save(teacherEntity);
     TeacherResponseDTO teacherResponseDTO = modelMapper.map(teacherEntity, TeacherResponseDTO.class);
     teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
     return ResponseEntity.status(HttpStatus.CREATED).body(teacherResponseDTO);
+    TeacherDTO teacherResponseDTO = modelMapper.map(teacherEntity, TeacherDTO.class);
+    final List<SubjectEntity> subjectEntityList = subjectRepository.findSubjectEntitiesByTeacherTeacherId(
+        teacherEntity.getTeacherId());
+    if (subjectEntityList.isEmpty()) {
+      throw new NotFoundException("Subjects list not found for teacherEntity: " + teacherEntity.getFirstName());
+    }
+    teacherResponseDTO.setSubjects(
+        subjectEntityList.stream().map(SubjectEntity::getSubject).collect(Collectors.toList()));
+    return teacherResponseDTO;
   }
 
   private void validateFieldsInRequestDto(final TeacherRequestDTO teacherDTO) {

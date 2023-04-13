@@ -3,12 +3,14 @@ package com.codingmonkey.studentmanagement.controller;
 import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATION_JSON_VALUE;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,36 +39,43 @@ public class TeacherRestController {
   }
 
   @GetMapping()
-  public List<TeacherResponseDTO> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
-                                             @RequestParam(value = "lastName", required = false) String lastName) {
-
+  public ResponseEntity<Map<String, List<TeacherResponseDTO>>> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
+                                                                          @RequestParam(value = "lastName", required = false) String lastName) {
+    List<TeacherResponseDTO> teachers;
     if (firstName == null && lastName == null) {
-      LOGGER.info("Get all Teacher details call received");
-      return teacherService.getAllTeachers();
+      LOGGER.info("Get all teachers details call received");
+      teachers = teacherService.getAllTeachers();
+    } else if (firstName == null) {
+      LOGGER.info("Get [{}] teacher details call received", lastName);
+      teachers = teacherService.getTeacherByLastName(lastName);
+    } else if (lastName == null) {
+      LOGGER.info("Get [{}] teacher details call received", firstName);
+      teachers = teacherService.getTeacherByFirstName(firstName);
+    } else {
+      LOGGER.info("Get [{}] [{}] teacher details call received", firstName, lastName);
+      teachers = teacherService.getTeacherByFirstNameAndLastName(firstName, lastName);
     }
-
-    LOGGER.info("Get [{}] [{}] Teacher details call received", firstName, lastName);
-    return teacherService.getTeacherByFirstNameAndLastName(firstName, lastName);
+    Map<String, List<TeacherResponseDTO>> response = Map.of("teachers", teachers);
+    return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
-  @PostMapping()
+  @PostMapping(consumes = APPLICATION_JSON_VALUE)
   public ResponseEntity<TeacherResponseDTO> addTeacher(@Valid @RequestBody TeacherRequestDTO teacherDTO) {
     String logPrefix = "#addTeacherDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
-    return teacherService.saveTeacherDetails(teacherDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.saveTeacherDetails(teacherDTO));
   }
 
-  @PutMapping(value = "/{teacherId}")
-  public ResponseEntity<TeacherResponseDTO> updateTeacher(@PathVariable int teacherId,
-                                                          @RequestBody TeacherRequestDTO teacherDTO) {
+  @PutMapping(consumes = APPLICATION_JSON_VALUE)
+  public ResponseEntity<TeacherResponseDTO> updateTeacher(@RequestBody TeacherRequestDTO teacherDTO) {
     String logPrefix = "#updateTeacherDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
-    return teacherService.updateTeacherDetails(teacherId, teacherDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.saveTeacherDetails(teacherDTO));
   }
 
   @DeleteMapping("{teacherId}")
-  public String deleteTeacher(@PathVariable int teacherId) {
+  public ResponseEntity<Void> deleteTeacher(@PathVariable int teacherId) {
     teacherService.deleteById(teacherId);
-    return "Teacher is successfully deleted";
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

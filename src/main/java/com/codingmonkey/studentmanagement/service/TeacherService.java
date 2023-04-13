@@ -15,7 +15,11 @@ public interface TeacherService {
 
   void deleteById(int teacherId);
 
-  ResponseEntity<TeacherResponseDTO> saveTeacherDetails(TeacherRequestDTO teacherDTO);
+  TeacherResponseDTO saveTeacherDetails(TeacherRequestDTO teacherDTO);
 
   ResponseEntity<TeacherResponseDTO> updateTeacherDetails(int teacherId, TeacherRequestDTO teacherDTO);
+
+  List<TeacherResponseDTO> getTeacherByFirstName(String firstName);
+
+  List<TeacherResponseDTO> getTeacherByLastName(String lastName);
 }

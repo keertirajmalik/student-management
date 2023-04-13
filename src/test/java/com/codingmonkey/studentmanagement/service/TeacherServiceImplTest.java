@@ -15,8 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import com.codingmonkey.studentmanagement.constant.Gender;
 import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
@@ -76,8 +74,8 @@ class TeacherServiceImplTest {
         teacherDetailsList.get(0).getLastName())).thenReturn(teacherDetailsList);
     when(subjectRepository.findSubjectEntitiesByTeacherTeacherId(teacherDetailsList.get(0).getTeacherId())).thenReturn(
         List.of(new SubjectEntity("Test", teacherDetailsList.get(0).getTeacherId())));
-    List<TeacherResponseDTO> result = teacherService.getTeacherByFirstNameAndLastName(
-        teacherDetailsList.get(0).getFirstName(), teacherDetailsList.get(0).getLastName());
+    List<TeacherDTO> result = teacherService.getTeacherByFirstNameAndLastName(teacherDetailsList.get(0).getFirstName(),
+        teacherDetailsList.get(0).getLastName());
 
     //    assertEquals(result, studentDetailsListDto); Unable to compare two lists
     assertThat(result).hasSize(1);
@@ -109,9 +107,12 @@ class TeacherServiceImplTest {
         List.of(new SubjectEntity("Test", 10)));
     when(modelMapper.map(teacherEntity, TeacherResponseDTO.class)).thenReturn(teacherResponseDTO);
     ResponseEntity<TeacherResponseDTO> response = teacherService.saveTeacherDetails(teacherDTO);
+    when(modelMapper.map(teacherEntity, TeacherDTO.class)).thenReturn(teacherDTO);
+    TeacherDTO teacher = teacherService.saveTeacherDetails(teacherDTO);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
     assertEquals(teacherResponseDTO, response.getBody());
+    assertEquals(teacherDTO, teacher);
   }
 
   @Test

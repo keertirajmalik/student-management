@@ -85,5 +85,5 @@ File(IntelliJ on Mac) → Preferences → Plugins → Marketplace → [Search fo
 
 ## API Documentation
 
-API documentation is available at [Swagger](http://localhost:8080/swagger-ui.html) once the application is up and
+API documentation is available at [Swagger](http://localhost:9090/swagger-ui.html) once the application is up and
 running.

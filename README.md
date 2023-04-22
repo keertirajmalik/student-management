@@ -34,7 +34,9 @@ Start the docker container using command:
 ```bash
 docker run -d --net my-mysqldb -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=student_data --name mysqldb mysql:latest --port 3306
 ```
+
 Add IP to the hosts file:
+
 ```bash
 sudo vi /etc/hosts
 ```

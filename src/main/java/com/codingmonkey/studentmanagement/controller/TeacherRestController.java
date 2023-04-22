@@ -26,6 +26,7 @@ import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
 import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -41,6 +42,7 @@ class TeacherRestController {
     this.teacherService = teacherService;
   }
 
+  @Operation(summary = "Get teachers details")
   @GetMapping()
   @ResponseStatus(HttpStatus.OK)
   Map<String, List<TeacherResponseDTO>> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
@@ -62,6 +64,7 @@ class TeacherRestController {
     return Map.of("teachers", teachers);
   }
 
+  @Operation(summary = "Add new teacher details")
   @PostMapping()
   @ResponseStatus(HttpStatus.CREATED)
   TeacherResponseDTO addTeacher(@Valid @RequestBody TeacherRequestDTO teacherDTO) {
@@ -70,6 +73,7 @@ class TeacherRestController {
     return teacherService.saveTeacherDetails(teacherDTO);
   }
 
+  @Operation(summary = "Update teacher details")
   @PutMapping("{teacherId}")
   @ResponseStatus(HttpStatus.OK)
   TeacherResponseDTO updateTeacher(@PathVariable int teacherId, @RequestBody TeacherRequestDTO teacherDTO) {
@@ -78,6 +82,7 @@ class TeacherRestController {
     return teacherService.updateTeacherDetails(teacherId, teacherDTO);
   }
 
+  @Operation(summary = "Delete teacher details")
   @DeleteMapping("{teacherId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   void deleteTeacher(@PathVariable int teacherId) {

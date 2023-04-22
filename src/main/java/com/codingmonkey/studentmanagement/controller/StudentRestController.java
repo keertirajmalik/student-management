@@ -39,7 +39,7 @@ class StudentRestController {
     this.studentService = studentService;
   }
 
-  @Operation(summary = "Get all students")
+  @Operation(summary = "Get students details")
   @GetMapping(produces = APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
   Map<String, List<StudentResponseDTO>> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
@@ -62,6 +62,7 @@ class StudentRestController {
     return Map.of("students", students);
   }
 
+  @Operation(summary = "Add new student details")
   @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
   StudentResponseDTO addStudent(@Valid @RequestBody StudentRequestDTO studentDTO) {
@@ -70,6 +71,7 @@ class StudentRestController {
     return studentService.saveStudentDetails(studentDTO);
   }
 
+  @Operation(summary = "Update student details")
   @PutMapping(value = "/{studentId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
   StudentResponseDTO updateStudent(@PathVariable int studentId, @Valid @RequestBody StudentRequestDTO studentDTO) {
@@ -78,6 +80,7 @@ class StudentRestController {
     return studentService.updateStudentDetails(studentId, studentDTO);
   }
 
+  @Operation(summary = "Delete student details")
   @DeleteMapping("/{studentId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   void deleteStudent(@PathVariable int studentId) {

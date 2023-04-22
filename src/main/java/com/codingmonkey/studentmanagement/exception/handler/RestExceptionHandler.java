@@ -15,6 +15,8 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.codingmonkey.studentmanagement.exception.ErrorResponse;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
@@ -24,6 +26,8 @@ public class RestExceptionHandler {
   private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionHandler.class);
 
   @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+  @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+  @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ErrorResponse> handleMediaTypeNotAcceptableException(HttpMediaTypeNotAcceptableException exception) {
     LOGGER.error("Unsupported media type exception :: Status Code: 406 , Error Message : {}", exception.getMessage());
     return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
@@ -32,6 +36,8 @@ public class RestExceptionHandler {
   }
 
   @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+  @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+  @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupported(final HttpMediaTypeNotSupportedException exception) {
     LOGGER.error("Unsupported media type exception :: Status Code: 415 , Error Message :{}", exception.getMessage());
     return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
@@ -40,21 +46,23 @@ public class RestExceptionHandler {
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public final ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
     LOGGER.error("Method argument not valid exception :: {}", exception.getMessage());
-
     String errorMessage = exception.getBindingResult()
         .getFieldErrors()
         .stream()
         .map(DefaultMessageSourceResolvable::getDefaultMessage)
         .collect(Collectors.toList())
         .toString();
-
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errorMessage, Instant.now().toString()));
   }
 
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+  @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+  @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public final ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
       HttpRequestMethodNotSupportedException exception) {
     LOGGER.error("Method argument not valid exception :: {}", exception.getMessage());
@@ -64,6 +72,8 @@ public class RestExceptionHandler {
   }
 
   @ExceptionHandler
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ErrorResponse> handleBadRequestException(Exception exception) {
     LOGGER.error("Error message :: {}", exception.getMessage());
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -72,6 +82,8 @@ public class RestExceptionHandler {
   }
 
   @ExceptionHandler
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ErrorResponse> handleException(NotFoundException exception) {
     LOGGER.error("Error message :: {}", exception.getMessage());
     return ResponseEntity.status(HttpStatus.NOT_FOUND)

@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,27 +19,32 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
 import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping(value = "/api/teachers", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-public class TeacherRestController {
+@Tag(name = "Teacher", description = "Teacher API")
+class TeacherRestController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TeacherRestController.class);
   private final TeacherService teacherService;
 
   @Autowired
-  public TeacherRestController(final TeacherService teacherService) {
+  TeacherRestController(final TeacherService teacherService) {
     this.teacherService = teacherService;
   }
 
   @GetMapping()
-  public ResponseEntity<Map<String, List<TeacherResponseDTO>>> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
-                                                                          @RequestParam(value = "lastName", required = false) String lastName) {
+  @ResponseStatus(HttpStatus.OK)
+  Map<String, List<TeacherResponseDTO>> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
+                                                   @RequestParam(value = "lastName", required = false) String lastName) {
     List<TeacherResponseDTO> teachers;
     if (firstName == null && lastName == null) {
       LOGGER.info("Get all teachers details call received");
@@ -55,28 +59,28 @@ public class TeacherRestController {
       LOGGER.info("Get [{}] [{}] teacher details call received", firstName, lastName);
       teachers = teacherService.getTeacherByFirstNameAndLastName(firstName, lastName);
     }
-    Map<String, List<TeacherResponseDTO>> response = Map.of("teachers", teachers);
-    return ResponseEntity.status(HttpStatus.OK).body(response);
+    return Map.of("teachers", teachers);
   }
 
   @PostMapping()
-  public ResponseEntity<TeacherResponseDTO> addTeacher(@Valid @RequestBody TeacherRequestDTO teacherDTO) {
+  @ResponseStatus(HttpStatus.CREATED)
+  TeacherResponseDTO addTeacher(@Valid @RequestBody TeacherRequestDTO teacherDTO) {
     String logPrefix = "#addTeacherDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
-    return ResponseEntity.status(HttpStatus.CREATED).body(teacherService.saveTeacherDetails(teacherDTO));
+    return teacherService.saveTeacherDetails(teacherDTO);
   }
 
   @PutMapping("{teacherId}")
-  public ResponseEntity<TeacherResponseDTO> updateTeacher(@PathVariable int teacherId,
-                                                          @RequestBody TeacherRequestDTO teacherDTO) {
+  @ResponseStatus(HttpStatus.OK)
+  TeacherResponseDTO updateTeacher(@PathVariable int teacherId, @RequestBody TeacherRequestDTO teacherDTO) {
     String logPrefix = "#updateTeacherDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
-    return ResponseEntity.status(HttpStatus.OK).body(teacherService.updateTeacherDetails(teacherId, teacherDTO));
+    return teacherService.updateTeacherDetails(teacherId, teacherDTO);
   }
 
   @DeleteMapping("{teacherId}")
-  public ResponseEntity<Void> deleteTeacher(@PathVariable int teacherId) {
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  void deleteTeacher(@PathVariable int teacherId) {
     teacherService.deleteById(teacherId);
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

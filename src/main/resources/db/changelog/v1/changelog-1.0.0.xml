@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd"
+    objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+  <changeSet id="1645696722528-1" author="keertirajlaxmanmalik">
+    <createTable tableName="student_details">
+        <column autoIncrement="true" name="student_id" type="INT">
+            <constraints nullable="false" primaryKey="true" primaryKeyName="pk_student_details"/>
+        </column>
+        <column name="first_name" type="VARCHAR(255)"/>
+        <column name="last_name" type="VARCHAR(255)"/>
+        <column name="roll_number" type="INT"/>
+        <column name="mobile_number" type="BIGINT"/>
+        <column name="email" type="VARCHAR(255)"/>
+        <column name="class_number" type="INT"/>
+        <column name="gender" type="VARCHAR(10)"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1645696722528-3" author="keertirajlaxmanmalik">
+      <createTable tableName="teacher_details">
+        <column autoIncrement="true" name="teacher_id" type="INT">
+            <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teacher_details"/>
+        </column>
+        <column name="first_name" type="VARCHAR(255)"/>
+        <column name="last_name" type="VARCHAR(255)"/>
+        <column name="mobile_number" type="BIGINT"/>
+        <column name="email" type="VARCHAR(255)"/>
+        <column name="gender" type="VARCHAR(10)"/>
+      </createTable>
+  </changeSet>
+
+  <changeSet id="1645697211656-2" author="keertirajlaxmanmalik">
+    <createTable tableName="subject_details">
+            <column autoIncrement="true" name="subject_id" type="INT">
+              <constraints nullable="false" primaryKey="true" primaryKeyName="pk_subject_details"/>
+            </column>
+            <column name="subject" type="VARCHAR(255)"/>
+            <column name="class_number" type="INT"/>
+    </createTable>
+          <addUniqueConstraint
+              columnNames="subject, class_number"
+              constraintName="subject_details_uindex"
+              tableName="subject_details"
+          />
+  </changeSet>
+
+  <changeSet dbms="mysql" author="keertiraj" id="1605500811268-4">
+    <sqlFile dbms="mysql" path="db/changelog/v1/scripts/ADD STUDENT DETAILS.sql"/>
+  </changeSet>
+
+  <changeSet dbms="mysql" author="keertiraj" id="1605500811268-5">
+    <sqlFile dbms="mysql" path="db/changelog/v1/scripts/ADD TEACHER DETAILS.sql"/>
+  </changeSet>
+
+  <changeSet dbms="mysql" author="keertiraj" id="1605500811268-6">
+    <sqlFile dbms="mysql" path="db/changelog/v1/scripts/ADD SUBJECTS.sql"/>
+  </changeSet>
+
+</databaseChangeLog>

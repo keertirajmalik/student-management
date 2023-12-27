@@ -5,8 +5,6 @@ import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATI
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,7 @@ import com.codingmonkey.studentmanagement.service.TeacherService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/api/teachers", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)

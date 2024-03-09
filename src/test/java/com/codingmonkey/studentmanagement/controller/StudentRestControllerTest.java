@@ -1,13 +1,19 @@
 package com.codingmonkey.studentmanagement.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -106,5 +112,57 @@ class StudentRestControllerTest {
         .content(asJson(new StudentRequestDTO("test", "test", 12345678900L, "keerti@gmailcom", 11, null)));
 
     mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void getStudent_whenFirstNameAndLastNameAreNull_returnsAllStudents() throws Exception {
+    when(studentService.getAllStudents()).thenReturn(List.of(studentDTO));
+
+    mockMvc.perform(get(URL))
+        .andExpect(status().isOk())
+        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+  }
+
+  @Test
+  void getStudent_whenFirstNameIsNotNullAndLastNameIsNull_returnsStudentsByFirstName() throws Exception {
+    when(studentService.getStudentByFirstName("test")).thenReturn(List.of(studentDTO));
+
+    mockMvc.perform(get(URL).param("firstName", "test"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+  }
+
+  @Test
+  void getStudent_whenFirstNameIsNullAndLastNameIsNotNull_returnsStudentsByLastName() throws Exception {
+    when(studentService.getStudentByLastName("test")).thenReturn(List.of(studentDTO));
+
+    mockMvc.perform(get(URL).param("lastName", "test"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+  }
+
+  @Test
+  void getStudent_whenFirstNameAndLastNameAreNotNull_returnsStudentsByFirstNameAndLastName() throws Exception {
+    when(studentService.getStudentByFirstNameAndLastName("test", "test")).thenReturn(List.of(studentDTO));
+
+    mockMvc.perform(get(URL).param("firstName", "test").param("lastName", "test"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+  }
+
+  @Test
+  void updateStudent_whenStudentExists_updatesAndReturnsStudent() throws Exception {
+    when(studentService.updateStudentDetails(anyInt(), any(StudentRequestDTO.class))).thenReturn(studentDTO);
+
+    mockMvc.perform(put(URL + "/1").content(asJson(studentDTO)).contentType("application/json"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(asJson(studentDTO), true));
+  }
+
+  @Test
+  void deleteStudent_whenStudentExists_deletesStudent() throws Exception {
+    doNothing().when(studentService).deleteById(1);
+
+    mockMvc.perform(delete(URL + "/1")).andExpect(status().isNoContent());
   }
 }

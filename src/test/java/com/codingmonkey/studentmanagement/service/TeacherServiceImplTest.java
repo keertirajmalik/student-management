@@ -11,10 +11,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 
 import com.codingmonkey.studentmanagement.constant.Gender;
 import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
@@ -23,6 +24,7 @@ import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 import com.codingmonkey.studentmanagement.entity.TeacherEntity;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.exception.TeacherDetailsException;
+import com.codingmonkey.studentmanagement.mapper.TeacherMapper;
 import com.codingmonkey.studentmanagement.repositories.SubjectRepository;
 import com.codingmonkey.studentmanagement.repositories.TeacherRepository;
 
@@ -34,8 +36,8 @@ class TeacherServiceImplTest {
   private TeacherRepository teacherRepository;
   @Mock
   private SubjectRepository subjectRepository;
-  @Mock
-  private ModelMapper modelMapper;
+  @Spy
+  private TeacherMapper teacherMapper = Mappers.getMapper(TeacherMapper.class);
 
   @Test
   void getAllTeachers_whenTeachersArePresent_expectAllTeachersDetails() {
@@ -100,9 +102,9 @@ class TeacherServiceImplTest {
     final TeacherEntity teacherEntity = new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"),
         "email@gmail.com", Gender.MALE);
 
-    when(modelMapper.map(teacherDTO, TeacherEntity.class)).thenReturn(teacherEntity);
+    when(teacherMapper.teacherDtoToEntity(teacherDTO)).thenReturn(teacherEntity);
     when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
-    when(modelMapper.map(teacherEntity, TeacherResponseDTO.class)).thenReturn(teacherResponseDTO);
+    when(teacherMapper.teacherEntityToDto(teacherEntity)).thenReturn(teacherResponseDTO);
     TeacherResponseDTO teacher = teacherService.saveTeacherDetails(teacherDTO);
 
     assertEquals(teacherResponseDTO, teacher);
@@ -131,9 +133,98 @@ class TeacherServiceImplTest {
     final TeacherEntity teacherEntity = new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"),
         "email@gmail.com", Gender.MALE);
 
-    when(modelMapper.map(teacherDTO, TeacherEntity.class)).thenReturn(teacherEntity);
+    when(teacherMapper.teacherDtoToEntity(teacherDTO)).thenReturn(teacherEntity);
     when(subjectRepository.findAll()).thenReturn(Collections.emptyList());
 
     assertThrows(NotFoundException.class, () -> teacherService.saveTeacherDetails(teacherDTO));
+  }
+
+  @Test
+  void updateTeacherDetails_whenTeacherDetailsAreValid_expectTeacherDetailsAreUpdated() {
+    // Given
+    final TeacherRequestDTO teacherDTO = new TeacherRequestDTO("John", "Doe", 8277272285L, "keerti@gmailcom",
+        Gender.MALE, List.of("Test"));
+    final TeacherResponseDTO expectedTeacherResponseDTO = new TeacherResponseDTO(1, "John", "Doe", 8277272285L,
+        "keerti@gmailcom", Gender.MALE, List.of("Test"));
+    final TeacherEntity teacherEntity = new TeacherEntity(1, "John", "Doe", 8277272285L, "email@gmail.com",
+        Gender.MALE);
+
+    when(teacherRepository.findByFirstNameAndLastNameAndTeacherId(teacherDTO.getFirstName(), teacherDTO.getLastName(),
+        1)).thenReturn(teacherEntity);
+    when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
+
+    // When
+    TeacherResponseDTO actualTeacherResponseDTO = teacherService.updateTeacherDetails(1, teacherDTO);
+
+    // Then
+    assertEquals(expectedTeacherResponseDTO.getTeacherId(), actualTeacherResponseDTO.getTeacherId());
+    assertEquals(expectedTeacherResponseDTO.getFirstName(), actualTeacherResponseDTO.getFirstName());
+    assertEquals(expectedTeacherResponseDTO.getLastName(), actualTeacherResponseDTO.getLastName());
+    assertEquals(expectedTeacherResponseDTO.getMobileNumber(), actualTeacherResponseDTO.getMobileNumber());
+    assertEquals(expectedTeacherResponseDTO.getEmail(), actualTeacherResponseDTO.getEmail());
+    assertEquals(expectedTeacherResponseDTO.getSubjects(), actualTeacherResponseDTO.getSubjects());
+    assertEquals(expectedTeacherResponseDTO.getGender(), actualTeacherResponseDTO.getGender());
+  }
+
+  @Test
+  void updateTeacherDetails_whenTeacherDoesNotExist_expectNotFoundException() {
+    // Given
+    final TeacherRequestDTO teacherDTO = new TeacherRequestDTO("John", "Doe", 8277272285L, "keerti@gmailcom",
+        Gender.MALE, List.of("Test"));
+
+    // When & Then
+    assertThrows(NotFoundException.class, () -> teacherService.updateTeacherDetails(1, teacherDTO));
+  }
+
+  @Test
+  void getTeacherByFirstName_whenTeacherIsPresent_expectTeacherDetails() {
+    // Given
+    List<TeacherEntity> teacherDetailsList = List.of(
+        new TeacherEntity(1, "John", "Doe", 8277272285L, "email@gmail.com", Gender.MALE));
+
+    when(teacherRepository.findByFirstName("John")).thenReturn(teacherDetailsList);
+    when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
+
+    // When
+    List<TeacherResponseDTO> result = teacherService.getTeacherByFirstName("John");
+
+    // Then
+    assertThat(result).hasSize(1);
+    assertEquals("John", result.get(0).getFirstName());
+  }
+
+  @Test
+  void getTeacherByFirstName_whenTeacherIsNotPresent_expectNotFoundException() {
+    // Given
+    when(teacherRepository.findByFirstName("John")).thenReturn(Collections.emptyList());
+
+    // When & Then
+    assertThrows(NotFoundException.class, () -> teacherService.getTeacherByFirstName("John"));
+  }
+
+  @Test
+  void getTeacherByLastName_whenTeacherIsPresent_expectTeacherDetails() {
+    // Given
+    List<TeacherEntity> teacherDetailsList = List.of(
+        new TeacherEntity(1, "John", "Doe", 8277272285L, "email@gmail.com", Gender.MALE));
+
+    when(teacherRepository.findByLastName("Doe")).thenReturn(teacherDetailsList);
+    when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
+
+    // When
+    List<TeacherResponseDTO> result = teacherService.getTeacherByLastName("Doe");
+
+    // Then
+    assertThat(result).hasSize(1);
+    assertEquals("Doe", result.get(0).getLastName());
+  }
+
+  @Test
+  void getTeacherByLastName_whenTeacherIsNotPresent_expectNotFoundException() {
+    // Given
+    when(teacherRepository.findByLastName("Doe")).thenReturn(Collections.emptyList());
+
+    // When & Then
+    assertThrows(NotFoundException.class, () -> teacherService.getTeacherByLastName("Doe"));
   }
 }

@@ -26,6 +26,7 @@ import lombok.ToString;
 public class StudentEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "student_id")
   private int studentId;
 
   @Column(name = "first_name")
@@ -47,5 +48,6 @@ public class StudentEntity {
   private int classNumber;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "gender")
   private Gender gender;
 }

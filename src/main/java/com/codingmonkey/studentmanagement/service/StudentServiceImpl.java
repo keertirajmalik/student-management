@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import com.codingmonkey.studentmanagement.entity.StudentEntity;
 import com.codingmonkey.studentmanagement.entity.SubjectEntity;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.exception.StudentDetailsException;
+import com.codingmonkey.studentmanagement.mapper.StudentMapper;
 import com.codingmonkey.studentmanagement.repositories.StudentRepository;
 import com.codingmonkey.studentmanagement.repositories.SubjectRepository;
 
@@ -28,43 +28,37 @@ public class StudentServiceImpl implements StudentService {
   private final StudentRepository studentRepository;
   private final SubjectRepository subjectRepository;
   private final ApplicationConfiguration applicationConfiguration;
-  private final ModelMapper modelMapper;
+  private final StudentMapper studentMapper;
 
   public StudentServiceImpl(final StudentRepository studentRepository,
                             @Autowired final SubjectRepository subjectRepository,
                             final ApplicationConfiguration applicationConfiguration,
-                            @Autowired final ModelMapper modelMapper) {
+                            @Autowired StudentMapper studentMapper) {
     this.studentRepository = studentRepository;
     this.subjectRepository = subjectRepository;
     this.applicationConfiguration = applicationConfiguration;
-    this.modelMapper = modelMapper;
+    this.studentMapper = studentMapper;
   }
 
   @Override
   public List<StudentResponseDTO> getAllStudents() {
     final List<StudentEntity> studentList = studentRepository.findAll();
-    return studentList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
-  }
-
-  private StudentResponseDTO convertEntityToDto(StudentEntity studentEntity) {
-    StudentResponseDTO studentDTO = new StudentResponseDTO();
-    studentDTO.setStudentId(studentEntity.getStudentId());
-    studentDTO.setFirstName(studentEntity.getFirstName());
-    studentDTO.setLastName(studentEntity.getLastName());
-    studentDTO.setEmail(studentEntity.getEmail());
-    studentDTO.setMobileNumber(studentEntity.getMobileNumber());
-    studentDTO.setClassNumber(studentEntity.getClassNumber());
-    studentDTO.setRollNumber(studentEntity.getRollNumber());
-    studentDTO.setGender(studentEntity.getGender());
-    studentDTO.setSubjects(getSubjects(studentEntity));
-    return studentDTO;
+    return studentList.stream().map(studentEntity -> {
+      StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
+      studentResponseDTO.setSubjects(getSubjects(studentEntity));
+      return studentResponseDTO;
+    }).toList();
   }
 
   @Override
   public List<StudentResponseDTO> getStudentByFirstNameAndLastName(final String firstName, final String lastName) {
     List<StudentEntity> studentEntityList = studentRepository.findByFirstNameAndLastName(firstName, lastName);
     if (!studentEntityList.isEmpty()) {
-      return studentEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+      return studentEntityList.stream().map(studentEntity -> {
+        StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
+        studentResponseDTO.setSubjects(getSubjects(studentEntity));
+        return studentResponseDTO;
+      }).toList();
     }
     throw new NotFoundException(
         String.format("Did not find student with first name %s  last name %s", firstName, lastName));
@@ -74,7 +68,11 @@ public class StudentServiceImpl implements StudentService {
   public List<StudentResponseDTO> getStudentByFirstName(final String firstName) {
     List<StudentEntity> studentEntityList = studentRepository.findByFirstName(firstName);
     if (!studentEntityList.isEmpty()) {
-      return studentEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+      return studentEntityList.stream().map(studentEntity -> {
+        StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
+        studentResponseDTO.setSubjects(getSubjects(studentEntity));
+        return studentResponseDTO;
+      }).toList();
     }
     throw new NotFoundException(String.format("Did not find student with first name %s", firstName));
   }
@@ -83,7 +81,11 @@ public class StudentServiceImpl implements StudentService {
   public List<StudentResponseDTO> getStudentByLastName(final String lastName) {
     List<StudentEntity> studentEntityList = studentRepository.findByLastName(lastName);
     if (!studentEntityList.isEmpty()) {
-      return studentEntityList.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+      return studentEntityList.stream().map(studentEntity -> {
+        StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
+        studentResponseDTO.setSubjects(getSubjects(studentEntity));
+        return studentResponseDTO;
+      }).toList();
     }
     throw new NotFoundException(String.format("Did not find student with last name %s", lastName));
   }
@@ -110,10 +112,10 @@ public class StudentServiceImpl implements StudentService {
   }
 
   private StudentResponseDTO saveStudentDetailsToDB(final StudentRequestDTO studentDTO) {
-    StudentEntity studentEntity = modelMapper.map(studentDTO, StudentEntity.class);
+    StudentEntity studentEntity = studentMapper.studentDtoToEntity(studentDTO);
     studentEntity.setRollNumber(getRollNumber(studentDTO.getClassNumber()));
     studentRepository.save(studentEntity);
-    StudentResponseDTO studentResponseDto = modelMapper.map(studentEntity, StudentResponseDTO.class);
+    StudentResponseDTO studentResponseDto = studentMapper.studentEntityToDto(studentEntity);
     studentResponseDto.setSubjects(getSubjects(studentEntity));
     return studentResponseDto;
   }
@@ -121,11 +123,7 @@ public class StudentServiceImpl implements StudentService {
   private int getRollNumber(final int classNumber) {
     LOGGER.info("Getting max roll number of class [{}] new student belong to ", classNumber);
     final List<StudentEntity> studentEntityList = studentRepository.findByClassNumber(classNumber);
-    int rollNumber = 0;
-    if (!studentEntityList.isEmpty()) {
-      rollNumber = studentEntityList.stream().mapToInt(StudentEntity::getRollNumber).max().orElse(0);
-    }
-    return rollNumber + 1;
+    return studentEntityList.stream().mapToInt(StudentEntity::getRollNumber).max().orElse(1);
   }
 
   private List<String> getSubjects(final StudentEntity studentEntity) {
@@ -152,9 +150,8 @@ public class StudentServiceImpl implements StudentService {
       throw new NotFoundException("Did not find student with first name " + studentDTO.getFirstName() + " last name "
           + studentDTO.getLastName());
     }
-    modelMapper.map(studentDTO, studentEntity);
+    StudentResponseDTO studentResponseDto = studentMapper.updateStudentEntityToDto(studentDTO, studentEntity);
     studentRepository.save(studentEntity);
-    StudentResponseDTO studentResponseDto = modelMapper.map(studentEntity, StudentResponseDTO.class);
     studentResponseDto.setSubjects(getSubjects(studentEntity));
     return studentResponseDto;
   }

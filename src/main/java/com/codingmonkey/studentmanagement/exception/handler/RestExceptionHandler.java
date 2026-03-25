@@ -64,7 +64,8 @@ public class RestExceptionHandler {
   @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public final ResponseEntity<ErrorResponse> handleMethodNotAllowedException(
       HttpRequestMethodNotSupportedException exception) {
-    LOGGER.error("Method not valid exception :: {}", exception.getMessage());
+    LOGGER.error("HTTP method not supported :: Requested method: {}, Error message: {}",
+            exception.getMethod(), exception.getMessage());
     return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
         .body(
             new ErrorResponse(HttpStatus.METHOD_NOT_ALLOWED.value(), exception.getMessage(), Instant.now().toString()));

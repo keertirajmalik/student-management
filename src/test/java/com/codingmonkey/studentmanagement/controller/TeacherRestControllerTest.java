@@ -3,7 +3,6 @@ package com.codingmonkey.studentmanagement.controller;
 import com.codingmonkey.studentmanagement.constant.Gender;
 import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
 import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
-import com.codingmonkey.studentmanagement.service.StudentService;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -28,15 +27,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(StudentRestController.class)
+@WebMvcTest(TeacherRestController.class)
 class TeacherRestControllerTest {
 
   static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-  private static final String URL = "/api/students";
+  private static final String URL = "/api/teachers";
   @MockitoBean
   private TeacherService teacherService;
-  @MockitoBean
-  private StudentService studentService;
   @Autowired
   private MockMvc mockMvc;
 

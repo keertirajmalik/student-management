@@ -1,8 +1,7 @@
 package com.codingmonkey.studentmanagement.exception.handler;
 
-import java.time.Instant;
-import java.util.stream.Collectors;
-
+import com.codingmonkey.studentmanagement.exception.ErrorResponse;
+import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -18,8 +17,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.codingmonkey.studentmanagement.exception.ErrorResponse;
-import com.codingmonkey.studentmanagement.exception.NotFoundException;
+import java.time.Instant;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -63,9 +62,9 @@ public class RestExceptionHandler {
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
   @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public final ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+  public final ResponseEntity<ErrorResponse> handleMethodNotAllowedException(
       HttpRequestMethodNotSupportedException exception) {
-    LOGGER.error("Method argument not valid exception :: {}", exception.getMessage());
+    LOGGER.error("Method not valid exception :: {}", exception.getMessage());
     return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
         .body(
             new ErrorResponse(HttpStatus.METHOD_NOT_ALLOWED.value(), exception.getMessage(), Instant.now().toString()));

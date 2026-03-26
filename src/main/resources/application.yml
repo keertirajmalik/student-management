@@ -8,12 +8,19 @@ spring:
     view:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
+  # Hibernate is disabled because Liquibase will manage schema
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
 
 app-config:
   maxClassAllowed: 10
 
 springdoc:
-  usemanagementport: true
+  use-management-port: true
+  swagger-ui:
+    enabled: true
 
 server:
   port: 8080
@@ -24,4 +31,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: openapi,swagger-ui,health,info
+        include: health,info,openapi,swagger-ui

@@ -2,6 +2,7 @@ package com.codingmonkey.studentmanagement.exception.handler;
 
 import com.codingmonkey.studentmanagement.exception.ErrorResponse;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
+import com.codingmonkey.studentmanagement.exception.StudentDetailsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -72,21 +73,21 @@ public class RestExceptionHandler {
   }
 
   @ExceptionHandler
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<ErrorResponse> handleBadRequestException(Exception exception) {
-    LOGGER.error("Error message :: {}", exception.getMessage());
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getLocalizedMessage(),
-            Instant.now().toString()));
-  }
-
-  @ExceptionHandler
   @ResponseStatus(HttpStatus.NOT_FOUND)
   @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ErrorResponse> handleException(NotFoundException exception) {
     LOGGER.error("Error message :: {}", exception.getMessage());
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
         .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage(), Instant.now().toString()));
+  }
+
+  @ExceptionHandler
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public <T extends RuntimeException> ResponseEntity<ErrorResponse> handleBadRequestException(T exception) {
+    LOGGER.error("Error message :: {}", exception.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getLocalizedMessage(),
+                    Instant.now().toString()));
   }
 }

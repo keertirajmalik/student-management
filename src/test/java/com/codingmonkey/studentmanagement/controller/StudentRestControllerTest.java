@@ -86,7 +86,7 @@ class StudentRestControllerTest {
         new StudentDetailsException("Class number cannot be greater than 10", HttpStatus.BAD_REQUEST));
 
     final MockHttpServletRequestBuilder requestBuilder = post(URL).contentType("application/json")
-        .content(asJson(new StudentRequestDTO("test", "test", 8277272285L, "keerti@gmailcom", 10, Gender.MALE)));
+        .content(asJson(new StudentRequestDTO("test", "test", 8277272285L, "keerti@gmailcom", 11, Gender.MALE)));
 
     mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
   }

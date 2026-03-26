@@ -72,16 +72,6 @@ public class RestExceptionHandler {
   }
 
   @ExceptionHandler
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<ErrorResponse> handleBadRequestException(Exception exception) {
-    LOGGER.error("Error message :: {}", exception.getMessage());
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getLocalizedMessage(),
-            Instant.now().toString()));
-  }
-
-  @ExceptionHandler
   @ResponseStatus(HttpStatus.NOT_FOUND)
   @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ErrorResponse> handleException(NotFoundException exception) {

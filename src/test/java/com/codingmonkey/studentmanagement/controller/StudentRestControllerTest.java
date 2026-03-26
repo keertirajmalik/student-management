@@ -1,24 +1,5 @@
 package com.codingmonkey.studentmanagement.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
 import com.codingmonkey.studentmanagement.constant.Gender;
 import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
 import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
@@ -26,6 +7,27 @@ import com.codingmonkey.studentmanagement.exception.StudentDetailsException;
 import com.codingmonkey.studentmanagement.service.StudentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(StudentRestController.class)
@@ -36,7 +38,7 @@ class StudentRestControllerTest {
   private static final String URL = "/api/students";
   static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-  @MockBean
+  @MockitoBean
   private StudentService studentService;
   @Autowired
   private MockMvc mockMvc;
@@ -106,5 +108,57 @@ class StudentRestControllerTest {
         .content(asJson(new StudentRequestDTO("test", "test", 12345678900L, "keerti@gmailcom", 11, null)));
 
     mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void getStudent_whenFirstNameAndLastNameAreNull_returnsAllStudents() throws Exception {
+    when(studentService.getAllStudents()).thenReturn(List.of(studentDTO));
+
+    mockMvc.perform(get(URL))
+        .andExpect(status().isOk())
+        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+  }
+
+  @Test
+  void getStudent_whenFirstNameIsNotNullAndLastNameIsNull_returnsStudentsByFirstName() throws Exception {
+    when(studentService.getStudentByFirstName("test")).thenReturn(List.of(studentDTO));
+
+    mockMvc.perform(get(URL).param("firstName", "test"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+  }
+
+  @Test
+  void getStudent_whenFirstNameIsNullAndLastNameIsNotNull_returnsStudentsByLastName() throws Exception {
+    when(studentService.getStudentByLastName("test")).thenReturn(List.of(studentDTO));
+
+    mockMvc.perform(get(URL).param("lastName", "test"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+  }
+
+  @Test
+  void getStudent_whenFirstNameAndLastNameAreNotNull_returnsStudentsByFirstNameAndLastName() throws Exception {
+    when(studentService.getStudentByFirstNameAndLastName("test", "test")).thenReturn(List.of(studentDTO));
+
+    mockMvc.perform(get(URL).param("firstName", "test").param("lastName", "test"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+  }
+
+  @Test
+  void updateStudent_whenStudentExists_updatesAndReturnsStudent() throws Exception {
+    when(studentService.updateStudentDetails(anyInt(), any(StudentRequestDTO.class))).thenReturn(studentDTO);
+
+    mockMvc.perform(put(URL + "/1").content(asJson(studentDTO)).contentType("application/json"))
+        .andExpect(status().isOk())
+        .andExpect(content().json(asJson(studentDTO), true));
+  }
+
+  @Test
+  void deleteStudent_whenStudentExists_deletesStudent() throws Exception {
+    doNothing().when(studentService).deleteById(1);
+
+    mockMvc.perform(delete(URL + "/1")).andExpect(status().isNoContent());
   }
 }

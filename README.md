@@ -1,6 +1,6 @@
 # Student Management Project
 
-[![Maven Package](https://github.com/keertirajmalik/student-management/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/keertirajmalik/student-management/actions/workflows/maven-publish.yml) [![CodeQL](https://github.com/keertirajmalik/student-management/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/keertirajmalik/student-management/actions/workflows/codeql-analysis.yml)
+[![CodeQL](https://github.com/keertirajmalik/student-management/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/keertirajmalik/student-management/actions/workflows/codeql-analysis.yml)
 
 I am creating this project to learn about the Spring. This project is a simple student management system. It will have
 the following features:

@@ -1,36 +1,24 @@
 package com.codingmonkey.studentmanagement.controller;
 
-import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATION_JSON_VALUE;
-
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-
+import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
+import com.codingmonkey.studentmanagement.service.TeacherService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
-import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
-import com.codingmonkey.studentmanagement.service.TeacherService;
+import java.util.List;
+import java.util.Map;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "/api/teachers", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/teachers")
 @Tag(name = "Teacher", description = "Teacher API")
 class TeacherRestController {
 
@@ -43,7 +31,7 @@ class TeacherRestController {
   }
 
   @Operation(summary = "Get teachers details")
-  @GetMapping()
+  @GetMapping(produces = APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
   Map<String, List<TeacherResponseDTO>> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
                                                    @RequestParam(value = "lastName", required = false) String lastName) {
@@ -65,7 +53,7 @@ class TeacherRestController {
   }
 
   @Operation(summary = "Add new teacher details")
-  @PostMapping()
+  @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.CREATED)
   TeacherResponseDTO addTeacher(@Valid @RequestBody TeacherRequestDTO teacherDTO) {
     String logPrefix = "#addTeacherDetails(): ";
@@ -74,16 +62,16 @@ class TeacherRestController {
   }
 
   @Operation(summary = "Update teacher details")
-  @PutMapping("{teacherId}")
+  @PutMapping(value = "/{teacherId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
-  TeacherResponseDTO updateTeacher(@PathVariable int teacherId, @RequestBody TeacherRequestDTO teacherDTO) {
+  TeacherResponseDTO updateTeacher(@PathVariable int teacherId, @Valid @RequestBody TeacherRequestDTO teacherDTO) {
     String logPrefix = "#updateTeacherDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
     return teacherService.updateTeacherDetails(teacherId, teacherDTO);
   }
 
   @Operation(summary = "Delete teacher details")
-  @DeleteMapping("{teacherId}")
+  @DeleteMapping(value = "/{teacherId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   void deleteTeacher(@PathVariable int teacherId) {
     teacherService.deleteById(teacherId);

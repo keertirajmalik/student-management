@@ -1,16 +1,15 @@
 package com.codingmonkey.studentmanagement.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.codingmonkey.studentmanagement.constant.Gender;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +26,7 @@ import lombok.ToString;
 public class StudentEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "student_id")
   private int studentId;
 
   @Column(name = "first_name")
@@ -48,5 +48,6 @@ public class StudentEntity {
   private int classNumber;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "gender")
   private Gender gender;
 }

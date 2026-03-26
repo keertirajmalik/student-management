@@ -62,16 +62,16 @@ class TeacherRestController {
   }
 
   @Operation(summary = "Update teacher details")
-  @PutMapping(value = "{teacherId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+  @PutMapping(value = "/{teacherId}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
-  TeacherResponseDTO updateTeacher(@PathVariable int teacherId, @RequestBody TeacherRequestDTO teacherDTO) {
+  TeacherResponseDTO updateTeacher(@PathVariable int teacherId, @Valid @RequestBody TeacherRequestDTO teacherDTO) {
     String logPrefix = "#updateTeacherDetails(): ";
     LOGGER.info("{} Request Received as {} ", logPrefix, teacherDTO);
     return teacherService.updateTeacherDetails(teacherId, teacherDTO);
   }
 
   @Operation(summary = "Delete teacher details")
-  @DeleteMapping(value = "{teacherId}")
+  @DeleteMapping(value = "/{teacherId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   void deleteTeacher(@PathVariable int teacherId) {
     teacherService.deleteById(teacherId);

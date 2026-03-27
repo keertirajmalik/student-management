@@ -1,10 +1,10 @@
 package com.codingmonkey.studentmanagement.repositories;
 
-import java.util.List;
-
+import com.codingmonkey.studentmanagement.domain.entity.StudentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.codingmonkey.studentmanagement.entity.StudentEntity;
+import java.util.List;
+
 
 public interface StudentRepository extends JpaRepository<StudentEntity, Integer> {
 

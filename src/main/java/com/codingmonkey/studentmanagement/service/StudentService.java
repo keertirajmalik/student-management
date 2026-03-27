@@ -2,12 +2,16 @@ package com.codingmonkey.studentmanagement.service;
 
 import java.util.List;
 
-import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
-import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
+import com.codingmonkey.studentmanagement.domain.dto.request.StudentRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.StudentResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface StudentService {
 
   List<StudentResponseDTO> getAllStudents();
+
+  Page<StudentResponseDTO> getAllStudents(Pageable pageable);
 
   StudentResponseDTO saveStudentDetails(StudentRequestDTO studentDTO);
 

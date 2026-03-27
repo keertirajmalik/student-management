@@ -1,4 +1,4 @@
-package com.codingmonkey.studentmanagement.configurations;
+package com.codingmonkey.studentmanagement.config;
 
 import lombok.Getter;
 import lombok.Setter;

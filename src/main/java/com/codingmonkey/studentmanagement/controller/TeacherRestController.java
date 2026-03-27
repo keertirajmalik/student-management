@@ -1,7 +1,7 @@
 package com.codingmonkey.studentmanagement.controller;
 
-import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
-import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
+import com.codingmonkey.studentmanagement.domain.dto.request.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.TeacherResponseDTO;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

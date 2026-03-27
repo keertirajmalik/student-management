@@ -1,25 +1,24 @@
-package com.codingmonkey.studentmanagement.service;
+package com.codingmonkey.studentmanagement.service.impl;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
-import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
-import com.codingmonkey.studentmanagement.entity.SubjectEntity;
-import com.codingmonkey.studentmanagement.entity.TeacherEntity;
+import com.codingmonkey.studentmanagement.domain.dto.request.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.TeacherResponseDTO;
+import com.codingmonkey.studentmanagement.domain.entity.SubjectEntity;
+import com.codingmonkey.studentmanagement.domain.entity.TeacherEntity;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.exception.TeacherDetailsException;
 import com.codingmonkey.studentmanagement.mapper.TeacherMapper;
 import com.codingmonkey.studentmanagement.repositories.SubjectRepository;
 import com.codingmonkey.studentmanagement.repositories.TeacherRepository;
+import com.codingmonkey.studentmanagement.service.TeacherService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -30,8 +29,8 @@ public class TeacherServiceImpl implements TeacherService {
   private final TeacherMapper teacherMapper;
 
   public TeacherServiceImpl(final TeacherRepository teacherRepository,
-                            @Autowired final SubjectRepository subjectRepository,
-                            @Autowired final TeacherMapper teacherMapper) {
+                            final SubjectRepository subjectRepository,
+                            final TeacherMapper teacherMapper) {
     this.teacherRepository = teacherRepository;
     this.subjectRepository = subjectRepository;
     this.teacherMapper = teacherMapper;

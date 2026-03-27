@@ -2,8 +2,8 @@ package com.codingmonkey.studentmanagement.service;
 
 import java.util.List;
 
-import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
-import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
+import com.codingmonkey.studentmanagement.domain.dto.request.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.TeacherResponseDTO;
 
 public interface TeacherService {
 

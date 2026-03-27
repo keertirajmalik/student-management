@@ -1,6 +1,6 @@
 package com.codingmonkey.studentmanagement;
 
-import com.codingmonkey.studentmanagement.configurations.ApplicationConfiguration;
+import com.codingmonkey.studentmanagement.config.ApplicationConfiguration;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

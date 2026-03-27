@@ -1,25 +1,26 @@
-package com.codingmonkey.studentmanagement.service;
+package com.codingmonkey.studentmanagement.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import com.codingmonkey.studentmanagement.configurations.ApplicationConfiguration;
-import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
-import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
-import com.codingmonkey.studentmanagement.entity.StudentEntity;
-import com.codingmonkey.studentmanagement.entity.SubjectEntity;
+import com.codingmonkey.studentmanagement.config.ApplicationConfiguration;
+import com.codingmonkey.studentmanagement.domain.dto.request.StudentRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.StudentResponseDTO;
+import com.codingmonkey.studentmanagement.domain.entity.StudentEntity;
+import com.codingmonkey.studentmanagement.domain.entity.SubjectEntity;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.exception.StudentDetailsException;
 import com.codingmonkey.studentmanagement.mapper.StudentMapper;
 import com.codingmonkey.studentmanagement.repositories.StudentRepository;
 import com.codingmonkey.studentmanagement.repositories.SubjectRepository;
+import com.codingmonkey.studentmanagement.service.StudentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -31,9 +32,9 @@ public class StudentServiceImpl implements StudentService {
   private final StudentMapper studentMapper;
 
   public StudentServiceImpl(final StudentRepository studentRepository,
-                            @Autowired final SubjectRepository subjectRepository,
+                            final SubjectRepository subjectRepository,
                             final ApplicationConfiguration applicationConfiguration,
-                            @Autowired StudentMapper studentMapper) {
+                            final StudentMapper studentMapper) {
     this.studentRepository = studentRepository;
     this.subjectRepository = subjectRepository;
     this.applicationConfiguration = applicationConfiguration;
@@ -48,6 +49,16 @@ public class StudentServiceImpl implements StudentService {
       studentResponseDTO.setSubjects(getSubjects(studentEntity));
       return studentResponseDTO;
     }).toList();
+  }
+
+  @Override
+  public Page<StudentResponseDTO> getAllStudents(Pageable pageable) {
+    final Page<StudentEntity> studentList = studentRepository.findAll(pageable);
+    return studentList.map(studentEntity -> {
+      StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
+      studentResponseDTO.setSubjects(getSubjects(studentEntity));
+      return studentResponseDTO;
+    });
   }
 
   @Override

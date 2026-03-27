@@ -1,8 +1,8 @@
 package com.codingmonkey.studentmanagement.controller;
 
 import com.codingmonkey.studentmanagement.constant.Gender;
-import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
-import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
+import com.codingmonkey.studentmanagement.domain.dto.request.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.TeacherResponseDTO;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

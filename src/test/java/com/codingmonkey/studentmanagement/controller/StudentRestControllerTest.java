@@ -1,8 +1,8 @@
 package com.codingmonkey.studentmanagement.controller;
 
 import com.codingmonkey.studentmanagement.constant.Gender;
-import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
-import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
+import com.codingmonkey.studentmanagement.domain.dto.request.StudentRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.StudentResponseDTO;
 import com.codingmonkey.studentmanagement.exception.StudentDetailsException;
 import com.codingmonkey.studentmanagement.service.StudentService;
 import com.fasterxml.jackson.core.JsonProcessingException;

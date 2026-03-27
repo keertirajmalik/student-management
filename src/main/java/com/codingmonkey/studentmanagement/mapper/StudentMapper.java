@@ -1,11 +1,11 @@
 package com.codingmonkey.studentmanagement.mapper;
 
+import com.codingmonkey.studentmanagement.domain.entity.StudentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
-import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
-import com.codingmonkey.studentmanagement.entity.StudentEntity;
+import com.codingmonkey.studentmanagement.domain.dto.request.StudentRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.StudentResponseDTO;
 
 @Mapper(componentModel = "spring")
 public interface StudentMapper {

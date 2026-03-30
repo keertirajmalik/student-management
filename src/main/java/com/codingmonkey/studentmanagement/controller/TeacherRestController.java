@@ -35,7 +35,7 @@ class TeacherRestController {
   Page<TeacherResponseDTO> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
                                       @RequestParam(value = "lastName", required = false) String lastName, Pageable pageable) {
 
-    LOGGER.info("Get [{}] [{}] student details call received", firstName, lastName);
+    LOGGER.info("Get [{}] [{}] teacher details call received", firstName, lastName);
     if (firstName == null && lastName == null) {
       return teacherService.getAllTeachers(pageable);
     } else if (firstName == null) {

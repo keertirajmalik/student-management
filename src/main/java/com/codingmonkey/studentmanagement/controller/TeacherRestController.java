@@ -9,11 +9,10 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATION_JSON_VALUE;
 
@@ -33,23 +32,19 @@ class TeacherRestController {
   @Operation(summary = "Get teachers details")
   @GetMapping(produces = APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
-  Map<String, List<TeacherResponseDTO>> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
-                                                   @RequestParam(value = "lastName", required = false) String lastName) {
-    List<TeacherResponseDTO> teachers;
+  Page<TeacherResponseDTO> getTeacher(@RequestParam(value = "firstName", required = false) String firstName,
+                                      @RequestParam(value = "lastName", required = false) String lastName, Pageable pageable) {
+
+    LOGGER.info("Get [{}] [{}] student details call received", firstName, lastName);
     if (firstName == null && lastName == null) {
-      LOGGER.info("Get all teachers details call received");
-      teachers = teacherService.getAllTeachers();
+      return teacherService.getAllTeachers(pageable);
     } else if (firstName == null) {
-      LOGGER.info("Get [{}] teacher details call received", lastName);
-      teachers = teacherService.getTeacherByLastName(lastName);
+      return teacherService.getTeacherByLastName(lastName, pageable);
     } else if (lastName == null) {
-      LOGGER.info("Get [{}] teacher details call received", firstName);
-      teachers = teacherService.getTeacherByFirstName(firstName);
+      return teacherService.getTeacherByFirstName(firstName, pageable);
     } else {
-      LOGGER.info("Get [{}] [{}] teacher details call received", firstName, lastName);
-      teachers = teacherService.getTeacherByFirstNameAndLastName(firstName, lastName);
+      return teacherService.getTeacherByFirstNameAndLastName(firstName, lastName, pageable);
     }
-    return Map.of("teachers", teachers);
   }
 
   @Operation(summary = "Add new teacher details")

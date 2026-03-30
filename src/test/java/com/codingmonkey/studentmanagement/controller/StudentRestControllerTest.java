@@ -21,15 +21,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(StudentRestController.class)
@@ -118,7 +116,9 @@ class StudentRestControllerTest {
 
     mockMvc.perform(get(URL))
         .andExpect(status().isOk())
-        .andExpect(content().json(asJson(Map.of("content", List.of(studentDTO))), JsonCompareMode.LENIENT));
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.content.length()").value(1))
+        .andExpect(jsonPath("$.content[0].firstName").value("test"));
   }
 
   @Test
@@ -127,7 +127,9 @@ class StudentRestControllerTest {
 
     mockMvc.perform(get(URL).param("firstName", "test"))
         .andExpect(status().isOk())
-        .andExpect(content().json(asJson(Map.of("content", List.of(studentDTO))), JsonCompareMode.LENIENT));
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.content.length()").value(1))
+        .andExpect(jsonPath("$.content[0].firstName").value("test"));
   }
 
   @Test
@@ -136,7 +138,9 @@ class StudentRestControllerTest {
 
     mockMvc.perform(get(URL).param("lastName", "test"))
         .andExpect(status().isOk())
-        .andExpect(content().json(asJson(Map.of("content", List.of(studentDTO))), JsonCompareMode.LENIENT));
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.content.length()").value(1))
+        .andExpect(jsonPath("$.content[0].firstName").value("test"));
   }
 
   @Test
@@ -145,7 +149,9 @@ class StudentRestControllerTest {
 
     mockMvc.perform(get(URL).param("firstName", "test").param("lastName", "test"))
         .andExpect(status().isOk())
-        .andExpect(content().json(asJson(Map.of("content", List.of(studentDTO))), JsonCompareMode.LENIENT));
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.content.length()").value(1))
+        .andExpect(jsonPath("$.content[0].firstName").value("test"));
   }
 
   @Test

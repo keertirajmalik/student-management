@@ -12,6 +12,8 @@ import com.codingmonkey.studentmanagement.repositories.TeacherRepository;
 import com.codingmonkey.studentmanagement.service.TeacherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -37,23 +39,24 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public List<TeacherResponseDTO> getAllTeachers() {
-    return teacherRepository.findAll().stream().map(teacherEntity -> {
+  public Page<TeacherResponseDTO> getAllTeachers(Pageable pageable) {
+    return teacherRepository.findAll(pageable).map(teacherEntity -> {
       TeacherResponseDTO teacherResponseDTO = teacherMapper.teacherEntityToDto(teacherEntity);
       teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
       return teacherResponseDTO;
-    }).toList();
+    });
   }
 
+
   @Override
-  public List<TeacherResponseDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName) {
-    List<TeacherEntity> teacherEntityList = teacherRepository.findByFirstNameAndLastName(firstName, lastName);
+  public Page<TeacherResponseDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName, Pageable pageable) {
+    Page<TeacherEntity> teacherEntityList = teacherRepository.findByFirstNameAndLastName(firstName, lastName, pageable);
     if (!teacherEntityList.isEmpty()) {
-      return teacherEntityList.stream().map(teacherEntity -> {
+      return teacherEntityList.map(teacherEntity -> {
         TeacherResponseDTO teacherResponseDTO = teacherMapper.teacherEntityToDto(teacherEntity);
         teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
         return teacherResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException("Did not find Teacher with first name " + firstName + " last name " + lastName);
   }
@@ -92,27 +95,27 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public List<TeacherResponseDTO> getTeacherByFirstName(final String firstName) {
-    List<TeacherEntity> teacherEntityList = teacherRepository.findByFirstName(firstName);
+  public Page<TeacherResponseDTO> getTeacherByFirstName(final String firstName, Pageable pageable) {
+    Page<TeacherEntity> teacherEntityList = teacherRepository.findByFirstName(firstName, pageable);
     if (!teacherEntityList.isEmpty()) {
-      return teacherEntityList.stream().map(teacherEntity -> {
+      return teacherEntityList.map(teacherEntity -> {
         TeacherResponseDTO teacherResponseDTO = teacherMapper.teacherEntityToDto(teacherEntity);
         teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
         return teacherResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException("Did not find Teacher with first name " + firstName);
   }
 
   @Override
-  public List<TeacherResponseDTO> getTeacherByLastName(final String lastName) {
-    List<TeacherEntity> teacherEntityList = teacherRepository.findByLastName(lastName);
+  public Page<TeacherResponseDTO> getTeacherByLastName(final String lastName, Pageable pageable) {
+    Page<TeacherEntity> teacherEntityList = teacherRepository.findByLastName(lastName, pageable);
     if (!teacherEntityList.isEmpty()) {
-      return teacherEntityList.stream().map(teacherEntity -> {
+      return teacherEntityList.map(teacherEntity -> {
         TeacherResponseDTO teacherResponseDTO = teacherMapper.teacherEntityToDto(teacherEntity);
         teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
         return teacherResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException("Did not find Teacher with last name " + lastName);
   }

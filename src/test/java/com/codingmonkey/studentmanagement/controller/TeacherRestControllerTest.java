@@ -21,8 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -57,7 +56,7 @@ class TeacherRestControllerTest {
   @Test
   void getTeacherByLastName_returnsTeachersWithMatchingLastName() throws Exception {
     List<TeacherResponseDTO> teachers = Collections.emptyList();
-    when(teacherService.getTeacherByLastName("Doe", any(Pageable.class))).thenReturn(new PageImpl<>(teachers));
+    when(teacherService.getTeacherByLastName(eq("Doe"), any(Pageable.class))).thenReturn(new PageImpl<>(teachers));
 
     mockMvc.perform(get(URL).param("lastName", "Doe"))
         .andExpect(status().isOk())
@@ -68,7 +67,7 @@ class TeacherRestControllerTest {
   @Test
   void getTeacherByFirstName_returnsTeachersWithMatchingFirstName() throws Exception {
     List<TeacherResponseDTO> teachers = Collections.emptyList();
-    when(teacherService.getTeacherByFirstName("John", any(Pageable.class))).thenReturn(new PageImpl<>(teachers));
+    when(teacherService.getTeacherByFirstName(eq("John"), any(Pageable.class))).thenReturn(new PageImpl<>(teachers));
 
     mockMvc.perform(get(URL).param("firstName", "John"))
         .andExpect(status().isOk())
@@ -79,7 +78,7 @@ class TeacherRestControllerTest {
   @Test
   void getTeacherByFirstNameAndLastName_returnsTeachersWithMatchingFirstAndLastName() throws Exception {
     List<TeacherResponseDTO> teachers = Collections.emptyList();
-    when(teacherService.getTeacherByFirstNameAndLastName("John", "Doe", any(Pageable.class))).thenReturn(new PageImpl<>(teachers));
+    when(teacherService.getTeacherByFirstNameAndLastName(eq("John"), eq("Doe"), any(Pageable.class))).thenReturn(new PageImpl<>(teachers));
 
     mockMvc.perform(get(URL).param("firstName", "John").param("lastName", "Doe"))
         .andExpect(status().isOk())

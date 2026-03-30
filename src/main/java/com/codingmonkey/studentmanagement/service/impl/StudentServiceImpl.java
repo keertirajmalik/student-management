@@ -62,41 +62,41 @@ public class StudentServiceImpl implements StudentService {
   }
 
   @Override
-  public List<StudentResponseDTO> getStudentByFirstNameAndLastName(final String firstName, final String lastName) {
-    List<StudentEntity> studentEntityList = studentRepository.findByFirstNameAndLastName(firstName, lastName);
+  public Page<StudentResponseDTO> getStudentByFirstNameAndLastName(final String firstName, final String lastName, Pageable pageable) {
+    Page<StudentEntity> studentEntityList = studentRepository.findByFirstNameAndLastName(firstName, lastName, pageable);
     if (!studentEntityList.isEmpty()) {
-      return studentEntityList.stream().map(studentEntity -> {
+      return studentEntityList.map(studentEntity -> {
         StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
         studentResponseDTO.setSubjects(getSubjects(studentEntity));
         return studentResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException(
         String.format("Did not find student with first name %s  last name %s", firstName, lastName));
   }
 
   @Override
-  public List<StudentResponseDTO> getStudentByFirstName(final String firstName) {
-    List<StudentEntity> studentEntityList = studentRepository.findByFirstName(firstName);
+  public Page<StudentResponseDTO> getStudentByFirstName(final String firstName, Pageable pageable) {
+    Page<StudentEntity> studentEntityList = studentRepository.findByFirstName(firstName, pageable);
     if (!studentEntityList.isEmpty()) {
-      return studentEntityList.stream().map(studentEntity -> {
+      return studentEntityList.map(studentEntity -> {
         StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
         studentResponseDTO.setSubjects(getSubjects(studentEntity));
         return studentResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException(String.format("Did not find student with first name %s", firstName));
   }
 
   @Override
-  public List<StudentResponseDTO> getStudentByLastName(final String lastName) {
-    List<StudentEntity> studentEntityList = studentRepository.findByLastName(lastName);
+  public Page<StudentResponseDTO> getStudentByLastName(final String lastName, Pageable pageable) {
+    Page<StudentEntity> studentEntityList = studentRepository.findByLastName(lastName, pageable);
     if (!studentEntityList.isEmpty()) {
-      return studentEntityList.stream().map(studentEntity -> {
+      return studentEntityList.map(studentEntity -> {
         StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
         studentResponseDTO.setSubjects(getSubjects(studentEntity));
         return studentResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException(String.format("Did not find student with last name %s", lastName));
   }

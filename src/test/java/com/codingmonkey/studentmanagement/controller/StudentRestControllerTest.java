@@ -11,17 +11,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,7 +52,7 @@ class StudentRestControllerTest {
     mockMvc.perform(post(URL).content(asJson(studentDTO)).contentType("application/json"))
         .andDo(print())
         .andExpect(status().isCreated())
-        .andExpect(content().json(asJson(studentDTO), true));
+        .andExpect(content().json(asJson(studentDTO), JsonCompareMode.STRICT));
   }
 
   private String asJson(final Object object) throws JsonProcessingException {
@@ -112,38 +114,38 @@ class StudentRestControllerTest {
 
   @Test
   void getStudent_whenFirstNameAndLastNameAreNull_returnsAllStudents() throws Exception {
-    when(studentService.getAllStudents()).thenReturn(List.of(studentDTO));
+    when(studentService.getAllStudents(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(studentDTO)));
 
     mockMvc.perform(get(URL))
         .andExpect(status().isOk())
-        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+        .andExpect(content().json(asJson(Map.of("content", List.of(studentDTO))), JsonCompareMode.LENIENT));
   }
 
   @Test
   void getStudent_whenFirstNameIsNotNullAndLastNameIsNull_returnsStudentsByFirstName() throws Exception {
-    when(studentService.getStudentByFirstName("test")).thenReturn(List.of(studentDTO));
+    when(studentService.getStudentByFirstName(eq("test"), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(studentDTO)));
 
     mockMvc.perform(get(URL).param("firstName", "test"))
         .andExpect(status().isOk())
-        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+        .andExpect(content().json(asJson(Map.of("content", List.of(studentDTO))), JsonCompareMode.LENIENT));
   }
 
   @Test
   void getStudent_whenFirstNameIsNullAndLastNameIsNotNull_returnsStudentsByLastName() throws Exception {
-    when(studentService.getStudentByLastName("test")).thenReturn(List.of(studentDTO));
+    when(studentService.getStudentByLastName(eq("test"), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(studentDTO)));
 
     mockMvc.perform(get(URL).param("lastName", "test"))
         .andExpect(status().isOk())
-        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+        .andExpect(content().json(asJson(Map.of("content", List.of(studentDTO))), JsonCompareMode.LENIENT));
   }
 
   @Test
   void getStudent_whenFirstNameAndLastNameAreNotNull_returnsStudentsByFirstNameAndLastName() throws Exception {
-    when(studentService.getStudentByFirstNameAndLastName("test", "test")).thenReturn(List.of(studentDTO));
+    when(studentService.getStudentByFirstNameAndLastName(eq("test"), eq("test"), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(studentDTO)));
 
     mockMvc.perform(get(URL).param("firstName", "test").param("lastName", "test"))
         .andExpect(status().isOk())
-        .andExpect(content().json(asJson(Map.of("students", List.of(studentDTO))), true));
+        .andExpect(content().json(asJson(Map.of("content", List.of(studentDTO))), JsonCompareMode.LENIENT));
   }
 
   @Test
@@ -152,7 +154,7 @@ class StudentRestControllerTest {
 
     mockMvc.perform(put(URL + "/1").content(asJson(studentDTO)).contentType("application/json"))
         .andExpect(status().isOk())
-        .andExpect(content().json(asJson(studentDTO), true));
+        .andExpect(content().json(asJson(studentDTO), JsonCompareMode.STRICT));
   }
 
   @Test

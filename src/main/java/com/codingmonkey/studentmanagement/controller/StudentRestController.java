@@ -13,8 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static com.codingmonkey.studentmanagement.constant.AppConstants.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -33,19 +31,17 @@ class StudentRestController {
   @ResponseStatus(HttpStatus.OK)
   Page<StudentResponseDTO> getStudent(@RequestParam(value = "firstName", required = false) String firstName,
                                       @RequestParam(value = "lastName", required = false) String lastName, Pageable pageable) {
-    List<StudentResponseDTO> students;
-//    if (firstName == null && lastName == null) {
-    return studentService.getAllStudents(pageable);
-//    } else if (firstName == null) {
-//      students = studentService.getStudentByLastName(lastName);
-//    } else if (lastName == null) {
-//      students = studentService.getStudentByFirstName(firstName);
-//    } else {
-//      students = studentService.getStudentByFirstNameAndLastName(firstName, lastName);
-//    }
-//    LOGGER.info("Get [{}] [{}] student details call received", firstName, lastName);
-//    return Map.of("students", students);
-//    return students;
+
+    LOGGER.info("Get [{}] [{}] student details call received", firstName, lastName);
+    if (firstName == null && lastName == null) {
+      return studentService.getAllStudents(pageable);
+    } else if (firstName == null) {
+      return studentService.getStudentByLastName(lastName, pageable);
+    } else if (lastName == null) {
+      return studentService.getStudentByFirstName(firstName, pageable);
+    } else {
+      return studentService.getStudentByFirstNameAndLastName(firstName, lastName, pageable);
+    }
   }
 
   @Operation(summary = "Add new student details")

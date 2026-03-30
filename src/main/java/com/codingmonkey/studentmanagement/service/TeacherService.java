@@ -1,15 +1,15 @@
 package com.codingmonkey.studentmanagement.service;
 
-import java.util.List;
-
-import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
-import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
+import com.codingmonkey.studentmanagement.domain.dto.request.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.TeacherResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface TeacherService {
 
-  List<TeacherResponseDTO> getAllTeachers();
+  Page<TeacherResponseDTO> getAllTeachers(Pageable pageable);
 
-  List<TeacherResponseDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName);
+  Page<TeacherResponseDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName, Pageable pageable);
 
   void deleteById(int teacherId);
 
@@ -17,7 +17,7 @@ public interface TeacherService {
 
   TeacherResponseDTO updateTeacherDetails(int teacherId, TeacherRequestDTO teacherDTO);
 
-  List<TeacherResponseDTO> getTeacherByFirstName(String firstName);
+  Page<TeacherResponseDTO> getTeacherByFirstName(String firstName, Pageable pageable);
 
-  List<TeacherResponseDTO> getTeacherByLastName(String lastName);
+  Page<TeacherResponseDTO> getTeacherByLastName(String lastName, Pageable pageable);
 }

@@ -1,25 +1,26 @@
-package com.codingmonkey.studentmanagement.service;
+package com.codingmonkey.studentmanagement.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import com.codingmonkey.studentmanagement.configurations.ApplicationConfiguration;
-import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
-import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
-import com.codingmonkey.studentmanagement.entity.StudentEntity;
-import com.codingmonkey.studentmanagement.entity.SubjectEntity;
+import com.codingmonkey.studentmanagement.config.ApplicationConfiguration;
+import com.codingmonkey.studentmanagement.domain.dto.request.StudentRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.StudentResponseDTO;
+import com.codingmonkey.studentmanagement.domain.entity.StudentEntity;
+import com.codingmonkey.studentmanagement.domain.entity.SubjectEntity;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.exception.StudentDetailsException;
 import com.codingmonkey.studentmanagement.mapper.StudentMapper;
 import com.codingmonkey.studentmanagement.repositories.StudentRepository;
 import com.codingmonkey.studentmanagement.repositories.SubjectRepository;
+import com.codingmonkey.studentmanagement.service.StudentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -31,9 +32,9 @@ public class StudentServiceImpl implements StudentService {
   private final StudentMapper studentMapper;
 
   public StudentServiceImpl(final StudentRepository studentRepository,
-                            @Autowired final SubjectRepository subjectRepository,
+                            final SubjectRepository subjectRepository,
                             final ApplicationConfiguration applicationConfiguration,
-                            @Autowired StudentMapper studentMapper) {
+                            final StudentMapper studentMapper) {
     this.studentRepository = studentRepository;
     this.subjectRepository = subjectRepository;
     this.applicationConfiguration = applicationConfiguration;
@@ -51,41 +52,51 @@ public class StudentServiceImpl implements StudentService {
   }
 
   @Override
-  public List<StudentResponseDTO> getStudentByFirstNameAndLastName(final String firstName, final String lastName) {
-    List<StudentEntity> studentEntityList = studentRepository.findByFirstNameAndLastName(firstName, lastName);
+  public Page<StudentResponseDTO> getAllStudents(Pageable pageable) {
+    final Page<StudentEntity> studentList = studentRepository.findAll(pageable);
+    return studentList.map(studentEntity -> {
+      StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
+      studentResponseDTO.setSubjects(getSubjects(studentEntity));
+      return studentResponseDTO;
+    });
+  }
+
+  @Override
+  public Page<StudentResponseDTO> getStudentByFirstNameAndLastName(final String firstName, final String lastName, Pageable pageable) {
+    Page<StudentEntity> studentEntityList = studentRepository.findByFirstNameAndLastName(firstName, lastName, pageable);
     if (!studentEntityList.isEmpty()) {
-      return studentEntityList.stream().map(studentEntity -> {
+      return studentEntityList.map(studentEntity -> {
         StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
         studentResponseDTO.setSubjects(getSubjects(studentEntity));
         return studentResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException(
         String.format("Did not find student with first name %s  last name %s", firstName, lastName));
   }
 
   @Override
-  public List<StudentResponseDTO> getStudentByFirstName(final String firstName) {
-    List<StudentEntity> studentEntityList = studentRepository.findByFirstName(firstName);
+  public Page<StudentResponseDTO> getStudentByFirstName(final String firstName, Pageable pageable) {
+    Page<StudentEntity> studentEntityList = studentRepository.findByFirstName(firstName, pageable);
     if (!studentEntityList.isEmpty()) {
-      return studentEntityList.stream().map(studentEntity -> {
+      return studentEntityList.map(studentEntity -> {
         StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
         studentResponseDTO.setSubjects(getSubjects(studentEntity));
         return studentResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException(String.format("Did not find student with first name %s", firstName));
   }
 
   @Override
-  public List<StudentResponseDTO> getStudentByLastName(final String lastName) {
-    List<StudentEntity> studentEntityList = studentRepository.findByLastName(lastName);
+  public Page<StudentResponseDTO> getStudentByLastName(final String lastName, Pageable pageable) {
+    Page<StudentEntity> studentEntityList = studentRepository.findByLastName(lastName, pageable);
     if (!studentEntityList.isEmpty()) {
-      return studentEntityList.stream().map(studentEntity -> {
+      return studentEntityList.map(studentEntity -> {
         StudentResponseDTO studentResponseDTO = studentMapper.studentEntityToDto(studentEntity);
         studentResponseDTO.setSubjects(getSubjects(studentEntity));
         return studentResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException(String.format("Did not find student with last name %s", lastName));
   }

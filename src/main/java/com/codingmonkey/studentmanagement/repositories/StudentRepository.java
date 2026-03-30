@@ -1,20 +1,23 @@
 package com.codingmonkey.studentmanagement.repositories;
 
-import java.util.List;
-
+import com.codingmonkey.studentmanagement.domain.entity.StudentEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.codingmonkey.studentmanagement.entity.StudentEntity;
+import java.util.List;
+
 
 public interface StudentRepository extends JpaRepository<StudentEntity, Integer> {
 
   List<StudentEntity> findByClassNumber(final int classNumber);
 
-  List<StudentEntity> findByFirstNameAndLastName(String firstName, String lastName);
+  Page<StudentEntity> findByFirstNameAndLastName(String firstName, String lastName,
+                                                 Pageable pageable);
 
   StudentEntity findByFirstNameAndLastNameAndStudentId(String firstName, String lastName, int studentId);
 
-  List<StudentEntity> findByFirstName(String firstName);
+  Page<StudentEntity> findByFirstName(String firstName, Pageable pageable);
 
-  List<StudentEntity> findByLastName(String lastName);
+  Page<StudentEntity> findByLastName(String lastName, Pageable pageable);
 }

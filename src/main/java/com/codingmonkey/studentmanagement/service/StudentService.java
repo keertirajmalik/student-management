@@ -1,13 +1,17 @@
 package com.codingmonkey.studentmanagement.service;
 
-import java.util.List;
+import com.codingmonkey.studentmanagement.domain.dto.request.StudentRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.StudentResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
-import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
+import java.util.List;
 
 public interface StudentService {
 
   List<StudentResponseDTO> getAllStudents();
+
+  Page<StudentResponseDTO> getAllStudents(Pageable pageable);
 
   StudentResponseDTO saveStudentDetails(StudentRequestDTO studentDTO);
 
@@ -15,9 +19,9 @@ public interface StudentService {
 
   void deleteById(int studentId);
 
-  List<StudentResponseDTO> getStudentByFirstNameAndLastName(String firstName, String lastName);
+  Page<StudentResponseDTO> getStudentByFirstNameAndLastName(String firstName, String lastName, Pageable pageable);
 
-  List<StudentResponseDTO> getStudentByFirstName(String firstName);
+  Page<StudentResponseDTO> getStudentByFirstName(String firstName, Pageable pageable);
 
-  List<StudentResponseDTO> getStudentByLastName(String lastName);
+  Page<StudentResponseDTO> getStudentByLastName(String lastName, Pageable pageable);
 }

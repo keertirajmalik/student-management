@@ -1,6 +1,4 @@
-package com.codingmonkey.studentmanagement.dto;
-
-import java.util.List;
+package com.codingmonkey.studentmanagement.domain.dto.request;
 
 import com.codingmonkey.studentmanagement.constant.Gender;
 
@@ -9,21 +7,12 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentResponseDTO {
-
-  @NotNull(message = "Student Id cannot be null")
-  private Integer studentId;
+public class StudentRequestDTO {
 
   @NotNull(message = "First Name cannot be null")
   @NotBlank(message = "First Name cannot be empty")
@@ -35,9 +24,6 @@ public class StudentResponseDTO {
   @Pattern(regexp = "^[a-zA-Z]*$", message = "Last name should contain only [a-z, A-Z]")
   private String lastName;
 
-  @Min(value = 1, message = "Roll number cannot be less than 1")
-  private int rollNumber;
-
   @NotNull(message = "Mobile number cannot be null")
   private Long mobileNumber;
 
@@ -48,8 +34,6 @@ public class StudentResponseDTO {
 
   @Min(value = 1, message = "Class number cannot be less than 1")
   private int classNumber;
-
-  private List<String> subjects;
 
   @NotNull(message = "Gender cannot be null")
   private Gender gender;

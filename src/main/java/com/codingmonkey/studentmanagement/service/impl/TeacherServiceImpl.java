@@ -1,25 +1,26 @@
-package com.codingmonkey.studentmanagement.service;
+package com.codingmonkey.studentmanagement.service.impl;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
-import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
-import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
-import com.codingmonkey.studentmanagement.entity.SubjectEntity;
-import com.codingmonkey.studentmanagement.entity.TeacherEntity;
+import com.codingmonkey.studentmanagement.domain.dto.request.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.TeacherResponseDTO;
+import com.codingmonkey.studentmanagement.domain.entity.SubjectEntity;
+import com.codingmonkey.studentmanagement.domain.entity.TeacherEntity;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.exception.TeacherDetailsException;
 import com.codingmonkey.studentmanagement.mapper.TeacherMapper;
 import com.codingmonkey.studentmanagement.repositories.SubjectRepository;
 import com.codingmonkey.studentmanagement.repositories.TeacherRepository;
+import com.codingmonkey.studentmanagement.service.TeacherService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -30,31 +31,32 @@ public class TeacherServiceImpl implements TeacherService {
   private final TeacherMapper teacherMapper;
 
   public TeacherServiceImpl(final TeacherRepository teacherRepository,
-                            @Autowired final SubjectRepository subjectRepository,
-                            @Autowired final TeacherMapper teacherMapper) {
+                            final SubjectRepository subjectRepository,
+                            final TeacherMapper teacherMapper) {
     this.teacherRepository = teacherRepository;
     this.subjectRepository = subjectRepository;
     this.teacherMapper = teacherMapper;
   }
 
   @Override
-  public List<TeacherResponseDTO> getAllTeachers() {
-    return teacherRepository.findAll().stream().map(teacherEntity -> {
+  public Page<TeacherResponseDTO> getAllTeachers(Pageable pageable) {
+    return teacherRepository.findAll(pageable).map(teacherEntity -> {
       TeacherResponseDTO teacherResponseDTO = teacherMapper.teacherEntityToDto(teacherEntity);
       teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
       return teacherResponseDTO;
-    }).toList();
+    });
   }
 
+
   @Override
-  public List<TeacherResponseDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName) {
-    List<TeacherEntity> teacherEntityList = teacherRepository.findByFirstNameAndLastName(firstName, lastName);
+  public Page<TeacherResponseDTO> getTeacherByFirstNameAndLastName(String firstName, String lastName, Pageable pageable) {
+    Page<TeacherEntity> teacherEntityList = teacherRepository.findByFirstNameAndLastName(firstName, lastName, pageable);
     if (!teacherEntityList.isEmpty()) {
-      return teacherEntityList.stream().map(teacherEntity -> {
+      return teacherEntityList.map(teacherEntity -> {
         TeacherResponseDTO teacherResponseDTO = teacherMapper.teacherEntityToDto(teacherEntity);
         teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
         return teacherResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException("Did not find Teacher with first name " + firstName + " last name " + lastName);
   }
@@ -93,27 +95,27 @@ public class TeacherServiceImpl implements TeacherService {
   }
 
   @Override
-  public List<TeacherResponseDTO> getTeacherByFirstName(final String firstName) {
-    List<TeacherEntity> teacherEntityList = teacherRepository.findByFirstName(firstName);
+  public Page<TeacherResponseDTO> getTeacherByFirstName(final String firstName, Pageable pageable) {
+    Page<TeacherEntity> teacherEntityList = teacherRepository.findByFirstName(firstName, pageable);
     if (!teacherEntityList.isEmpty()) {
-      return teacherEntityList.stream().map(teacherEntity -> {
+      return teacherEntityList.map(teacherEntity -> {
         TeacherResponseDTO teacherResponseDTO = teacherMapper.teacherEntityToDto(teacherEntity);
         teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
         return teacherResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException("Did not find Teacher with first name " + firstName);
   }
 
   @Override
-  public List<TeacherResponseDTO> getTeacherByLastName(final String lastName) {
-    List<TeacherEntity> teacherEntityList = teacherRepository.findByLastName(lastName);
+  public Page<TeacherResponseDTO> getTeacherByLastName(final String lastName, Pageable pageable) {
+    Page<TeacherEntity> teacherEntityList = teacherRepository.findByLastName(lastName, pageable);
     if (!teacherEntityList.isEmpty()) {
-      return teacherEntityList.stream().map(teacherEntity -> {
+      return teacherEntityList.map(teacherEntity -> {
         TeacherResponseDTO teacherResponseDTO = teacherMapper.teacherEntityToDto(teacherEntity);
         teacherResponseDTO.setSubjects(getSubjects(teacherEntity));
         return teacherResponseDTO;
-      }).toList();
+      });
     }
     throw new NotFoundException("Did not find Teacher with last name " + lastName);
   }

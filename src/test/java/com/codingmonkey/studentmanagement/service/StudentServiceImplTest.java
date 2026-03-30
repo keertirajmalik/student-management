@@ -9,6 +9,9 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 
+import com.codingmonkey.studentmanagement.domain.entity.StudentEntity;
+import com.codingmonkey.studentmanagement.domain.entity.SubjectEntity;
+import com.codingmonkey.studentmanagement.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -17,12 +20,10 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.codingmonkey.studentmanagement.configurations.ApplicationConfiguration;
+import com.codingmonkey.studentmanagement.config.ApplicationConfiguration;
 import com.codingmonkey.studentmanagement.constant.Gender;
-import com.codingmonkey.studentmanagement.dto.StudentRequestDTO;
-import com.codingmonkey.studentmanagement.dto.StudentResponseDTO;
-import com.codingmonkey.studentmanagement.entity.StudentEntity;
-import com.codingmonkey.studentmanagement.entity.SubjectEntity;
+import com.codingmonkey.studentmanagement.domain.dto.request.StudentRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.StudentResponseDTO;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.exception.StudentDetailsException;
 import com.codingmonkey.studentmanagement.mapper.StudentMapper;

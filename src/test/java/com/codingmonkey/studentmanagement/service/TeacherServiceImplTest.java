@@ -3,12 +3,17 @@ package com.codingmonkey.studentmanagement.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
 
+import com.codingmonkey.studentmanagement.domain.entity.SubjectEntity;
+import com.codingmonkey.studentmanagement.domain.entity.TeacherEntity;
+import com.codingmonkey.studentmanagement.service.impl.TeacherServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -18,15 +23,17 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.codingmonkey.studentmanagement.constant.Gender;
-import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
-import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
-import com.codingmonkey.studentmanagement.entity.SubjectEntity;
-import com.codingmonkey.studentmanagement.entity.TeacherEntity;
+import com.codingmonkey.studentmanagement.domain.dto.request.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.TeacherResponseDTO;
 import com.codingmonkey.studentmanagement.exception.NotFoundException;
 import com.codingmonkey.studentmanagement.exception.TeacherDetailsException;
 import com.codingmonkey.studentmanagement.mapper.TeacherMapper;
 import com.codingmonkey.studentmanagement.repositories.SubjectRepository;
 import com.codingmonkey.studentmanagement.repositories.TeacherRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class TeacherServiceImplTest {
@@ -39,47 +46,51 @@ class TeacherServiceImplTest {
   @Spy
   private TeacherMapper teacherMapper = Mappers.getMapper(TeacherMapper.class);
 
+  private final Pageable pageable = PageRequest.of(0, 10);
+
   @Test
   void getAllTeachers_whenTeachersArePresent_expectAllTeachersDetails() {
     List<TeacherEntity> teacherDetailsList = List.of(
         new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"), "email@gmail.com", Gender.MALE));
 
-    when(teacherRepository.findAll()).thenReturn(teacherDetailsList);
+    when(teacherRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(teacherDetailsList));
     when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
-    List<TeacherResponseDTO> result = teacherService.getAllTeachers();
+    Page<TeacherResponseDTO> result = teacherService.getAllTeachers(pageable);
 
     assertThat(result).hasSize(1);
-    assertEquals("John", result.get(0).getFirstName());
+    assertEquals("John", result.getContent().get(0).getFirstName());
   }
 
   @Test
   void getAllTeachers_whenNoTeachersArePresent_expectAllTeachersDetails() {
-    given(teacherRepository.findAll()).willReturn(Collections.emptyList());
+    when(teacherRepository.findAll(any(Pageable.class))).thenReturn(Page.empty());
 
-    assertEquals(Collections.emptyList(), teacherService.getAllTeachers());
+    Page<TeacherResponseDTO> result = teacherService.getAllTeachers(pageable);
+
+    assertTrue(result.isEmpty());
   }
 
   @Test
   void getAllTeachers_whenSubjectsAreNotPresent_expectNotFoundExceptionIsThrown() {
     List<TeacherEntity> teacherDetailsList = List.of(
         new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"), "email@gmail.com", Gender.MALE));
-    when(teacherRepository.findAll()).thenReturn(teacherDetailsList);
-    assertThrows(NotFoundException.class, () -> teacherService.getAllTeachers());
+    when(teacherRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(teacherDetailsList));
+    assertThrows(NotFoundException.class, () -> teacherService.getAllTeachers(pageable));
   }
 
   @Test
   void getTeacherByFirstNameAndLastName_whenTeacherIsPresent_expectTeacherDetails() {
     List<TeacherEntity> teacherDetailsList = List.of(
         new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"), "email@gmail.com", Gender.MALE));
-    when(teacherRepository.findByFirstNameAndLastName(teacherDetailsList.get(0).getFirstName(),
-        teacherDetailsList.get(0).getLastName())).thenReturn(teacherDetailsList);
+    when(teacherRepository.findByFirstNameAndLastName(eq(teacherDetailsList.get(0).getFirstName()),
+        eq(teacherDetailsList.get(0).getLastName()), any(Pageable.class)))
+        .thenReturn(new PageImpl<>(teacherDetailsList));
     when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
-    List<TeacherResponseDTO> result = teacherService.getTeacherByFirstNameAndLastName(
-        teacherDetailsList.get(0).getFirstName(), teacherDetailsList.get(0).getLastName());
+    Page<TeacherResponseDTO> result = teacherService.getTeacherByFirstNameAndLastName(
+        teacherDetailsList.get(0).getFirstName(), teacherDetailsList.get(0).getLastName(), pageable);
 
-    //    assertEquals(result, studentDetailsListDto); Unable to compare two lists
     assertThat(result).hasSize(1);
-    assertEquals("John", result.get(0).getFirstName());
+    assertEquals("John", result.getContent().get(0).getFirstName());
   }
 
   @Test
@@ -88,9 +99,11 @@ class TeacherServiceImplTest {
         new TeacherEntity(1, "John", "Doe", Long.valueOf("8277272285"), "email@gmail.com", Gender.MALE));
     final String firstName = teacherDetailsList.get(0).getFirstName();
     final String lastName = teacherDetailsList.get(0).getLastName();
-    when(teacherRepository.findByFirstNameAndLastName(firstName, lastName)).thenReturn(Collections.emptyList());
+    when(teacherRepository.findByFirstNameAndLastName(eq(firstName), eq(lastName), any(Pageable.class)))
+        .thenReturn(Page.empty());
 
-    assertThrows(NotFoundException.class, () -> teacherService.getTeacherByFirstNameAndLastName(firstName, lastName));
+    assertThrows(NotFoundException.class,
+        () -> teacherService.getTeacherByFirstNameAndLastName(firstName, lastName, pageable));
   }
 
   @Test
@@ -172,6 +185,8 @@ class TeacherServiceImplTest {
     final TeacherRequestDTO teacherDTO = new TeacherRequestDTO("John", "Doe", 8277272285L, "keerti@gmailcom",
         Gender.MALE, List.of("Test"));
 
+    when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
+
     // When & Then
     assertThrows(NotFoundException.class, () -> teacherService.updateTeacherDetails(1, teacherDTO));
   }
@@ -182,24 +197,25 @@ class TeacherServiceImplTest {
     List<TeacherEntity> teacherDetailsList = List.of(
         new TeacherEntity(1, "John", "Doe", 8277272285L, "email@gmail.com", Gender.MALE));
 
-    when(teacherRepository.findByFirstName("John")).thenReturn(teacherDetailsList);
+    when(teacherRepository.findByFirstName(eq("John"), any(Pageable.class)))
+        .thenReturn(new PageImpl<>(teacherDetailsList));
     when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
 
     // When
-    List<TeacherResponseDTO> result = teacherService.getTeacherByFirstName("John");
+    Page<TeacherResponseDTO> result = teacherService.getTeacherByFirstName("John", pageable);
 
     // Then
     assertThat(result).hasSize(1);
-    assertEquals("John", result.get(0).getFirstName());
+    assertEquals("John", result.getContent().get(0).getFirstName());
   }
 
   @Test
   void getTeacherByFirstName_whenTeacherIsNotPresent_expectNotFoundException() {
     // Given
-    when(teacherRepository.findByFirstName("John")).thenReturn(Collections.emptyList());
+    when(teacherRepository.findByFirstName(eq("John"), any(Pageable.class))).thenReturn(Page.empty());
 
     // When & Then
-    assertThrows(NotFoundException.class, () -> teacherService.getTeacherByFirstName("John"));
+    assertThrows(NotFoundException.class, () -> teacherService.getTeacherByFirstName("John", pageable));
   }
 
   @Test
@@ -208,23 +224,24 @@ class TeacherServiceImplTest {
     List<TeacherEntity> teacherDetailsList = List.of(
         new TeacherEntity(1, "John", "Doe", 8277272285L, "email@gmail.com", Gender.MALE));
 
-    when(teacherRepository.findByLastName("Doe")).thenReturn(teacherDetailsList);
+    when(teacherRepository.findByLastName(eq("Doe"), any(Pageable.class)))
+        .thenReturn(new PageImpl<>(teacherDetailsList));
     when(subjectRepository.findAll()).thenReturn(List.of(new SubjectEntity(1, "Test", 10)));
 
     // When
-    List<TeacherResponseDTO> result = teacherService.getTeacherByLastName("Doe");
+    Page<TeacherResponseDTO> result = teacherService.getTeacherByLastName("Doe", pageable);
 
     // Then
     assertThat(result).hasSize(1);
-    assertEquals("Doe", result.get(0).getLastName());
+    assertEquals("Doe", result.getContent().get(0).getLastName());
   }
 
   @Test
   void getTeacherByLastName_whenTeacherIsNotPresent_expectNotFoundException() {
     // Given
-    when(teacherRepository.findByLastName("Doe")).thenReturn(Collections.emptyList());
+    when(teacherRepository.findByLastName(eq("Doe"), any(Pageable.class))).thenReturn(Page.empty());
 
     // When & Then
-    assertThrows(NotFoundException.class, () -> teacherService.getTeacherByLastName("Doe"));
+    assertThrows(NotFoundException.class, () -> teacherService.getTeacherByLastName("Doe", pageable));
   }
 }

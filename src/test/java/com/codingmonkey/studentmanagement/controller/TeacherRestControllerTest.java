@@ -1,30 +1,31 @@
 package com.codingmonkey.studentmanagement.controller;
 
 import com.codingmonkey.studentmanagement.constant.Gender;
-import com.codingmonkey.studentmanagement.dto.TeacherRequestDTO;
-import com.codingmonkey.studentmanagement.dto.TeacherResponseDTO;
+import com.codingmonkey.studentmanagement.domain.dto.request.TeacherRequestDTO;
+import com.codingmonkey.studentmanagement.domain.dto.response.TeacherResponseDTO;
 import com.codingmonkey.studentmanagement.service.TeacherService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(TeacherRestController.class)
@@ -40,41 +41,49 @@ class TeacherRestControllerTest {
   @Test
   void getAllTeachers_returnsAllTeachers() throws Exception {
     List<TeacherResponseDTO> teachers = Collections.emptyList();
-    when(teacherService.getAllTeachers()).thenReturn(teachers);
+    when(teacherService.getAllTeachers(any(Pageable.class))).thenReturn(new PageImpl<>(teachers));
 
     mockMvc.perform(get(URL))
         .andExpect(status().isOk())
-        .andExpect(content().json(OBJECT_MAPPER.writeValueAsString(Map.of("teachers", teachers))));
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.content").isEmpty());
+  }
+
+  private String asJson(final Object object) throws JsonProcessingException {
+    return OBJECT_MAPPER.writeValueAsString(object);
   }
 
   @Test
   void getTeacherByLastName_returnsTeachersWithMatchingLastName() throws Exception {
     List<TeacherResponseDTO> teachers = Collections.emptyList();
-    when(teacherService.getTeacherByLastName("Doe")).thenReturn(teachers);
+    when(teacherService.getTeacherByLastName(eq("Doe"), any(Pageable.class))).thenReturn(new PageImpl<>(teachers));
 
     mockMvc.perform(get(URL).param("lastName", "Doe"))
         .andExpect(status().isOk())
-        .andExpect(content().json(OBJECT_MAPPER.writeValueAsString(Map.of("teachers", teachers))));
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.content").isEmpty());
   }
 
   @Test
   void getTeacherByFirstName_returnsTeachersWithMatchingFirstName() throws Exception {
     List<TeacherResponseDTO> teachers = Collections.emptyList();
-    when(teacherService.getTeacherByFirstName("John")).thenReturn(teachers);
+    when(teacherService.getTeacherByFirstName(eq("John"), any(Pageable.class))).thenReturn(new PageImpl<>(teachers));
 
     mockMvc.perform(get(URL).param("firstName", "John"))
         .andExpect(status().isOk())
-        .andExpect(content().json(OBJECT_MAPPER.writeValueAsString(Map.of("teachers", teachers))));
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.content").isEmpty());
   }
 
   @Test
   void getTeacherByFirstNameAndLastName_returnsTeachersWithMatchingFirstAndLastName() throws Exception {
     List<TeacherResponseDTO> teachers = Collections.emptyList();
-    when(teacherService.getTeacherByFirstNameAndLastName("John", "Doe")).thenReturn(teachers);
+    when(teacherService.getTeacherByFirstNameAndLastName(eq("John"), eq("Doe"), any(Pageable.class))).thenReturn(new PageImpl<>(teachers));
 
     mockMvc.perform(get(URL).param("firstName", "John").param("lastName", "Doe"))
         .andExpect(status().isOk())
-        .andExpect(content().json(OBJECT_MAPPER.writeValueAsString(Map.of("teachers", teachers))));
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.content").isEmpty());
   }
 
   @Test
@@ -86,9 +95,9 @@ class TeacherRestControllerTest {
     when(teacherService.saveTeacherDetails(any(TeacherRequestDTO.class))).thenReturn(teacherDTO);
 
     mockMvc.perform(
-            post(URL).contentType(MediaType.APPLICATION_JSON).content(OBJECT_MAPPER.writeValueAsString(teacherRequestDTO)))
+            post(URL).contentType(MediaType.APPLICATION_JSON).content(asJson(teacherRequestDTO)))
         .andExpect(status().isCreated())
-        .andExpect(content().json(OBJECT_MAPPER.writeValueAsString(teacherDTO)));
+        .andExpect(content().json(asJson(teacherDTO), JsonCompareMode.STRICT));
   }
 
   @Test
@@ -100,9 +109,9 @@ class TeacherRestControllerTest {
     when(teacherService.updateTeacherDetails(anyInt(), any(TeacherRequestDTO.class))).thenReturn(teacherDTO);
 
     mockMvc.perform(put(URL + "/1").contentType(MediaType.APPLICATION_JSON)
-            .content(OBJECT_MAPPER.writeValueAsString(teacherRequestDTO)))
+            .content(asJson(teacherRequestDTO)))
         .andExpect(status().isOk())
-        .andExpect(content().json(OBJECT_MAPPER.writeValueAsString(teacherDTO)));
+        .andExpect(content().json(asJson(teacherDTO), JsonCompareMode.STRICT));
   }
 
   @Test

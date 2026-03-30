@@ -1,4 +1,4 @@
-package com.codingmonkey.studentmanagement.dto;
+package com.codingmonkey.studentmanagement.domain.dto.request;
 
 import java.util.List;
 
@@ -8,20 +8,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-public class TeacherResponseDTO {
-  @NotNull(message = "Teacher Id cannot be null")
-  private Integer teacherId;
+public class TeacherRequestDTO {
 
   @NotNull(message = "First name cannot be null")
   @NotBlank(message = "First name cannot be empty")
@@ -44,5 +35,6 @@ public class TeacherResponseDTO {
   @NotNull(message = "Gender cannot be null")
   private Gender gender;
 
+  @NotNull(message = "subjects cannot be null")
   private List<String> subjects;
 }

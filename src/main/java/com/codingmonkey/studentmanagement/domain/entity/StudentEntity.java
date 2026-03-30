@@ -1,4 +1,4 @@
-package com.codingmonkey.studentmanagement.entity;
+package com.codingmonkey.studentmanagement.domain.entity;
 
 import com.codingmonkey.studentmanagement.constant.Gender;
 
@@ -10,16 +10,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "student_details")
@@ -50,4 +44,7 @@ public class StudentEntity {
   @Enumerated(EnumType.STRING)
   @Column(name = "gender")
   private Gender gender;
+
+  //TODO: create a field for subjects object directly with @ManyToMany connection and also explore @JoinColumn annotation here
+  // but before that redesign the database schema with system design
 }
